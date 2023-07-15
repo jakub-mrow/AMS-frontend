@@ -6,11 +6,18 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  IconButton,
 } from "@mui/material";
 import { Wallet } from "./use-wallets";
-import TouchRipple from "@mui/material/ButtonBase/TouchRipple";
+import { Delete } from "@mui/icons-material";
 
-export const WalletsTable = ({ wallets }: { wallets: Wallet[] }) => {
+export const WalletsTable = ({
+  wallets,
+  onWalletDelete,
+}: {
+  wallets: Wallet[];
+  onWalletDelete: (walletId: number) => void;
+}) => {
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -18,6 +25,7 @@ export const WalletsTable = ({ wallets }: { wallets: Wallet[] }) => {
           <TableRow>
             <TableCell>Wallet</TableCell>
             <TableCell>Currency</TableCell>
+            <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -25,7 +33,11 @@ export const WalletsTable = ({ wallets }: { wallets: Wallet[] }) => {
             <TableRow key={wallet.id} hover onClick={() => {}}>
               <TableCell>{wallet.id}</TableCell>
               <TableCell>{wallet.currency}</TableCell>
-              <TouchRipple center={false} />
+              <TableCell>
+                <IconButton onClick={() => onWalletDelete(wallet.id)}>
+                  <Delete />
+                </IconButton>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

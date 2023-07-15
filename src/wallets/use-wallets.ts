@@ -1,7 +1,11 @@
 import { useCallback, useState } from "react";
 
+export type WalletInput = {
+  currency: string;
+};
+
 export type Wallet = {
-  id?: number;
+  id: number;
   currency: string;
 };
 
@@ -28,12 +32,28 @@ export const useWallets = () => {
     setIsAddDialogOpen(false);
   }, []);
 
-  const addWallet = useCallback((wallet: Wallet) => {
+  const addWallet = useCallback((wallet: WalletInput) => {
     setWallets((prevWallets) => {
-      wallet.id = prevWallets.length + 1;
-      return [...prevWallets, wallet];
+      const maxId = prevWallets.reduce((prev, current) => {
+        return prev.id > current.id ? prev : current;
+      }).id;
+
+      return [...prevWallets, { id: maxId + 1, ...wallet }];
     });
   }, []);
 
-  return { wallets, openAddDialog, closeAddDialog, isAddDialogOpen, addWallet };
+  const removeWallet = useCallback((walletId: number) => {
+    setWallets((prevWallets) => {
+      return prevWallets.filter((wallet) => wallet.id !== walletId);
+    });
+  }, []);
+
+  return {
+    wallets,
+    openAddDialog,
+    closeAddDialog,
+    isAddDialogOpen,
+    addWallet,
+    removeWallet,
+  };
 };

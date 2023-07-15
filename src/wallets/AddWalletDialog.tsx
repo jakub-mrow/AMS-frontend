@@ -7,7 +7,7 @@ import {
   DialogActions,
   Button,
 } from "@mui/material";
-import { Wallet } from "./use-wallets";
+import { WalletInput } from "./use-wallets";
 import useInput from "../util/use-input";
 
 export const AddWalletDialog = ({
@@ -17,7 +17,7 @@ export const AddWalletDialog = ({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (wallet: Wallet) => void;
+  onAdd: (wallet: WalletInput) => void;
 }) => {
   const currencyInput = useInput((value) => value.trim().length > 0, "");
 
