@@ -20,13 +20,19 @@ declare module '@mui/material/Button' {
 
 const theme = createTheme({
   palette: {
+    primary: {
+      main: "#275CC4",
+    },
+    secondary: {
+      main: "#C49427",
+    },
     white: {
       main: "#ffffff",
     },
     black: {
       main: "#000000",
-    }
-  }
-})
+    },
+  },
+});
 
 export default theme;
