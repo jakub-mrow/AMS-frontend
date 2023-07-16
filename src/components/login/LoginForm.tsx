@@ -62,7 +62,7 @@ const LoginForm = () => {
                         </button>
                     </div>
                 </div>
-                <div className="mt-16">
+                <div className="mt-12">
                     <button 
                         className="w-full mt-4 h-12 text-xl bg-primary text-white rounded-xl shadow-lg" 
                         type="submit" >
