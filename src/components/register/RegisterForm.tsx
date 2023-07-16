@@ -58,7 +58,9 @@ const RegisterForm = () => {
                 <FaDollarSign className="h-24 w-24 text-white" />
             </div>
 
-            <h1 className="text-6xl font-semibold mt-20">Create your AMS account</h1>
+            <div className="text-center">
+                <h1 className="text-6xl font-semibold mt-20 whitespace-normal">Create your AMS account</h1>
+            </div>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mt-14">
                     <TextField 

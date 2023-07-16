@@ -57,8 +57,8 @@ const LoginForm = () => {
                 <FaDollarSign className="h-24 w-24 text-white" />
             </div>
 
-            <h1 className="text-6xl font-semibold mt-20">Welcome to AMS!</h1>
             <div className="text-center">
+                <h1 className="text-6xl font-semibold mt-20 whitespace-normal">Welcome to AMS!</h1>
                 <p className="text-xl mt-4 whitespace-normal">Asset management system is the best place to keep track of all your investments</p>
             </div>
             
