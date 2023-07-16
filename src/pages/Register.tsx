@@ -1,4 +1,3 @@
-import React, { useState } from 'react'
 import RegisterForm from '../components/register/RegisterForm';
 import LoginPanel from '../components/login/LoginPanel';
 
