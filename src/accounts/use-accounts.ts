@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { apiUrl } from "../config.ts";
 import { Account, AccountInput, AccountsService } from "./accounts-service.ts";
 import { useAuth } from "../util/use-auth.ts";
+import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../snackbar/use-snackbar.ts";
 import { Severity } from "../snackbar/snackbar-context.ts";
 
@@ -22,6 +23,7 @@ export const useAccounts = () => {
     account: { id: 0, userId: 1, name: "" },
   });
   const alert = useSnackbar();
+  const navigate = useNavigate();
 
   useEffect(() => {
     accountsService
@@ -100,6 +102,13 @@ export const useAccounts = () => {
     [accountsService, alert],
   );
 
+  const goToAccount = useCallback(
+    (accountId: number) => {
+      navigate(`/accounts/${accountId}`);
+    },
+    [navigate],
+  );
+
   return {
     accounts,
     openAddDialog,
@@ -111,5 +120,6 @@ export const useAccounts = () => {
     addAccount,
     removeAccount,
     updateAccount,
+    goToAccount,
   };
 };

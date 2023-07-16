@@ -16,6 +16,7 @@ export const Accounts = () => {
     addAccount,
     removeAccount,
     updateAccount,
+    goToAccount,
   } = useAccounts();
   return (
     <Container maxWidth="md">
@@ -23,6 +24,7 @@ export const Accounts = () => {
         accounts={accounts}
         onAccountDelete={removeAccount}
         onAccountUpdate={openUpdateDialog}
+        goToAccount={goToAccount}
       />
       <Button variant="contained" onClick={openAddDialog}>
         Create account
