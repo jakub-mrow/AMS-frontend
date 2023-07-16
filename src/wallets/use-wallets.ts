@@ -9,6 +9,11 @@ export type Wallet = {
   currency: string;
 };
 
+export type UpdateDialogData = {
+  isOpen: boolean;
+  wallet: Wallet;
+};
+
 const walletsData: Wallet[] = [
   {
     id: 1,
@@ -23,6 +28,10 @@ const walletsData: Wallet[] = [
 export const useWallets = () => {
   const [wallets, setWallets] = useState(walletsData);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [updateDialogData, setUpdateDialogData] = useState<UpdateDialogData>({
+    isOpen: false,
+    wallet: { id: 0, currency: "" },
+  });
 
   const openAddDialog = useCallback(() => {
     setIsAddDialogOpen(true);
@@ -30,6 +39,14 @@ export const useWallets = () => {
 
   const closeAddDialog = useCallback(() => {
     setIsAddDialogOpen(false);
+  }, []);
+
+  const openUpdateDialog = useCallback((wallet: Wallet) => {
+    setUpdateDialogData({ isOpen: true, wallet: wallet });
+  }, []);
+
+  const closeUpdateDialog = useCallback(() => {
+    setUpdateDialogData({ isOpen: false, wallet: { id: 0, currency: "" } });
   }, []);
 
   const addWallet = useCallback((wallet: WalletInput) => {
@@ -48,12 +65,27 @@ export const useWallets = () => {
     });
   }, []);
 
+  const updateWallet = useCallback((wallet: Wallet) => {
+    setWallets((prevWallets) => {
+      return prevWallets.map((prevWallet) => {
+        if (prevWallet.id === wallet.id) {
+          return wallet;
+        }
+        return prevWallet;
+      });
+    });
+  }, []);
+
   return {
     wallets,
     openAddDialog,
     closeAddDialog,
     isAddDialogOpen,
+    openUpdateDialog,
+    closeUpdateDialog,
+    updateDialogData,
     addWallet,
     removeWallet,
+    updateWallet,
   };
 };

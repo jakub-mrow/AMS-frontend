@@ -7,39 +7,47 @@ import {
   DialogActions,
   Button,
 } from "@mui/material";
-import { WalletInput } from "./use-wallets";
+import { Wallet } from "./use-wallets";
 import useInput from "../util/use-input";
+import { useEffect } from "react";
 
-export const AddWalletDialog = ({
+export const UpdateWalletDialog = ({
   isOpen,
   onClose,
-  onAdd,
+  onUpdate,
+  walletToUpdate,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (wallet: WalletInput) => void;
+  onUpdate: (wallet: Wallet) => void;
+  walletToUpdate: Wallet;
 }) => {
-  const currencyInput = useInput((value) => value.trim().length > 0, "");
+  const currencyInput = useInput(
+    (value) => value.trim().length > 0,
+    walletToUpdate.currency
+  );
+
+  useEffect(() => {
+    currencyInput.reset();
+  }, [walletToUpdate.currency]);
 
   const cancelHandler = () => {
     onClose();
     currencyInput.reset();
   };
 
-  const addHandler = () => {
+  const updateHandler = () => {
     if (!currencyInput.isValid) return;
-    onAdd({ currency: currencyInput.value });
+    onUpdate({ id: walletToUpdate.id, currency: currencyInput.value });
     onClose();
     currencyInput.reset();
   };
 
   return (
     <Dialog open={isOpen} onClose={cancelHandler}>
-      <DialogTitle>Create wallet</DialogTitle>
+      <DialogTitle>Update wallet</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          To create a new wallet, please enter a currency.
-        </DialogContentText>
+        <DialogContentText>Enter new currency for wallet.</DialogContentText>
         <TextField
           margin="normal"
           id="currency"
@@ -53,8 +61,10 @@ export const AddWalletDialog = ({
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={cancelHandler} color="secondary">Cancel</Button>
-        <Button onClick={addHandler}>Create</Button>
+        <Button onClick={cancelHandler} color="secondary">
+          Cancel
+        </Button>
+        <Button onClick={updateHandler}>Update</Button>
       </DialogActions>
     </Dialog>
   );

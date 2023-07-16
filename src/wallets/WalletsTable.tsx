@@ -9,14 +9,16 @@ import {
   IconButton,
 } from "@mui/material";
 import { Wallet } from "./use-wallets";
-import { Delete } from "@mui/icons-material";
+import { Delete, Edit } from "@mui/icons-material";
 
 export const WalletsTable = ({
   wallets,
   onWalletDelete,
+  onWalletUpdate,
 }: {
   wallets: Wallet[];
   onWalletDelete: (walletId: number) => void;
+  onWalletUpdate: (wallet: Wallet) => void;
 }) => {
   return (
     <TableContainer component={Paper}>
@@ -36,6 +38,9 @@ export const WalletsTable = ({
               <TableCell>
                 <IconButton onClick={() => onWalletDelete(wallet.id)}>
                   <Delete />
+                </IconButton>
+                <IconButton onClick={() => onWalletUpdate(wallet)}>
+                  <Edit />
                 </IconButton>
               </TableCell>
             </TableRow>
