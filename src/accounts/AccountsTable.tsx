@@ -26,7 +26,7 @@ export const AccountsTable = ({
         <TableHead>
           <TableRow>
             <TableCell>Account</TableCell>
-            <TableCell>Currency</TableCell>
+            <TableCell>Name</TableCell>
             <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -34,7 +34,7 @@ export const AccountsTable = ({
           {accounts.map((account) => (
             <TableRow key={account.id} hover onClick={() => {}}>
               <TableCell>{account.id}</TableCell>
-              <TableCell>{account.currency}</TableCell>
+              <TableCell>{account.name}</TableCell>
               <TableCell>
                 <IconButton onClick={() => onAccountDelete(account.id)}>
                   <Delete />

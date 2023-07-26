@@ -19,18 +19,18 @@ export const AddAccountDialog = ({
   onClose: () => void;
   onAdd: (account: AccountInput) => void;
 }) => {
-  const currencyInput = useInput((value) => value.trim().length > 0, "");
+  const nameInput = useInput((value) => value.trim().length > 0, "");
 
   const cancelHandler = () => {
     onClose();
-    currencyInput.reset();
+    nameInput.reset();
   };
 
   const addHandler = () => {
-    if (!currencyInput.isValid) return;
-    onAdd({ currency: currencyInput.value });
+    if (!nameInput.isValid) return;
+    onAdd({ name: nameInput.value });
     onClose();
-    currencyInput.reset();
+    nameInput.reset();
   };
 
   return (
@@ -38,18 +38,18 @@ export const AddAccountDialog = ({
       <DialogTitle>Create account</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          To create a new account, please enter a currency.
+          To create a new account, please enter a name.
         </DialogContentText>
         <TextField
           margin="normal"
-          id="currency"
-          label="Currency"
+          id="name"
+          label="Name"
           fullWidth
           variant="standard"
-          value={currencyInput.value}
-          onChange={currencyInput.valueChangeHandler}
-          onBlur={currencyInput.inputBlurHandler}
-          error={currencyInput.hasError}
+          value={nameInput.value}
+          onChange={nameInput.valueChangeHandler}
+          onBlur={nameInput.inputBlurHandler}
+          error={nameInput.hasError}
         />
       </DialogContent>
       <DialogActions>

@@ -22,42 +22,46 @@ export const UpdateAccountDialog = ({
   onUpdate: (account: Account) => void;
   accountToUpdate: Account;
 }) => {
-  const currencyInput = useInput(
+  const nameInput = useInput(
     (value) => value.trim().length > 0,
-    accountToUpdate.currency,
+    accountToUpdate.name,
   );
 
   useEffect(() => {
-    currencyInput.reset();
-  }, [accountToUpdate.currency]);
+    nameInput.reset();
+  }, [accountToUpdate.name]);
 
   const cancelHandler = () => {
     onClose();
-    currencyInput.reset();
+    nameInput.reset();
   };
 
   const updateHandler = () => {
-    if (!currencyInput.isValid) return;
-    onUpdate({ id: accountToUpdate.id, currency: currencyInput.value });
+    if (!nameInput.isValid) return;
+    onUpdate({
+      id: accountToUpdate.id,
+      userId: accountToUpdate.userId,
+      name: nameInput.value,
+    });
     onClose();
-    currencyInput.reset();
+    nameInput.reset();
   };
 
   return (
     <Dialog open={isOpen} onClose={cancelHandler}>
       <DialogTitle>Update account</DialogTitle>
       <DialogContent>
-        <DialogContentText>Enter new currency for account.</DialogContentText>
+        <DialogContentText>Enter new name for account.</DialogContentText>
         <TextField
           margin="normal"
-          id="currency"
-          label="Currency"
+          id="name"
+          label="Name"
           fullWidth
           variant="standard"
-          value={currencyInput.value}
-          onChange={currencyInput.valueChangeHandler}
-          onBlur={currencyInput.inputBlurHandler}
-          error={currencyInput.hasError}
+          value={nameInput.value}
+          onChange={nameInput.valueChangeHandler}
+          onBlur={nameInput.inputBlurHandler}
+          error={nameInput.hasError}
         />
       </DialogContent>
       <DialogActions>

@@ -1,12 +1,13 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 export type AccountInput = {
-  currency: string;
+  name: string;
 };
 
 export type Account = {
   id: number;
-  currency: string;
+  userId: number;
+  name: string;
 };
 
 export type UpdateDialogData = {
@@ -17,20 +18,25 @@ export type UpdateDialogData = {
 const accountsData: Account[] = [
   {
     id: 1,
-    currency: "PLN",
+    userId: 1,
+    name: "Retirement",
   },
   {
     id: 2,
-    currency: "EUR",
+    userId: 1,
+    name: "Savings",
   },
 ];
 
 export const useAccounts = () => {
+  const userId = useMemo(() => {
+    return 1;
+  }, []);
   const [accounts, setAccounts] = useState(accountsData);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [updateDialogData, setUpdateDialogData] = useState<UpdateDialogData>({
     isOpen: false,
-    account: { id: 0, currency: "" },
+    account: { id: 0, userId: userId, name: "" },
   });
 
   const openAddDialog = useCallback(() => {
@@ -46,18 +52,24 @@ export const useAccounts = () => {
   }, []);
 
   const closeUpdateDialog = useCallback(() => {
-    setUpdateDialogData({ isOpen: false, account: { id: 0, currency: "" } });
-  }, []);
-
-  const addAccount = useCallback((account: AccountInput) => {
-    setAccounts((prevAccounts) => {
-      const maxId = prevAccounts.reduce((prev, current) => {
-        return prev.id > current.id ? prev : current;
-      }).id;
-
-      return [...prevAccounts, { id: maxId + 1, ...account }];
+    setUpdateDialogData({
+      isOpen: false,
+      account: { id: 0, userId: userId, name: "" },
     });
-  }, []);
+  }, [userId]);
+
+  const addAccount = useCallback(
+    (account: AccountInput) => {
+      setAccounts((prevAccounts) => {
+        const maxId = prevAccounts.reduce((prev, current) => {
+          return prev.id > current.id ? prev : current;
+        }).id;
+
+        return [...prevAccounts, { id: maxId + 1, userId: userId, ...account }];
+      });
+    },
+    [userId],
+  );
 
   const removeAccount = useCallback((accountId: number) => {
     setAccounts((prevAccounts) => {
