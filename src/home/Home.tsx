@@ -9,8 +9,8 @@ const Home = () => {
   return (
     <>
       <Typography variant="h1">Hello AMS</Typography>
-      <Button variant="contained" onClick={() => navigate("/wallets")}>
-        Wallets
+      <Button variant="contained" onClick={() => navigate("/accounts")}>
+        Accounts
       </Button>
       <Button onClick={() => alert("Snackbar is working!", Severity.SUCCESS)}>
         Snackbar

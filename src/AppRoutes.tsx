@@ -1,14 +1,14 @@
-import {Route, Routes} from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Home from "./home/Home.tsx";
-import { Wallets } from "./wallets/Wallets.tsx";
+import { Accounts } from "./accounts/Accounts.tsx";
 
 const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/wallets" element={<Wallets />} />
+      <Route path="/accounts" element={<Accounts />} />
     </Routes>
   );
-}
+};
 
-export default AppRoutes
+export default AppRoutes;

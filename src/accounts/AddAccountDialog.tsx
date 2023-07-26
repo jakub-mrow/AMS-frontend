@@ -1,23 +1,23 @@
 import {
+  Button,
   Dialog,
-  DialogTitle,
+  DialogActions,
   DialogContent,
   DialogContentText,
+  DialogTitle,
   TextField,
-  DialogActions,
-  Button,
 } from "@mui/material";
-import { WalletInput } from "./use-wallets";
-import useInput from "../util/use-input";
+import { AccountInput } from "./use-accounts.ts";
+import useInput from "../util/use-input.ts";
 
-export const AddWalletDialog = ({
+export const AddAccountDialog = ({
   isOpen,
   onClose,
   onAdd,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (wallet: WalletInput) => void;
+  onAdd: (account: AccountInput) => void;
 }) => {
   const currencyInput = useInput((value) => value.trim().length > 0, "");
 
@@ -35,10 +35,10 @@ export const AddWalletDialog = ({
 
   return (
     <Dialog open={isOpen} onClose={cancelHandler}>
-      <DialogTitle>Create wallet</DialogTitle>
+      <DialogTitle>Create account</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          To create a new wallet, please enter a currency.
+          To create a new account, please enter a currency.
         </DialogContentText>
         <TextField
           margin="normal"
@@ -53,7 +53,9 @@ export const AddWalletDialog = ({
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={cancelHandler} color="secondary">Cancel</Button>
+        <Button onClick={cancelHandler} color="secondary">
+          Cancel
+        </Button>
         <Button onClick={addHandler}>Create</Button>
       </DialogActions>
     </Dialog>

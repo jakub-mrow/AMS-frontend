@@ -1,35 +1,35 @@
 import {
+  Button,
   Dialog,
-  DialogTitle,
+  DialogActions,
   DialogContent,
   DialogContentText,
+  DialogTitle,
   TextField,
-  DialogActions,
-  Button,
 } from "@mui/material";
-import { Wallet } from "./use-wallets";
-import useInput from "../util/use-input";
+import { Account } from "./use-accounts.ts";
+import useInput from "../util/use-input.ts";
 import { useEffect } from "react";
 
-export const UpdateWalletDialog = ({
+export const UpdateAccountDialog = ({
   isOpen,
   onClose,
   onUpdate,
-  walletToUpdate,
+  accountToUpdate,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onUpdate: (wallet: Wallet) => void;
-  walletToUpdate: Wallet;
+  onUpdate: (account: Account) => void;
+  accountToUpdate: Account;
 }) => {
   const currencyInput = useInput(
     (value) => value.trim().length > 0,
-    walletToUpdate.currency
+    accountToUpdate.currency,
   );
 
   useEffect(() => {
     currencyInput.reset();
-  }, [walletToUpdate.currency]);
+  }, [accountToUpdate.currency]);
 
   const cancelHandler = () => {
     onClose();
@@ -38,16 +38,16 @@ export const UpdateWalletDialog = ({
 
   const updateHandler = () => {
     if (!currencyInput.isValid) return;
-    onUpdate({ id: walletToUpdate.id, currency: currencyInput.value });
+    onUpdate({ id: accountToUpdate.id, currency: currencyInput.value });
     onClose();
     currencyInput.reset();
   };
 
   return (
     <Dialog open={isOpen} onClose={cancelHandler}>
-      <DialogTitle>Update wallet</DialogTitle>
+      <DialogTitle>Update account</DialogTitle>
       <DialogContent>
-        <DialogContentText>Enter new currency for wallet.</DialogContentText>
+        <DialogContentText>Enter new currency for account.</DialogContentText>
         <TextField
           margin="normal"
           id="currency"
