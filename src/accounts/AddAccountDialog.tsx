@@ -7,8 +7,8 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import { AccountInput } from "./use-accounts.ts";
 import useInput from "../util/use-input.ts";
+import { AccountInput } from "./accounts-service.ts";
 
 export const AddAccountDialog = ({
   isOpen,

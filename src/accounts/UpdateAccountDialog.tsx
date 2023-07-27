@@ -7,9 +7,9 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import { Account } from "./use-accounts.ts";
 import useInput from "../util/use-input.ts";
 import { useEffect } from "react";
+import { Account } from "./accounts-service.ts";
 
 export const UpdateAccountDialog = ({
   isOpen,

@@ -1,43 +1,35 @@
-import { useCallback, useMemo, useState } from "react";
-
-export type AccountInput = {
-  name: string;
-};
-
-export type Account = {
-  id: number;
-  userId: number;
-  name: string;
-};
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { apiUrl } from "../config.ts";
+import { Account, AccountInput, AccountsService } from "./accounts-service.ts";
+import { useAuth } from "../util/use-auth.ts";
 
 export type UpdateDialogData = {
   isOpen: boolean;
   account: Account;
 };
 
-const accountsData: Account[] = [
-  {
-    id: 1,
-    userId: 1,
-    name: "Retirement",
-  },
-  {
-    id: 2,
-    userId: 1,
-    name: "Savings",
-  },
-];
-
 export const useAccounts = () => {
-  const userId = useMemo(() => {
-    return 1;
-  }, []);
-  const [accounts, setAccounts] = useState(accountsData);
+  const { token } = useAuth(); //TODO remove after getting token
+  const accountsService = useMemo(() => {
+    return new AccountsService(apiUrl, token);
+  }, [token]);
+  const [accounts, setAccounts] = useState<Account[]>([]);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [updateDialogData, setUpdateDialogData] = useState<UpdateDialogData>({
     isOpen: false,
-    account: { id: 0, userId: userId, name: "" },
+    account: { id: 0, userId: 1, name: "" },
   });
+
+  useEffect(() => {
+    accountsService
+      .fetchAccounts()
+      .then((data) => {
+        setAccounts(data);
+      })
+      .catch((error) => {
+        console.log(error); //TODO handle error
+      });
+  }, [accountsService]);
 
   const openAddDialog = useCallback(() => {
     setIsAddDialogOpen(true);
@@ -54,39 +46,48 @@ export const useAccounts = () => {
   const closeUpdateDialog = useCallback(() => {
     setUpdateDialogData({
       isOpen: false,
-      account: { id: 0, userId: userId, name: "" },
+      account: { id: 0, userId: 1, name: "" },
     });
-  }, [userId]);
+  }, []);
 
   const addAccount = useCallback(
-    (account: AccountInput) => {
-      setAccounts((prevAccounts) => {
-        const maxId = prevAccounts.reduce((prev, current) => {
-          return prev.id > current.id ? prev : current;
-        }).id;
-
-        return [...prevAccounts, { id: maxId + 1, userId: userId, ...account }];
-      });
+    async (account: AccountInput) => {
+      try {
+        await accountsService.postAccount(account);
+        const newAccounts = await accountsService.fetchAccounts();
+        setAccounts(newAccounts);
+      } catch (error) {
+        console.log(error); //TODO handle error
+      }
     },
-    [userId],
+    [accountsService],
   );
 
-  const removeAccount = useCallback((accountId: number) => {
-    setAccounts((prevAccounts) => {
-      return prevAccounts.filter((account) => account.id !== accountId);
-    });
-  }, []);
+  const removeAccount = useCallback(
+    async (accountId: number) => {
+      try {
+        await accountsService.deleteAccount(accountId);
+        const newAccounts = await accountsService.fetchAccounts();
+        setAccounts(newAccounts);
+      } catch (error) {
+        console.log(error); //TODO handle error
+      }
+    },
+    [accountsService],
+  );
 
-  const updateAccount = useCallback((account: Account) => {
-    setAccounts((prevAccounts) => {
-      return prevAccounts.map((prevAccount) => {
-        if (prevAccount.id === account.id) {
-          return account;
-        }
-        return prevAccount;
-      });
-    });
-  }, []);
+  const updateAccount = useCallback(
+    async (account: Account) => {
+      try {
+        await accountsService.putAccount(account);
+        const newAccounts = await accountsService.fetchAccounts();
+        setAccounts(newAccounts);
+      } catch (error) {
+        console.log(error); //TODO handle error
+      }
+    },
+    [accountsService],
+  );
 
   return {
     accounts,

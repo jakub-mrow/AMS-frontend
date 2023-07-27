@@ -8,8 +8,8 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { Account } from "./use-accounts.ts";
 import { Delete, Edit } from "@mui/icons-material";
+import { Account } from "./accounts-service.ts";
 
 export const AccountsTable = ({
   accounts,
