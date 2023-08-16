@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { apiUrl } from "../config.ts";
 import { Account, AccountInput, AccountsService } from "./accounts-service.ts";
 import { useAuth } from "../util/use-auth.ts";
+import { useSnackbar } from "../snackbar/use-snackbar.ts";
+import { Severity } from "../snackbar/snackbar-context.ts";
 
 export type UpdateDialogData = {
   isOpen: boolean;
@@ -19,6 +21,7 @@ export const useAccounts = () => {
     isOpen: false,
     account: { id: 0, userId: 1, name: "" },
   });
+  const alert = useSnackbar();
 
   useEffect(() => {
     accountsService
@@ -27,9 +30,11 @@ export const useAccounts = () => {
         setAccounts(data);
       })
       .catch((error) => {
-        console.log(error); //TODO handle error
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+        }
       });
-  }, [accountsService]);
+  }, [alert, accountsService]);
 
   const openAddDialog = useCallback(() => {
     setIsAddDialogOpen(true);
@@ -57,10 +62,12 @@ export const useAccounts = () => {
         const newAccounts = await accountsService.fetchAccounts();
         setAccounts(newAccounts);
       } catch (error) {
-        console.log(error); //TODO handle error
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+        }
       }
     },
-    [accountsService],
+    [accountsService, alert],
   );
 
   const removeAccount = useCallback(
@@ -70,10 +77,12 @@ export const useAccounts = () => {
         const newAccounts = await accountsService.fetchAccounts();
         setAccounts(newAccounts);
       } catch (error) {
-        console.log(error); //TODO handle error
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+        }
       }
     },
-    [accountsService],
+    [accountsService, alert],
   );
 
   const updateAccount = useCallback(
@@ -83,10 +92,12 @@ export const useAccounts = () => {
         const newAccounts = await accountsService.fetchAccounts();
         setAccounts(newAccounts);
       } catch (error) {
-        console.log(error); //TODO handle error
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+        }
       }
     },
-    [accountsService],
+    [accountsService, alert],
   );
 
   return {

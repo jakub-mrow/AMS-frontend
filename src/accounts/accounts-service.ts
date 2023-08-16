@@ -22,7 +22,7 @@ export class AccountsService {
     });
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.message);
+      throw new Error(data.error);
     }
     return data;
   }
@@ -38,7 +38,7 @@ export class AccountsService {
     });
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.message);
+      throw new Error(data.error);
     }
   }
 
@@ -51,7 +51,7 @@ export class AccountsService {
     });
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.message);
+      throw new Error(data.error);
     }
   }
 
@@ -66,7 +66,7 @@ export class AccountsService {
     });
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.message);
+      throw new Error(data.error);
     }
   }
 }
