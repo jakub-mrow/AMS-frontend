@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Account, AccountTransaction } from "../accounts/types.ts";
+import {
+  Account,
+  AccountTransaction,
+  AccountTransactionType,
+} from "../accounts/types.ts";
 import { useAuth } from "../util/use-auth.ts";
 import { apiUrl } from "../config.ts";
 import { AccountsDetailsService } from "./account-details-service.ts";
@@ -19,14 +23,21 @@ export const useAccountDetails = () => {
   const [accountTransactions, setAccountTransactions] = useState<
     AccountTransaction[]
   >([]);
-  const [isDepositDialogOpen, setIsDepositDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState(AccountTransactionType.DEPOSIT);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const openDepositDialog = useCallback(() => {
-    setIsDepositDialogOpen(true);
+    setDialogType(AccountTransactionType.DEPOSIT);
+    setIsDialogOpen(true);
   }, []);
 
-  const closeDepositDialog = useCallback(() => {
-    setIsDepositDialogOpen(false);
+  const openWithdrawalDialog = useCallback(() => {
+    setDialogType(AccountTransactionType.WITHDRAWAL);
+    setIsDialogOpen(true);
+  }, []);
+
+  const closeDialog = useCallback(() => {
+    setIsDialogOpen(false);
   }, []);
 
   const refreshAccountData = useCallback(() => {
@@ -61,10 +72,10 @@ export const useAccountDetails = () => {
     refreshAccountData();
   }, [refreshAccountData]);
 
-  const onDeposit = (amount: number, currency: string) => {
+  const onConfirmDialog = (amount: number, currency: string) => {
     if (account) {
       accountDetailsService
-        .depositToAccount(account.id, amount, currency)
+        .addAccountTransaction(account.id, dialogType, amount, currency)
         .then(() => refreshAccountData())
         .catch((error) => {
           if (error instanceof Error) {
@@ -78,8 +89,10 @@ export const useAccountDetails = () => {
     account,
     accountTransactions,
     openDepositDialog,
-    closeDepositDialog,
-    isDepositDialogOpen,
-    onDeposit,
+    openWithdrawalDialog,
+    closeDialog,
+    dialogType,
+    isDialogOpen,
+    onConfirmDialog,
   };
 };

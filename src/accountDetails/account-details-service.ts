@@ -1,4 +1,8 @@
-import { Account, AccountTransaction } from "../accounts/types.ts";
+import {
+  Account,
+  AccountTransaction,
+  AccountTransactionType,
+} from "../accounts/types.ts";
 
 export type AccountInput = {
   name: string;
@@ -55,7 +59,12 @@ export class AccountsDetailsService {
     }));
   }
 
-  async depositToAccount(id: number, amount: number, currency: string) {
+  async addAccountTransaction(
+    id: number,
+    type: AccountTransactionType,
+    amount: number,
+    currency: string,
+  ) {
     const response = await fetch(
       `${this.apiUrl}/api/accounts/${id}/transactions`,
       {
@@ -65,9 +74,9 @@ export class AccountsDetailsService {
           Authorization: `Bearer ${this.token}`,
         },
         body: JSON.stringify({
-          amount: amount,
-          currency: currency,
-          type: "deposit",
+          amount,
+          currency,
+          type,
         }),
       },
     );

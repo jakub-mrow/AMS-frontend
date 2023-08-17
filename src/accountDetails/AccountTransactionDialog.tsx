@@ -8,15 +8,18 @@ import {
 } from "@mui/material";
 import useInput from "../util/use-input.ts";
 import { isValidAmount, isValidCurrency } from "../util/validations.ts";
+import { AccountTransactionType } from "../accounts/types.ts";
 
-export const DepositDialog = ({
+export const AccountTransactionDialog = ({
   isOpen,
   onClose,
-  onDeposit,
+  onConfirm,
+  type,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onDeposit: (amount: number, currency: string) => void;
+  onConfirm: (amount: number, currency: string) => void;
+  type: AccountTransactionType;
 }) => {
   const amountInput = useInput(isValidAmount, "");
   const currencyInput = useInput(isValidCurrency, "");
@@ -27,9 +30,9 @@ export const DepositDialog = ({
     currencyInput.reset();
   };
 
-  const addHandler = () => {
+  const confirmHandler = () => {
     if (!amountInput.isValid || !currencyInput.isValid) return;
-    onDeposit(Number(amountInput.value), currencyInput.value.trim());
+    onConfirm(Number(amountInput.value), currencyInput.value.trim());
     onClose();
     amountInput.reset();
     currencyInput.reset();
@@ -37,7 +40,11 @@ export const DepositDialog = ({
 
   return (
     <Dialog open={isOpen} onClose={cancelHandler}>
-      <DialogTitle>Deposit to account</DialogTitle>
+      <DialogTitle>
+        {type === AccountTransactionType.DEPOSIT
+          ? "Deposit to account"
+          : "Withdraw from account"}
+      </DialogTitle>
       <DialogContent>
         <TextField
           margin="normal"
@@ -66,7 +73,7 @@ export const DepositDialog = ({
         <Button onClick={cancelHandler} color="secondary">
           Cancel
         </Button>
-        <Button onClick={addHandler}>Deposit</Button>
+        <Button onClick={confirmHandler}>Confirm</Button>
       </DialogActions>
     </Dialog>
   );

@@ -1,16 +1,18 @@
 import { Button, Container, LinearProgress } from "@mui/material";
 import { useAccountDetails } from "./use-account-details";
 import { AccountsTransactionsTable } from "./AccountTransactionsTable.tsx";
-import { DepositDialog } from "./DepositDialog.tsx";
+import { AccountTransactionDialog } from "./AccountTransactionDialog.tsx";
 
 export const AccountDetails = () => {
   const {
     account,
     accountTransactions,
     openDepositDialog,
-    closeDepositDialog,
-    isDepositDialogOpen,
-    onDeposit,
+    openWithdrawalDialog,
+    closeDialog,
+    isDialogOpen,
+    dialogType,
+    onConfirmDialog,
   } = useAccountDetails();
 
   if (!account) {
@@ -34,13 +36,18 @@ export const AccountDetails = () => {
       <Button variant="contained" color="primary" onClick={openDepositDialog}>
         Deposit
       </Button>
-      <Button variant="contained" color="secondary">
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={openWithdrawalDialog}
+      >
         Withdraw
       </Button>
-      <DepositDialog
-        isOpen={isDepositDialogOpen}
-        onClose={closeDepositDialog}
-        onDeposit={onDeposit}
+      <AccountTransactionDialog
+        isOpen={isDialogOpen}
+        onClose={closeDialog}
+        onConfirm={onConfirmDialog}
+        type={dialogType}
       />
     </Container>
   );
