@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Account, AccountTransaction } from "../accounts/types.ts";
 import { useAuth } from "../util/use-auth.ts";
@@ -19,8 +19,17 @@ export const useAccountDetails = () => {
   const [accountTransactions, setAccountTransactions] = useState<
     AccountTransaction[]
   >([]);
+  const [isDepositDialogOpen, setIsDepositDialogOpen] = useState(false);
 
-  useEffect(() => {
+  const openDepositDialog = useCallback(() => {
+    setIsDepositDialogOpen(true);
+  }, []);
+
+  const closeDepositDialog = useCallback(() => {
+    setIsDepositDialogOpen(false);
+  }, []);
+
+  const refreshAccountData = useCallback(() => {
     if (!id) {
       return;
     }
@@ -48,5 +57,29 @@ export const useAccountDetails = () => {
       });
   }, [id, alert, accountDetailsService, navigate]);
 
-  return { account, accountTransactions };
+  useEffect(() => {
+    refreshAccountData();
+  }, [refreshAccountData]);
+
+  const onDeposit = (amount: number, currency: string) => {
+    if (account) {
+      accountDetailsService
+        .depositToAccount(account.id, amount, currency)
+        .then(() => refreshAccountData())
+        .catch((error) => {
+          if (error instanceof Error) {
+            alert(error.message, Severity.ERROR);
+          }
+        });
+    }
+  };
+
+  return {
+    account,
+    accountTransactions,
+    openDepositDialog,
+    closeDepositDialog,
+    isDepositDialogOpen,
+    onDeposit,
+  };
 };
