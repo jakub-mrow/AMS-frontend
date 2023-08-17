@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { apiUrl } from "../config.ts";
-import { Account, AccountInput, AccountsService } from "./accounts-service.ts";
+import { AccountInput, AccountsService } from "./accounts-service.ts";
 import { useAuth } from "../util/use-auth.ts";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../snackbar/use-snackbar.ts";
 import { Severity } from "../snackbar/snackbar-context.ts";
+import { Account } from "./types.ts";
 
 export type UpdateDialogData = {
   isOpen: boolean;
@@ -20,7 +21,7 @@ export const useAccounts = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [updateDialogData, setUpdateDialogData] = useState<UpdateDialogData>({
     isOpen: false,
-    account: { id: 0, userId: 1, name: "" },
+    account: { id: 0, userId: 1, name: "", balances: [] },
   });
   const alert = useSnackbar();
   const navigate = useNavigate();
@@ -53,7 +54,7 @@ export const useAccounts = () => {
   const closeUpdateDialog = useCallback(() => {
     setUpdateDialogData({
       isOpen: false,
-      account: { id: 0, userId: 1, name: "" },
+      account: { id: 0, userId: 1, name: "", balances: [] },
     });
   }, []);
 

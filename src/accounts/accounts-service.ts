@@ -1,10 +1,6 @@
-export type AccountInput = {
-  name: string;
-};
+import { Account } from "./types.ts";
 
-export type Account = {
-  id: number;
-  userId: number;
+export type AccountInput = {
   name: string;
 };
 
