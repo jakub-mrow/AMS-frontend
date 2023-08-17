@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Account } from "../accounts/types.ts";
+import { Account, AccountTransaction } from "../accounts/types.ts";
 import { useAuth } from "../util/use-auth.ts";
 import { apiUrl } from "../config.ts";
 import { AccountsDetailsService } from "./account-details-service.ts";
@@ -16,6 +16,9 @@ export const useAccountDetails = () => {
   const alert = useSnackbar();
   const navigate = useNavigate();
   const [account, setAccount] = useState<Account | null>(null);
+  const [accountTransactions, setAccountTransactions] = useState<
+    AccountTransaction[]
+  >([]);
 
   useEffect(() => {
     if (!id) {
@@ -32,7 +35,18 @@ export const useAccountDetails = () => {
           navigate("/accounts", { replace: true });
         }
       });
+    accountDetailsService
+      .fetchAccountTransactions(Number(id))
+      .then((data) => {
+        setAccountTransactions(data);
+      })
+      .catch((error) => {
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+          navigate("/accounts", { replace: true });
+        }
+      });
   }, [id, alert, accountDetailsService, navigate]);
 
-  return { account };
+  return { account, accountTransactions };
 };

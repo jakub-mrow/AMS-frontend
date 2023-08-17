@@ -1,4 +1,4 @@
-import { Account } from "../accounts/types.ts";
+import { Account, AccountTransaction } from "../accounts/types.ts";
 
 export type AccountInput = {
   name: string;
@@ -6,6 +6,14 @@ export type AccountInput = {
 
 type ErrorResponse = {
   error?: string;
+};
+
+type AccountTransactionApi = {
+  id: number;
+  type: AccountTransactionType;
+  amount: number;
+  currency: string;
+  date: string;
 };
 
 export class AccountsDetailsService {
@@ -25,5 +33,25 @@ export class AccountsDetailsService {
       throw new Error(data.error ?? "Failed to fetch account");
     }
     return await response.json();
+  }
+
+  async fetchAccountTransactions(id: number): Promise<AccountTransaction[]> {
+    const response = await fetch(
+      `${this.apiUrl}/api/accounts/${id}/transactions`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      },
+    );
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to fetch transactions");
+    }
+    const data: AccountTransactionApi[] = await response.json();
+    return data.map((transaction) => ({
+      ...transaction,
+      date: new Date(transaction.date),
+    }));
   }
 }

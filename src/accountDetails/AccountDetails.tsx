@@ -1,8 +1,9 @@
 import { Button, Container, LinearProgress } from "@mui/material";
 import { useAccountDetails } from "./use-account-details";
+import { AccountsTransactionsTable } from "./AccountTransactionsTable.tsx";
 
 export const AccountDetails = () => {
-  const { account } = useAccountDetails();
+  const { account, accountTransactions } = useAccountDetails();
 
   if (!account) {
     return <LinearProgress />;
@@ -21,6 +22,7 @@ export const AccountDetails = () => {
           {balance.currency}: {balance.amount}
         </div>
       ))}
+      <AccountsTransactionsTable accountTransactions={accountTransactions} />
       <Button variant="contained" color="primary">
         Deposit
       </Button>
