@@ -85,4 +85,19 @@ export class AccountsDetailsService {
       throw new Error(data.error ?? "Failed to add transaction");
     }
   }
+
+  async deleteAccountTransaction(id: number, transactionId: number) {
+    const response = await fetch(
+      `${this.apiUrl}/api/accounts/${id}/transactions/${transactionId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      },
+    );
+    if (!response.ok) {
+      throw new Error("Failed to delete transaction");
+    }
+  }
 }

@@ -85,6 +85,19 @@ export const useAccountDetails = () => {
     }
   };
 
+  const onDeleteTransaction = (transaction: AccountTransaction) => {
+    if (account) {
+      accountDetailsService
+        .deleteAccountTransaction(account.id, transaction.id)
+        .then(() => refreshAccountData())
+        .catch((error) => {
+          if (error instanceof Error) {
+            alert(error.message, Severity.ERROR);
+          }
+        });
+    }
+  };
+
   return {
     account,
     accountTransactions,
@@ -94,5 +107,6 @@ export const useAccountDetails = () => {
     dialogType,
     isDialogOpen,
     onConfirmDialog,
+    onDeleteTransaction,
   };
 };

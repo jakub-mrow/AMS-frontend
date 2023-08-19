@@ -13,6 +13,7 @@ export const AccountDetails = () => {
     isDialogOpen,
     dialogType,
     onConfirmDialog,
+    onDeleteTransaction,
   } = useAccountDetails();
 
   if (!account) {
@@ -32,7 +33,10 @@ export const AccountDetails = () => {
           {balance.currency}: {balance.amount}
         </div>
       ))}
-      <AccountsTransactionsTable accountTransactions={accountTransactions} />
+      <AccountsTransactionsTable
+        accountTransactions={accountTransactions}
+        onDeleteTransaction={onDeleteTransaction}
+      />
       <Button variant="contained" color="primary" onClick={openDepositDialog}>
         Deposit
       </Button>
