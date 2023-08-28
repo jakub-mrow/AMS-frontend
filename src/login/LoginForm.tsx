@@ -1,55 +1,25 @@
-import { useState } from 'react';
-import { AlertColor, TextField } from "@mui/material"
+import { TextField } from "@mui/material"
 import { Link } from 'react-router-dom';
 import { IconButton, InputAdornment, Snackbar, Alert } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { FaDollarSign } from 'react-icons/fa';
-import { authenticateLogin } from '../../api/authRequests';
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-
+import { useLogin } from './use-login';
 
 
 const LoginForm = () => {
-    const [showPassword, setShowPassword] = useState<boolean>(false);
-    const [showAlert, setShowAlert] = useState<string | null>(null);
-    const [alertSeverity, setAlertSeverity] = useState<AlertColor>("error");
-
-    const [username, setUsername] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
-
-    const handleTogglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-    };
-
-    let navigate = useNavigate();
-    const changeToMainRoute = () => { 
-        const path = "/"; 
-        navigate(path);
-    }
-
+    const {
+        showPassword,
+        showAlert,
+        alertSeverity,
+        handleTogglePasswordVisibility,
+        updatePassword,
+        updateUsername,
+        updateAlertText,
+        onSubmit
+    } = useLogin();
+    
     const {register, handleSubmit, formState: { errors }} = useForm();
-
-    const onSubmit = async () => {
-        try{
-            const response = await authenticateLogin(username, password);
-
-            if (response.success){
-                setAlertSeverity("success");
-                setShowAlert(response.message as string);
-                setTimeout(() => {
-                    changeToMainRoute();
-                }, 2000);
-
-            } else {
-                setAlertSeverity("error");
-                setShowAlert(response.message as string);
-            }
-
-        } catch(e){
-            console.log(e);
-        }
-    }
 
     return (
         <>
@@ -69,7 +39,7 @@ const LoginForm = () => {
                         label="Username" 
                         variant="outlined" 
                         className="w-96"
-                        onChange={(event) => setUsername(event.target.value)}
+                        onChange={(event) => updateUsername(event.target.value)}
                     />
                 </div>
                 <div className="mt-8">
@@ -78,7 +48,7 @@ const LoginForm = () => {
                         label="Password"
                         type={showPassword ? 'text' : 'password'}
                         className="w-96"
-                        onChange={(event) => setPassword(event.target.value)}
+                        onChange={(event) => updatePassword(event.target.value)}
                         InputProps={{
                             endAdornment: (
                             <InputAdornment position="end">
@@ -117,7 +87,7 @@ const LoginForm = () => {
                 key={'bottom' + 'right'} 
                 open={showAlert !== null} 
                 autoHideDuration={5000} 
-                onClose={() => setShowAlert(null)}>
+                onClose={() => updateAlertText(null)}>
                     <Alert severity={alertSeverity}>{showAlert}</Alert>
             </Snackbar>
         </>

@@ -1,4 +1,4 @@
-import panelImage from "../../public/panel_graphics.png"
+import panelImage from "../public/panel_graphics.png"
 
 const LoginPanel = () => {
   return (

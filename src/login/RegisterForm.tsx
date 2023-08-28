@@ -1,57 +1,30 @@
 import { useState } from 'react'
 
-import { AlertColor, TextField } from "@mui/material"
-import { Link, useNavigate } from 'react-router-dom';
+import { TextField } from "@mui/material"
+import { Link } from 'react-router-dom';
 import { IconButton, InputAdornment, Snackbar, Alert } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-
 import { FaDollarSign } from 'react-icons/fa';
-import { registerRequest } from '../../api/authRequests';
 import { useForm } from 'react-hook-form';
+import { useRegister } from './use-register';
+
 
 const RegisterForm = () => {
-    const [showPassword, setShowPassword] = useState<boolean>(false);
-    const [showAlert, setShowAlert] = useState<string | null>(null);
-    const [alertSeverity, setAlertSeverity] = useState<AlertColor>("error");
-
-    const [username, setUsername] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
-    const [repeatedPassword, setRepeatedPassword] = useState<string>("");
-    const [email, setEmail] = useState<string>("");
-
-    const handleTogglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-    };
-
-    let navigate = useNavigate();
-    const changeToMainRoute = () => { 
-        const path = "/"; 
-        navigate(path);
-    }
-
+    const {
+        showPassword,
+        showAlert,
+        alertSeverity,
+        updateUsername,
+        updatePassword,
+        updateRepeatedPassword,
+        onSubmit,
+        togglePasswordVisibility,
+        updateAlertText,
+        updateEmail
+    } = useRegister();
+    
     const {register, handleSubmit, formState: { errors }} = useForm();
 
-    const onSubmit = async () => {
-        try{
-            const response = await registerRequest(username, password, email);
-
-            if (response.success){
-                setAlertSeverity("success");
-                setShowAlert(response.message as string);
-                setTimeout(() => {
-                    changeToMainRoute();
-                }, 2000);
-
-            } else {
-                setAlertSeverity("error");
-                setShowAlert(response.message as string);
-            }
-
-        } catch(e){
-            setAlertSeverity("error");
-            setShowAlert("Internal server error");
-        }
-    }
     return (
         <>
             <div className="w-48 h-48 flex items-center justify-center rounded-full bg-gradient-to-br from-primary via-purple-500 to-primary">
@@ -68,7 +41,7 @@ const RegisterForm = () => {
                         label="Username" 
                         variant="outlined" 
                         className="w-96"
-                        onChange={(event) => setUsername(event.target.value)}
+                        onChange={(event) => updateUsername(event.target.value)}
                     />
                 </div>
                 <div className="mt-8">
@@ -77,7 +50,7 @@ const RegisterForm = () => {
                         label="Email" 
                         variant="outlined" 
                         className="w-96"
-                        onChange={(event) => setEmail(event.target.value)}
+                        onChange={(event) => updateEmail(event.target.value)}
                     />
                 </div>
                 <div className="mt-8">
@@ -86,11 +59,11 @@ const RegisterForm = () => {
                         label="Password"
                         type={showPassword ? 'text' : 'password'}
                         className="w-96"
-                        onChange={(event) => setPassword(event.target.value)}
+                        onChange={(event) => updatePassword(event.target.value)}
                         InputProps={{
                             endAdornment: (
                             <InputAdornment position="end">
-                                <IconButton onClick={handleTogglePasswordVisibility}>
+                                <IconButton onClick={togglePasswordVisibility}>
                                 {showPassword ? <Visibility /> : <VisibilityOff />}
                                 </IconButton>
                             </InputAdornment>
@@ -103,12 +76,12 @@ const RegisterForm = () => {
                         id="repeatPassword"
                         label="Repeat Password"
                         type={showPassword ? 'text' : 'password'}
-                        onChange={(event) => setRepeatedPassword(event.target.value)}
+                        onChange={(event) => updateRepeatedPassword(event.target.value)}
                         className="w-96"
                         InputProps={{
                             endAdornment: (
                             <InputAdornment position="end">
-                                <IconButton onClick={handleTogglePasswordVisibility}>
+                                <IconButton onClick={togglePasswordVisibility}>
                                 {showPassword ? <Visibility /> : <VisibilityOff />}
                                 </IconButton>
                             </InputAdornment>
@@ -140,7 +113,7 @@ const RegisterForm = () => {
                 key={'bottom' + 'right'} 
                 open={showAlert !== null} 
                 autoHideDuration={5000} 
-                onClose={() => setShowAlert(null)}>
+                onClose={() => updateAlertText(null)}>
                     <Alert severity={alertSeverity}>{showAlert}</Alert>
             </Snackbar>                
         </>

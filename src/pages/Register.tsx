@@ -1,5 +1,5 @@
-import RegisterForm from '../components/register/RegisterForm';
-import LoginPanel from '../components/login/LoginPanel';
+import RegisterForm from '../login/RegisterForm';
+import LoginPanel from '../login/LoginPanel';
 
 const Register = () => {
     

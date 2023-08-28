@@ -8,9 +8,9 @@ import AppBar from "./appBar/AppBar.tsx";
 function App() {
   return (
     <>
-      <header>
+      {/* <header>
         <AppBar />
-      </header>
+      </header> */}
       <main>
         <AppRoutes />
       </main>

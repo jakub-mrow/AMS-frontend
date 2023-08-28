@@ -2,7 +2,7 @@ import { ApiResponse } from "./apiResponse";
 
 export async function authenticateLogin(username: string, password: string): Promise<ApiResponse> {
     try {
-        const response = await fetch("http://localhost:8000/auth/login/", {
+        const response = await fetch("http://localhost:8000/auth/login", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ export async function authenticateLogin(username: string, password: string): Pro
 
 export async function registerRequest(username: string, password: string, email: string): Promise<ApiResponse>{
     try {
-        const response = await fetch("http://localhost:8000/auth/register/", {
+        const response = await fetch("http://localhost:8000/auth/register", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
