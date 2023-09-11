@@ -1,58 +1,48 @@
-import { Button, Container, LinearProgress } from "@mui/material";
+import {
+  BottomNavigation,
+  BottomNavigationAction,
+  LinearProgress,
+} from "@mui/material";
 import { useAccountDetails } from "./use-account-details";
-import { AccountsTransactionsTable } from "./AccountTransactionsTable.tsx";
-import { AccountTransactionDialog } from "./AccountTransactionDialog.tsx";
+import { useState } from "react";
+import { Equalizer, FormatListNumbered, Timeline } from "@mui/icons-material";
+import { Assets } from "./Assets.tsx";
+
+enum MobilePage {
+  ASSETS,
+  TRANSACTIONS,
+  SUMMARY,
+}
 
 export const AccountDetails = () => {
-  const {
-    account,
-    accountTransactions,
-    openDepositDialog,
-    openWithdrawalDialog,
-    closeDialog,
-    isDialogOpen,
-    dialogType,
-    onConfirmDialog,
-    onDeleteTransaction,
-  } = useAccountDetails();
+  const { account, assets, isLoading } = useAccountDetails();
+
+  const [mobilePage, setMobilePage] = useState(MobilePage.ASSETS);
 
   if (!account) {
     return <LinearProgress />;
   }
 
   return (
-    <Container maxWidth="md">
-      Account id: {account.id}
-      <br />
-      Account name: {account.name}
-      <br />
-      Account balances:
-      <br />
-      {account.balances.map((balance) => (
-        <div key={balance.currency}>
-          {balance.currency}: {balance.amount}
-        </div>
-      ))}
-      <AccountsTransactionsTable
-        accountTransactions={accountTransactions}
-        onDeleteTransaction={onDeleteTransaction}
-      />
-      <Button variant="contained" color="primary" onClick={openDepositDialog}>
-        Deposit
-      </Button>
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={openWithdrawalDialog}
+    <>
+      {mobilePage === MobilePage.ASSETS && (
+        <Assets assets={assets} isLoading={isLoading} />
+      )}
+      {mobilePage === MobilePage.TRANSACTIONS && <div>Transactions</div>}
+      {mobilePage === MobilePage.SUMMARY && <div>Summary</div>}
+      <BottomNavigation
+        showLabels
+        value={mobilePage}
+        onChange={(_event, newValue) => setMobilePage(newValue)}
+        sx={{ position: "fixed", bottom: 0, width: "100%" }}
       >
-        Withdraw
-      </Button>
-      <AccountTransactionDialog
-        isOpen={isDialogOpen}
-        onClose={closeDialog}
-        onConfirm={onConfirmDialog}
-        type={dialogType}
-      />
-    </Container>
+        <BottomNavigationAction label="Assets" icon={<Timeline />} />
+        <BottomNavigationAction
+          label="Transactions"
+          icon={<FormatListNumbered />}
+        />
+        <BottomNavigationAction label="Summary" icon={<Equalizer />} />
+      </BottomNavigation>
+    </>
   );
 };

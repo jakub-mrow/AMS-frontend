@@ -3,6 +3,7 @@ import {
   AccountTransaction,
   AccountTransactionType,
 } from "../accounts/types.ts";
+import { Asset, assets } from "./assets-mock.ts";
 
 export type AccountInput = {
   name: string;
@@ -99,5 +100,13 @@ export class AccountsDetailsService {
     if (!response.ok) {
       throw new Error("Failed to delete transaction");
     }
+  }
+
+  async fetchAssets(): Promise<Asset[]> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(assets);
+      }, 1000);
+    });
   }
 }
