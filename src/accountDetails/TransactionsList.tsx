@@ -26,7 +26,7 @@ export const TransactionsList = ({
     );
   }
   return (
-    <List>
+    <List sx={{ flex: 1, overflowY: "auto" }}>
       {transactions.map((transaction) => (
         <TransactionsListItem
           key={transaction.id}

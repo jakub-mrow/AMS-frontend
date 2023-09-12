@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Container } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import { TransactionsList } from "./TransactionsList.tsx";
 import { AccountTransaction } from "../accounts/types.ts";
 import { ConfirmationDialog } from "../dialog/ConfirmationDialog.tsx";
@@ -29,27 +29,23 @@ export const Transactions = ({
   };
   return (
     <>
-      <Container maxWidth="md" sx={{ mb: "56px" }}>
-        {isLoading ? (
-          <Box
-            sx={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              transform: "translate(-50%, -50%)",
-            }}
-          >
-            <CircularProgress />
-          </Box>
-        ) : (
-          <>
-            <TransactionsList
-              transactions={transactions}
-              onDeleteClick={onDeleteClick}
-            />
-          </>
-        )}
-      </Container>
+      {isLoading ? (
+        <Box
+          sx={{
+            flex: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : (
+        <TransactionsList
+          transactions={transactions}
+          onDeleteClick={onDeleteClick}
+        />
+      )}
       <ConfirmationDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}

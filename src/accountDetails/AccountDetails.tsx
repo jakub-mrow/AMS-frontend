@@ -1,6 +1,7 @@
 import {
   BottomNavigation,
   BottomNavigationAction,
+  Container,
   Fab,
   LinearProgress,
   Zoom,
@@ -69,7 +70,11 @@ export const AccountDetails = () => {
   }
 
   return (
-    <>
+    <Container
+      maxWidth="md"
+      disableGutters
+      sx={{ flex: 1, display: "flex", minHeight: 0, flexDirection: "column" }}
+    >
       {mobilePage === MobilePage.ASSETS && (
         <Assets assets={assets} isLoading={isLoading} />
       )}
@@ -85,7 +90,6 @@ export const AccountDetails = () => {
         showLabels
         value={mobilePage}
         onChange={(_event, newValue) => setMobilePage(newValue)}
-        sx={{ position: "fixed", bottom: 0, width: "100%" }}
       >
         <BottomNavigationAction label="Assets" icon={<Timeline />} />
         <BottomNavigationAction
@@ -120,6 +124,6 @@ export const AccountDetails = () => {
           </Fab>
         </Zoom>
       ))}
-    </>
+    </Container>
   );
 };

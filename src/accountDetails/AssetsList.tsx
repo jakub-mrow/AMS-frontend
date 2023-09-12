@@ -30,10 +30,10 @@ export const AssetsList = ({
     return (
       <Box
         sx={{
-          position: "absolute",
-          left: "50%",
-          top: "50%",
-          transform: "translate(-50%, -50%)",
+          flex: 1,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <Typography align="center" variant="h3">
@@ -43,7 +43,7 @@ export const AssetsList = ({
     );
   }
   return (
-    <List>
+    <List sx={{ flex: 1, overflowY: "auto" }}>
       {assetsOfType.map((asset) => (
         <AssetsListItem key={asset.isin} asset={asset} />
       ))}
