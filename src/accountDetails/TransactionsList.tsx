@@ -4,8 +4,10 @@ import { TransactionsListItem } from "./TransactionsListItem.tsx";
 
 export const TransactionsList = ({
   transactions,
+  onDeleteClick,
 }: {
   transactions: AccountTransaction[];
+  onDeleteClick: (transaction: AccountTransaction) => void;
 }) => {
   if (transactions.length === 0) {
     return (
@@ -26,7 +28,11 @@ export const TransactionsList = ({
   return (
     <List>
       {transactions.map((transaction) => (
-        <TransactionsListItem key={transaction.id} transaction={transaction} />
+        <TransactionsListItem
+          key={transaction.id}
+          transaction={transaction}
+          onDeleteClick={onDeleteClick}
+        />
       ))}
     </List>
   );

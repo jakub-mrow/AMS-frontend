@@ -2,8 +2,15 @@ import {
   AccountTransaction,
   AccountTransactionType,
 } from "../accounts/types.ts";
-import { Box, Divider, ListItem, ListItemText } from "@mui/material";
+import {
+  Box,
+  Divider,
+  IconButton,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
 import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
+import { Delete } from "@mui/icons-material";
 
 const getName = (type: AccountTransactionType) => {
   switch (type) {
@@ -40,11 +47,19 @@ const getColor = (type: AccountTransactionType) => {
 
 export const TransactionsListItem = ({
   transaction,
+  onDeleteClick,
 }: {
   transaction: AccountTransaction;
+  onDeleteClick: (transaction: AccountTransaction) => void;
 }) => (
   <>
-    <ListItem>
+    <ListItem
+      secondaryAction={
+        <IconButton edge="end" onClick={() => onDeleteClick(transaction)}>
+          <Delete />
+        </IconButton>
+      }
+    >
       <ListItemText>
         <Box
           sx={{
@@ -64,6 +79,7 @@ export const TransactionsListItem = ({
             }}
             secondary={transaction.date.toLocaleDateString()}
             secondaryTypographyProps={{ align: "right" }}
+            sx={{ mr: 2 }}
           />
         </Box>
       </ListItemText>

@@ -41,6 +41,7 @@ export const AccountDetails = () => {
     closeDialog,
     onConfirmDialog,
     dialogType,
+    onDeleteTransaction,
   } = useAccountDetails();
 
   const [mobilePage, setMobilePage] = useState(MobilePage.ASSETS);
@@ -76,6 +77,7 @@ export const AccountDetails = () => {
         <Transactions
           transactions={accountTransactions}
           isLoading={isLoading}
+          onDelete={onDeleteTransaction}
         />
       )}
       {mobilePage === MobilePage.SUMMARY && <div>Summary</div>}

@@ -1,9 +1,22 @@
-import { Box, Divider, ListItem, ListItemText } from "@mui/material";
+import {
+  Box,
+  Divider,
+  IconButton,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
 import { Asset } from "./assets-mock.ts";
+import { Delete } from "@mui/icons-material";
 
 export const AssetsListItem = ({ asset }: { asset: Asset }) => (
   <>
-    <ListItem>
+    <ListItem
+      secondaryAction={
+        <IconButton edge="end">
+          <Delete />
+        </IconButton>
+      }
+    >
       <ListItemText>
         <Box
           sx={{
@@ -23,6 +36,7 @@ export const AssetsListItem = ({ asset }: { asset: Asset }) => (
               align: "right",
               color: asset.result > 0 ? "green" : asset.result < 0 ? "red" : "",
             }}
+            sx={{ mr: 2 }}
           />
         </Box>
       </ListItemText>
