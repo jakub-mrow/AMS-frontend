@@ -12,6 +12,11 @@ import { useSnackbar } from "../snackbar/use-snackbar.ts";
 import { Severity } from "../snackbar/snackbar-context.ts";
 import { Asset } from "./assets-mock.ts";
 
+export enum DialogType {
+  DEPOSIT,
+  WITHDRAWAL,
+}
+
 export const useAccountDetails = () => {
   const { token } = useAuth(); //TODO remove after getting token
   const accountDetailsService = useMemo(() => {
@@ -37,20 +42,16 @@ export const useAccountDetails = () => {
     AccountTransaction[]
   >([]);
   const [assets, setAssets] = useState<Asset[]>([]);
-  const [dialogType, setDialogType] = useState(AccountTransactionType.DEPOSIT);
+  const [dialogType, setDialogType] = useState<DialogType | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const openDepositDialog = useCallback(() => {
-    setDialogType(AccountTransactionType.DEPOSIT);
-    setIsDialogOpen(true);
-  }, []);
-
-  const openWithdrawalDialog = useCallback(() => {
-    setDialogType(AccountTransactionType.WITHDRAWAL);
+  const openDialog = useCallback((type: DialogType) => {
+    setDialogType(type);
     setIsDialogOpen(true);
   }, []);
 
   const closeDialog = useCallback(() => {
+    setDialogType(null);
     setIsDialogOpen(false);
   }, []);
 
@@ -103,10 +104,14 @@ export const useAccountDetails = () => {
     refreshAccountData();
   }, [refreshAccountData]);
 
-  const onConfirmDialog = (amount: number, currency: string) => {
+  const onConfirmDialog = (
+    amount: number,
+    currency: string,
+    type: AccountTransactionType,
+  ) => {
     if (account) {
       accountDetailsService
-        .addAccountTransaction(account.id, dialogType, amount, currency)
+        .addAccountTransaction(account.id, type, amount, currency)
         .then(() => refreshAccountData())
         .catch((error) => {
           if (error instanceof Error) {
@@ -134,8 +139,7 @@ export const useAccountDetails = () => {
     accountTransactions,
     assets,
     isLoading,
-    openDepositDialog,
-    openWithdrawalDialog,
+    openDialog,
     closeDialog,
     dialogType,
     isDialogOpen,
