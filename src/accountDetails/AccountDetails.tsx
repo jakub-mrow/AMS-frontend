@@ -5,7 +5,7 @@ import {
   LinearProgress,
   Zoom,
 } from "@mui/material";
-import { useAccountDetails } from "./use-account-details";
+import { DialogType, useAccountDetails } from "./use-account-details";
 import { useState } from "react";
 import {
   Add,
@@ -16,6 +16,7 @@ import {
 } from "@mui/icons-material";
 import { Assets } from "./Assets.tsx";
 import { Transactions } from "./Transactions.tsx";
+import { AccountDetailsDialog } from "./AccountDetailsDialog.tsx";
 
 enum MobilePage {
   ASSETS,
@@ -26,28 +27,41 @@ enum MobilePage {
 type FabData = {
   value: MobilePage;
   icon: JSX.Element;
+  onClick: () => void;
 };
 
-const fabs: FabData[] = [
-  {
-    value: MobilePage.ASSETS,
-    icon: <Add />,
-  },
-  {
-    value: MobilePage.TRANSACTIONS,
-    icon: <Add />,
-  },
-  {
-    value: MobilePage.SUMMARY,
-    icon: <Settings />,
-  },
-];
-
 export const AccountDetails = () => {
-  const { account, accountTransactions, assets, isLoading } =
-    useAccountDetails();
+  const {
+    account,
+    accountTransactions,
+    assets,
+    isLoading,
+    isDialogOpen,
+    openDialog,
+    closeDialog,
+    onConfirmDialog,
+    dialogType,
+  } = useAccountDetails();
 
   const [mobilePage, setMobilePage] = useState(MobilePage.ASSETS);
+
+  const fabs: FabData[] = [
+    {
+      value: MobilePage.ASSETS,
+      icon: <Add />,
+      onClick: () => openDialog(DialogType.DEPOSIT),
+    },
+    {
+      value: MobilePage.TRANSACTIONS,
+      icon: <Add />,
+      onClick: () => openDialog(DialogType.DEPOSIT),
+    },
+    {
+      value: MobilePage.SUMMARY,
+      icon: <Settings />,
+      onClick: () => openDialog(DialogType.DEPOSIT),
+    },
+  ];
 
   if (!account) {
     return <LinearProgress />;
@@ -78,6 +92,12 @@ export const AccountDetails = () => {
         />
         <BottomNavigationAction label="Summary" icon={<Equalizer />} />
       </BottomNavigation>
+      <AccountDetailsDialog
+        isOpen={isDialogOpen}
+        onClose={closeDialog}
+        onConfirm={onConfirmDialog}
+        type={dialogType}
+      />
       {fabs.map((fab) => (
         <Zoom
           key={fab.value}
@@ -92,6 +112,7 @@ export const AccountDetails = () => {
             key={fab.value}
             color="primary"
             sx={{ position: "fixed", bottom: 68, right: 24 }}
+            onClick={fab.onClick}
           >
             {fab.icon}
           </Fab>

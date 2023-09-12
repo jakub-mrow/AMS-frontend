@@ -42,7 +42,7 @@ export const useAccountDetails = () => {
     AccountTransaction[]
   >([]);
   const [assets, setAssets] = useState<Asset[]>([]);
-  const [dialogType, setDialogType] = useState<DialogType | null>(null);
+  const [dialogType, setDialogType] = useState<DialogType>(DialogType.DEPOSIT);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const openDialog = useCallback((type: DialogType) => {
@@ -51,7 +51,6 @@ export const useAccountDetails = () => {
   }, []);
 
   const closeDialog = useCallback(() => {
-    setDialogType(null);
     setIsDialogOpen(false);
   }, []);
 

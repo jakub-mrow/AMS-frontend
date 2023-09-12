@@ -9,8 +9,9 @@ import {
 import useInput from "../util/use-input.ts";
 import { isValidAmount, isValidCurrency } from "../util/validations.ts";
 import { AccountTransactionType } from "../accounts/types.ts";
+import { DialogType } from "./use-account-details.ts";
 
-export const AccountTransactionDialog = ({
+export const AccountDetailsDialog = ({
   isOpen,
   onClose,
   onConfirm,
@@ -18,8 +19,12 @@ export const AccountTransactionDialog = ({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (amount: number, currency: string) => void;
-  type: AccountTransactionType;
+  onConfirm: (
+    amount: number,
+    currency: string,
+    type: AccountTransactionType,
+  ) => void;
+  type: DialogType;
 }) => {
   const amountInput = useInput(isValidAmount, "");
   const currencyInput = useInput(isValidCurrency, "");
@@ -32,7 +37,15 @@ export const AccountTransactionDialog = ({
 
   const confirmHandler = () => {
     if (!amountInput.isValid || !currencyInput.isValid) return;
-    onConfirm(Number(amountInput.value), currencyInput.value.trim());
+    const transactionType =
+      type === DialogType.DEPOSIT
+        ? AccountTransactionType.DEPOSIT
+        : AccountTransactionType.WITHDRAWAL;
+    onConfirm(
+      Number(amountInput.value),
+      currencyInput.value.trim(),
+      transactionType,
+    );
     onClose();
     amountInput.reset();
     currencyInput.reset();
@@ -41,7 +54,7 @@ export const AccountTransactionDialog = ({
   return (
     <Dialog open={isOpen} onClose={cancelHandler}>
       <DialogTitle>
-        {type === AccountTransactionType.DEPOSIT
+        {type === DialogType.DEPOSIT
           ? "Deposit to account"
           : "Withdraw from account"}
       </DialogTitle>
