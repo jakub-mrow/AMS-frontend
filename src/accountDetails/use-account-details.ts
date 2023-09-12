@@ -13,8 +13,7 @@ import { Severity } from "../snackbar/snackbar-context.ts";
 import { Asset } from "./assets-mock.ts";
 
 export enum DialogType {
-  DEPOSIT,
-  WITHDRAWAL,
+  TRANSACTION,
 }
 
 export const useAccountDetails = () => {
@@ -42,7 +41,9 @@ export const useAccountDetails = () => {
     AccountTransaction[]
   >([]);
   const [assets, setAssets] = useState<Asset[]>([]);
-  const [dialogType, setDialogType] = useState<DialogType>(DialogType.DEPOSIT);
+  const [dialogType, setDialogType] = useState<DialogType>(
+    DialogType.TRANSACTION,
+  );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const openDialog = useCallback((type: DialogType) => {

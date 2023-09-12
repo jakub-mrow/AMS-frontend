@@ -4,6 +4,11 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
   TextField,
 } from "@mui/material";
 import useInput from "../util/use-input.ts";
@@ -28,6 +33,10 @@ export const AccountDetailsDialog = ({
 }) => {
   const amountInput = useInput(isValidAmount, "");
   const currencyInput = useInput(isValidCurrency, "");
+  const typeInput = useInput(
+    (input) => !!input,
+    AccountTransactionType.DEPOSIT,
+  );
 
   const cancelHandler = () => {
     onClose();
@@ -36,11 +45,13 @@ export const AccountDetailsDialog = ({
   };
 
   const confirmHandler = () => {
+    let transactionType;
+    if (typeInput.value === AccountTransactionType.DEPOSIT) {
+      transactionType = AccountTransactionType.DEPOSIT;
+    } else {
+      transactionType = AccountTransactionType.WITHDRAWAL;
+    }
     if (!amountInput.isValid || !currencyInput.isValid) return;
-    const transactionType =
-      type === DialogType.DEPOSIT
-        ? AccountTransactionType.DEPOSIT
-        : AccountTransactionType.WITHDRAWAL;
     onConfirm(
       Number(amountInput.value),
       currencyInput.value.trim(),
@@ -53,12 +64,28 @@ export const AccountDetailsDialog = ({
 
   return (
     <Dialog open={isOpen} onClose={cancelHandler}>
-      <DialogTitle>
-        {type === DialogType.DEPOSIT
-          ? "Deposit to account"
-          : "Withdraw from account"}
-      </DialogTitle>
+      <DialogTitle>{DialogType[type]}</DialogTitle>
       <DialogContent>
+        <FormControl>
+          <FormLabel id="type">Type</FormLabel>
+          <RadioGroup
+            defaultValue={AccountTransactionType.DEPOSIT}
+            value={typeInput.value}
+            onChange={typeInput.valueChangeHandler}
+            onBlur={amountInput.inputBlurHandler}
+          >
+            <FormControlLabel
+              value={AccountTransactionType.DEPOSIT}
+              control={<Radio />}
+              label="Deposit"
+            />
+            <FormControlLabel
+              value={AccountTransactionType.WITHDRAWAL}
+              control={<Radio />}
+              label="Withdrawal"
+            />
+          </RadioGroup>
+        </FormControl>
         <TextField
           margin="normal"
           id="amount"

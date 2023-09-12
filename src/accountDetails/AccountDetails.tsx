@@ -49,17 +49,17 @@ export const AccountDetails = () => {
     {
       value: MobilePage.ASSETS,
       icon: <Add />,
-      onClick: () => openDialog(DialogType.DEPOSIT),
+      onClick: () => openDialog(DialogType.TRANSACTION),
     },
     {
       value: MobilePage.TRANSACTIONS,
       icon: <Add />,
-      onClick: () => openDialog(DialogType.DEPOSIT),
+      onClick: () => openDialog(DialogType.TRANSACTION),
     },
     {
       value: MobilePage.SUMMARY,
       icon: <Settings />,
-      onClick: () => openDialog(DialogType.DEPOSIT),
+      onClick: () => openDialog(DialogType.TRANSACTION),
     },
   ];
 
