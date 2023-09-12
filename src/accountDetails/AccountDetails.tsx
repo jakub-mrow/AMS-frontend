@@ -7,6 +7,7 @@ import { useAccountDetails } from "./use-account-details";
 import { useState } from "react";
 import { Equalizer, FormatListNumbered, Timeline } from "@mui/icons-material";
 import { Assets } from "./Assets.tsx";
+import { Transactions } from "./Transactions.tsx";
 
 enum MobilePage {
   ASSETS,
@@ -15,7 +16,8 @@ enum MobilePage {
 }
 
 export const AccountDetails = () => {
-  const { account, assets, isLoading } = useAccountDetails();
+  const { account, accountTransactions, assets, isLoading } =
+    useAccountDetails();
 
   const [mobilePage, setMobilePage] = useState(MobilePage.ASSETS);
 
@@ -28,7 +30,12 @@ export const AccountDetails = () => {
       {mobilePage === MobilePage.ASSETS && (
         <Assets assets={assets} isLoading={isLoading} />
       )}
-      {mobilePage === MobilePage.TRANSACTIONS && <div>Transactions</div>}
+      {mobilePage === MobilePage.TRANSACTIONS && (
+        <Transactions
+          transactions={accountTransactions}
+          isLoading={isLoading}
+        />
+      )}
       {mobilePage === MobilePage.SUMMARY && <div>Summary</div>}
       <BottomNavigation
         showLabels
