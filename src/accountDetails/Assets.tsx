@@ -1,9 +1,9 @@
-import { CircularProgress, Tab, Tabs } from "@mui/material";
+import { Tab, Tabs } from "@mui/material";
 import { AssetsList } from "./AssetsList.tsx";
 import { Asset, AssetTypes } from "./assets-mock.ts";
 import { useState } from "react";
 import { VerticalFlexContainer } from "../util/VerticalFlexContainer.tsx";
-import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
+import { Loading } from "./Loading.tsx";
 
 export const Assets = ({
   assets,
@@ -28,15 +28,7 @@ export const Assets = ({
         <Tab label="Crypto" />
       </Tabs>
       {isLoading ? (
-        <VerticalFlexBox
-          fullHeight
-          sx={{
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <CircularProgress />
-        </VerticalFlexBox>
+        <Loading />
       ) : (
         <VerticalFlexContainer
           fullHeight

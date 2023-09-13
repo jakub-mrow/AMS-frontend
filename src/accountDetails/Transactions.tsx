@@ -1,10 +1,9 @@
-import { CircularProgress } from "@mui/material";
 import { TransactionsList } from "./TransactionsList.tsx";
 import { AccountTransaction } from "../accounts/types.ts";
 import { ConfirmationDialog } from "../dialog/ConfirmationDialog.tsx";
 import { useState } from "react";
 import { VerticalFlexContainer } from "../util/VerticalFlexContainer.tsx";
-import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
+import { Loading } from "./Loading.tsx";
 
 export const Transactions = ({
   transactions,
@@ -32,15 +31,7 @@ export const Transactions = ({
   return (
     <>
       {isLoading ? (
-        <VerticalFlexBox
-          fullHeight
-          sx={{
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <CircularProgress />
-        </VerticalFlexBox>
+        <Loading />
       ) : (
         <VerticalFlexContainer
           fullHeight

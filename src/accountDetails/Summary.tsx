@@ -1,6 +1,7 @@
 import { Account } from "../accounts/types.ts";
-import { Box, CircularProgress, Divider, Typography } from "@mui/material";
+import { Divider, Typography } from "@mui/material";
 import { VerticalFlexContainer } from "../util/VerticalFlexContainer.tsx";
+import { Loading } from "./Loading.tsx";
 
 export const Summary = ({
   account,
@@ -12,16 +13,7 @@ export const Summary = ({
   return (
     <>
       {isLoading ? (
-        <Box
-          sx={{
-            flex: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <CircularProgress />
-        </Box>
+        <Loading />
       ) : (
         <VerticalFlexContainer
           fullHeight

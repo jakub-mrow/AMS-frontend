@@ -2,7 +2,6 @@ import {
   BottomNavigation,
   BottomNavigationAction,
   Fab,
-  LinearProgress,
   Zoom,
 } from "@mui/material";
 import { DialogType, useAccountDetails } from "./use-account-details";
@@ -19,6 +18,7 @@ import { Transactions } from "./Transactions.tsx";
 import { AccountDetailsDialog } from "./AccountDetailsDialog.tsx";
 import { Summary } from "./Summary.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
+import { Loading } from "./Loading.tsx";
 
 enum MobilePage {
   ASSETS,
@@ -67,7 +67,7 @@ export const AccountDetails = () => {
   ];
 
   if (!account) {
-    return <LinearProgress />;
+    return <Loading />;
   }
 
   return (
