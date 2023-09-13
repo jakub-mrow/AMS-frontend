@@ -6,58 +6,81 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  TablePagination,
   TableRow,
 } from "@mui/material";
 import { AccountTransaction } from "../accounts/types.ts";
 import { Delete } from "@mui/icons-material";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { ConfirmationDialog } from "../dialog/ConfirmationDialog.tsx";
+import { Loading } from "./Loading.tsx";
+import { getColor, getName, getSign } from "./transactions-util.ts";
 
 export const AccountsTransactionsTable = ({
-  accountTransactions,
+  transactions,
   onDeleteTransaction,
+  isLoading,
 }: {
-  accountTransactions: AccountTransaction[];
+  transactions: AccountTransaction[];
   onDeleteTransaction: (accountTransaction: AccountTransaction) => void;
+  isLoading: boolean;
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [transactionToDelete, setTransactionToDelete] =
     useState<AccountTransaction | null>(null);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const onDeleteConfirm = () => {
     if (transactionToDelete) {
       onDeleteTransaction(transactionToDelete);
     }
     setIsDialogOpen(false);
   };
+
+  const handleChangeRowsPerPage = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setRowsPerPage(Number(event.target.value));
+    setPage(0);
+  };
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table>
+      <TableContainer component={Paper} sx={{ flex: 1, overflowY: "auto" }}>
+        <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
               <TableCell>Type</TableCell>
               <TableCell>Amount</TableCell>
-              <TableCell>Currency</TableCell>
               <TableCell>Date</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {accountTransactions.map((accountTransaction) => (
-              <TableRow key={accountTransaction.id} hover>
-                <TableCell>{accountTransaction.id}</TableCell>
-                <TableCell>{accountTransaction.type}</TableCell>
-                <TableCell>{accountTransaction.amount}</TableCell>
-                <TableCell>{accountTransaction.currency}</TableCell>
-                <TableCell>
-                  {accountTransaction.date.toLocaleString()}
-                </TableCell>
+            {(rowsPerPage > 0
+              ? transactions.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage,
+                )
+              : transactions
+            ).map((transaction) => (
+              <TableRow key={transaction.id} hover>
+                <TableCell>{getName(transaction.type)}</TableCell>
+                <TableCell
+                  sx={{ color: getColor(transaction.type) }}
+                >{`${getSign(transaction.type)}${transaction.amount} ${
+                  transaction.currency
+                }`}</TableCell>
+                <TableCell>{transaction.date.toLocaleDateString()}</TableCell>
                 <TableCell>
                   <IconButton
                     onClick={() => {
                       setIsDialogOpen(true);
-                      setTransactionToDelete(accountTransaction);
+                      setTransactionToDelete(transaction);
                     }}
                   >
                     <Delete />
@@ -68,6 +91,14 @@ export const AccountsTransactionsTable = ({
           </TableBody>
         </Table>
       </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+        count={transactions.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={(_event, newPage) => setPage(newPage)}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
       <ConfirmationDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}

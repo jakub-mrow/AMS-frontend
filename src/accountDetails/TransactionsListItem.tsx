@@ -1,7 +1,4 @@
-import {
-  AccountTransaction,
-  AccountTransactionType,
-} from "../accounts/types.ts";
+import { AccountTransaction } from "../accounts/types.ts";
 import {
   Box,
   Divider,
@@ -9,41 +6,8 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
-import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
 import { Delete } from "@mui/icons-material";
-
-const getName = (type: AccountTransactionType) => {
-  switch (type) {
-    case AccountTransactionType.DEPOSIT:
-      return "Deposit";
-    case AccountTransactionType.WITHDRAWAL:
-      return "Withdrawal";
-    default:
-      return exhaustiveGuard(type);
-  }
-};
-
-const getSign = (type: AccountTransactionType) => {
-  switch (type) {
-    case AccountTransactionType.DEPOSIT:
-      return "+";
-    case AccountTransactionType.WITHDRAWAL:
-      return "-";
-    default:
-      return exhaustiveGuard(type);
-  }
-};
-
-const getColor = (type: AccountTransactionType) => {
-  switch (type) {
-    case AccountTransactionType.DEPOSIT:
-      return "green";
-    case AccountTransactionType.WITHDRAWAL:
-      return "red";
-    default:
-      return exhaustiveGuard(type);
-  }
-};
+import { getColor, getName, getSign } from "./transactions-util.ts";
 
 export const TransactionsListItem = ({
   transaction,
