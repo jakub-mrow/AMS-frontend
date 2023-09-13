@@ -1,7 +1,9 @@
-import { Box, CircularProgress, Container, Tab, Tabs } from "@mui/material";
+import { CircularProgress, Tab, Tabs } from "@mui/material";
 import { AssetsList } from "./AssetsList.tsx";
 import { Asset, AssetTypes } from "./assets-mock.ts";
 import { useState } from "react";
+import { VerticalFlexContainer } from "../util/VerticalFlexContainer.tsx";
+import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 
 export const Assets = ({
   assets,
@@ -26,28 +28,25 @@ export const Assets = ({
         <Tab label="Crypto" />
       </Tabs>
       {isLoading ? (
-        <Box
+        <VerticalFlexBox
+          fullHeight
           sx={{
-            flex: 1,
-            display: "flex",
             justifyContent: "center",
             alignItems: "center",
           }}
         >
           <CircularProgress />
-        </Box>
+        </VerticalFlexBox>
       ) : (
-        <Container
+        <VerticalFlexContainer
+          fullHeight
           maxWidth="md"
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            flex: 1,
             minHeight: 0,
           }}
         >
           <AssetsList assets={assets} type={assetsType} />
-        </Container>
+        </VerticalFlexContainer>
       )}
     </>
   );

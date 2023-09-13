@@ -1,7 +1,6 @@
 import {
   BottomNavigation,
   BottomNavigationAction,
-  Box,
   Fab,
   LinearProgress,
   Zoom,
@@ -19,6 +18,7 @@ import { Assets } from "./Assets.tsx";
 import { Transactions } from "./Transactions.tsx";
 import { AccountDetailsDialog } from "./AccountDetailsDialog.tsx";
 import { Summary } from "./Summary.tsx";
+import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 
 enum MobilePage {
   ASSETS,
@@ -71,9 +71,7 @@ export const AccountDetails = () => {
   }
 
   return (
-    <Box
-      sx={{ flex: 1, display: "flex", minHeight: 0, flexDirection: "column" }}
-    >
+    <VerticalFlexBox fullHeight sx={{ minHeight: 0 }}>
       {mobilePage === MobilePage.ASSETS && (
         <Assets assets={assets} isLoading={isLoading} />
       )}
@@ -125,6 +123,6 @@ export const AccountDetails = () => {
           </Fab>
         </Zoom>
       ))}
-    </Box>
+    </VerticalFlexBox>
   );
 };

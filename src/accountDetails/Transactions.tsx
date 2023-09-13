@@ -1,8 +1,10 @@
-import { Box, CircularProgress, Container } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { TransactionsList } from "./TransactionsList.tsx";
 import { AccountTransaction } from "../accounts/types.ts";
 import { ConfirmationDialog } from "../dialog/ConfirmationDialog.tsx";
 import { useState } from "react";
+import { VerticalFlexContainer } from "../util/VerticalFlexContainer.tsx";
+import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 
 export const Transactions = ({
   transactions,
@@ -30,31 +32,28 @@ export const Transactions = ({
   return (
     <>
       {isLoading ? (
-        <Box
+        <VerticalFlexBox
+          fullHeight
           sx={{
-            flex: 1,
-            display: "flex",
             justifyContent: "center",
             alignItems: "center",
           }}
         >
           <CircularProgress />
-        </Box>
+        </VerticalFlexBox>
       ) : (
-        <Container
+        <VerticalFlexContainer
+          fullHeight
           maxWidth="md"
           sx={{
-            flex: 1,
             minHeight: 0,
-            display: "flex",
-            flexDirection: "column",
           }}
         >
           <TransactionsList
             transactions={transactions}
             onDeleteClick={onDeleteClick}
           />
-        </Container>
+        </VerticalFlexContainer>
       )}
       <ConfirmationDialog
         isOpen={isDialogOpen}

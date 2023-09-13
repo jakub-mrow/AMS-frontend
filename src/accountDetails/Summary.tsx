@@ -1,11 +1,6 @@
 import { Account } from "../accounts/types.ts";
-import {
-  Box,
-  CircularProgress,
-  Container,
-  Divider,
-  Typography,
-} from "@mui/material";
+import { Box, CircularProgress, Divider, Typography } from "@mui/material";
+import { VerticalFlexContainer } from "../util/VerticalFlexContainer.tsx";
 
 export const Summary = ({
   account,
@@ -28,13 +23,11 @@ export const Summary = ({
           <CircularProgress />
         </Box>
       ) : (
-        <Container
+        <VerticalFlexContainer
+          fullHeight
           maxWidth="md"
           sx={{
             textAlign: "center",
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
           }}
         >
           <Typography variant="h3">{account.name}</Typography>
@@ -46,7 +39,7 @@ export const Summary = ({
             </Typography>
           ))}
           <Divider />
-        </Container>
+        </VerticalFlexContainer>
       )}
     </>
   );

@@ -1,6 +1,7 @@
 import { AccountTransaction } from "../accounts/types.ts";
-import { Box, List, Typography } from "@mui/material";
+import { List, Typography } from "@mui/material";
 import { TransactionsListItem } from "./TransactionsListItem.tsx";
+import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 
 export const TransactionsList = ({
   transactions,
@@ -11,18 +12,17 @@ export const TransactionsList = ({
 }) => {
   if (transactions.length === 0) {
     return (
-      <Box
+      <VerticalFlexBox
+        fullHeight
         sx={{
-          position: "absolute",
-          left: "50%",
-          top: "50%",
-          transform: "translate(-50%, -50%)",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <Typography align="center" variant="h3">
           You don't have any transactions yet
         </Typography>
-      </Box>
+      </VerticalFlexBox>
     );
   }
   return (

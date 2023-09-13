@@ -1,7 +1,8 @@
-import { Box, List, Typography } from "@mui/material";
+import { List, Typography } from "@mui/material";
 import { AssetsListItem } from "./AssetsListItem.tsx";
 import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
 import { Asset, AssetTypes } from "./assets-mock.ts";
+import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 
 const getTypeName = (type: AssetTypes) => {
   switch (type) {
@@ -28,10 +29,9 @@ export const AssetsList = ({
   const assetsOfType = assets.filter((asset) => asset.type === type);
   if (assetsOfType.length === 0) {
     return (
-      <Box
+      <VerticalFlexBox
+        fullHeight
         sx={{
-          flex: 1,
-          display: "flex",
           justifyContent: "center",
           alignItems: "center",
         }}
@@ -39,7 +39,7 @@ export const AssetsList = ({
         <Typography align="center" variant="h3">
           You don't have any {getTypeName(type)} yet
         </Typography>
-      </Box>
+      </VerticalFlexBox>
     );
   }
   return (
