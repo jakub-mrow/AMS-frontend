@@ -18,6 +18,7 @@ import {
 import { Assets } from "./Assets.tsx";
 import { Transactions } from "./Transactions.tsx";
 import { AccountDetailsDialog } from "./AccountDetailsDialog.tsx";
+import { Summary } from "./Summary.tsx";
 
 enum MobilePage {
   ASSETS,
@@ -85,7 +86,9 @@ export const AccountDetails = () => {
           onDelete={onDeleteTransaction}
         />
       )}
-      {mobilePage === MobilePage.SUMMARY && <div>Summary</div>}
+      {mobilePage === MobilePage.SUMMARY && (
+        <Summary isLoading={isLoading} account={account} />
+      )}
       <BottomNavigation
         showLabels
         value={mobilePage}
