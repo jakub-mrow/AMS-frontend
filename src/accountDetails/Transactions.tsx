@@ -1,4 +1,4 @@
-import { Box, CircularProgress } from "@mui/material";
+import { Box, CircularProgress, Container } from "@mui/material";
 import { TransactionsList } from "./TransactionsList.tsx";
 import { AccountTransaction } from "../accounts/types.ts";
 import { ConfirmationDialog } from "../dialog/ConfirmationDialog.tsx";
@@ -41,10 +41,20 @@ export const Transactions = ({
           <CircularProgress />
         </Box>
       ) : (
-        <TransactionsList
-          transactions={transactions}
-          onDeleteClick={onDeleteClick}
-        />
+        <Container
+          maxWidth="md"
+          sx={{
+            flex: 1,
+            minHeight: 0,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <TransactionsList
+            transactions={transactions}
+            onDeleteClick={onDeleteClick}
+          />
+        </Container>
       )}
       <ConfirmationDialog
         isOpen={isDialogOpen}

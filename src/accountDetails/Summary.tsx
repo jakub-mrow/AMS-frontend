@@ -1,5 +1,11 @@
 import { Account } from "../accounts/types.ts";
-import { Box, CircularProgress, Divider, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Container,
+  Divider,
+  Typography,
+} from "@mui/material";
 
 export const Summary = ({
   account,
@@ -22,7 +28,15 @@ export const Summary = ({
           <CircularProgress />
         </Box>
       ) : (
-        <Box sx={{ textAlign: "center", flex: 1 }}>
+        <Container
+          maxWidth="md"
+          sx={{
+            textAlign: "center",
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <Typography variant="h3">{account.name}</Typography>
           <Divider />
           <Typography variant="h4">Balances</Typography>
@@ -32,7 +46,7 @@ export const Summary = ({
             </Typography>
           ))}
           <Divider />
-        </Box>
+        </Container>
       )}
     </>
   );

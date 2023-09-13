@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Tab, Tabs } from "@mui/material";
+import { Box, CircularProgress, Container, Tab, Tabs } from "@mui/material";
 import { AssetsList } from "./AssetsList.tsx";
 import { Asset, AssetTypes } from "./assets-mock.ts";
 import { useState } from "react";
@@ -37,7 +37,17 @@ export const Assets = ({
           <CircularProgress />
         </Box>
       ) : (
-        <AssetsList assets={assets} type={assetsType} />
+        <Container
+          maxWidth="md"
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            flex: 1,
+            minHeight: 0,
+          }}
+        >
+          <AssetsList assets={assets} type={assetsType} />
+        </Container>
       )}
     </>
   );

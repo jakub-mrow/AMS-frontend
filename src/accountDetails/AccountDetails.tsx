@@ -1,7 +1,7 @@
 import {
   BottomNavigation,
   BottomNavigationAction,
-  Container,
+  Box,
   Fab,
   LinearProgress,
   Zoom,
@@ -71,9 +71,7 @@ export const AccountDetails = () => {
   }
 
   return (
-    <Container
-      maxWidth="md"
-      disableGutters
+    <Box
       sx={{ flex: 1, display: "flex", minHeight: 0, flexDirection: "column" }}
     >
       {mobilePage === MobilePage.ASSETS && (
@@ -127,6 +125,6 @@ export const AccountDetails = () => {
           </Fab>
         </Zoom>
       ))}
-    </Container>
+    </Box>
   );
 };
