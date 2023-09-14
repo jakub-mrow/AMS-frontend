@@ -1,7 +1,7 @@
-import { useAccountDetails } from "./use-account-details.ts";
+import { DialogType, useAccountDetails } from "./use-account-details.ts";
 import { Loading } from "./Loading.tsx";
 import { AccountDetailsDialog } from "./AccountDetailsDialog.tsx";
-import { Box, Container, Paper, Tab, Tabs } from "@mui/material";
+import { Box, Button, Container, Paper, Tab, Tabs } from "@mui/material";
 import { Summary } from "./Summary.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { useState } from "react";
@@ -23,7 +23,7 @@ export const AccountDetailsDesktop = () => {
     // assets,
     isLoading,
     isDialogOpen,
-    // openDialog,
+    openDialog,
     closeDialog,
     onConfirmDialog,
     dialogType,
@@ -67,11 +67,21 @@ export const AccountDetailsDesktop = () => {
             }}
           >
             {detailsTab === DetailsTabs.TRANSACTIONS ? (
-              <AccountsTransactionsTable
-                transactions={accountTransactions}
-                onDeleteTransaction={onDeleteTransaction}
-                isLoading={isLoading}
-              />
+              <>
+                <Box display={"flex"} justifyContent={"flex-end"} m={2}>
+                  <Button
+                    variant={"contained"}
+                    onClick={() => openDialog(DialogType.TRANSACTION)}
+                  >
+                    Add transaction
+                  </Button>
+                </Box>
+                <AccountsTransactionsTable
+                  transactions={accountTransactions}
+                  onDeleteTransaction={onDeleteTransaction}
+                  isLoading={isLoading}
+                />
+              </>
             ) : (
               <div>assets</div>
             )}
