@@ -6,6 +6,9 @@ import { Summary } from "./Summary.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { useState } from "react";
 import { AccountsTransactionsTable } from "./AccountTransactionsTable.tsx";
+import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
+import { AssetTypes } from "./assets-mock.ts";
+import { AssetsDesktop } from "./AssetsDesktop.tsx";
 
 enum DetailsTabs {
   STOCKS,
@@ -16,11 +19,28 @@ enum DetailsTabs {
   TRANSACTIONS,
 }
 
+const toAssetsType = (tab: DetailsTabs) => {
+  switch (tab) {
+    case DetailsTabs.EMPTY:
+    case DetailsTabs.TRANSACTIONS:
+    case DetailsTabs.STOCKS:
+      return AssetTypes.STOCKS;
+    case DetailsTabs.BONDS:
+      return AssetTypes.BONDS;
+    case DetailsTabs.DEPOSITS:
+      return AssetTypes.DEPOSITS;
+    case DetailsTabs.CRYPTO:
+      return AssetTypes.CRYPTO;
+    default:
+      exhaustiveGuard(tab);
+  }
+};
+
 export const AccountDetailsDesktop = () => {
   const {
     account,
     accountTransactions,
-    // assets,
+    assets,
     isLoading,
     isDialogOpen,
     openDialog,
@@ -83,7 +103,12 @@ export const AccountDetailsDesktop = () => {
                 />
               </>
             ) : (
-              <div>assets</div>
+              <AssetsDesktop
+                assets={assets}
+                type={toAssetsType(detailsTab)}
+                isLoading={isLoading}
+                onAddAssetClick={() => openDialog(DialogType.TRANSACTION)}
+              />
             )}
           </Paper>
         </VerticalFlexBox>

@@ -16,6 +16,16 @@ export type Asset = {
   type: AssetTypes;
 };
 
+export const getAssetResultColor = (asset: Asset) => {
+  const result = asset.result;
+  if (result > 0) {
+    return "green";
+  } else if (result < 0) {
+    return "red";
+  }
+  return "black";
+};
+
 export const assets: Asset[] = [
   {
     isin: "US0378331005",

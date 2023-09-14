@@ -5,7 +5,7 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
-import { Asset } from "./assets-mock.ts";
+import { Asset, getAssetResultColor } from "./assets-mock.ts";
 import { Delete } from "@mui/icons-material";
 
 export const AssetsListItem = ({ asset }: { asset: Asset }) => (
@@ -29,12 +29,10 @@ export const AssetsListItem = ({ asset }: { asset: Asset }) => (
           <ListItemText
             primary={`${asset.total} ${asset.currency}`}
             primaryTypographyProps={{ align: "right" }}
-            secondary={`${
-              asset.result > 0 ? "+" : asset.result < 0 ? "-" : ""
-            }${asset.result}%`}
+            secondary={`${asset.result}%`}
             secondaryTypographyProps={{
               align: "right",
-              color: asset.result > 0 ? "green" : asset.result < 0 ? "red" : "",
+              color: getAssetResultColor(asset),
             }}
             sx={{ mr: 2 }}
           />
