@@ -45,6 +45,7 @@ export const AssetsDesktop = ({
           justifyContent: "center",
           alignItems: "center",
           gap: 2,
+          mx: 8,
         }}
       >
         <Typography align="center" variant="h3">

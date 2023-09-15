@@ -1,13 +1,13 @@
 import { DialogType, useAccountDetails } from "./use-account-details.ts";
 import { Loading } from "./Loading.tsx";
 import { AccountDetailsDialog } from "./AccountDetailsDialog.tsx";
-import { Box, Button, Container, Paper, Tab, Tabs } from "@mui/material";
+import { Box, Container, Paper, Tab, Tabs } from "@mui/material";
 import { Summary } from "./Summary.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { useState } from "react";
-import { AccountsTransactionsTable } from "./AccountTransactionsTable.tsx";
 import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
 import { AssetTypes } from "./assets-mock.ts";
+import { TransactionsDesktop } from "./TransactionsDesktop.tsx";
 import { AssetsDesktop } from "./AssetsDesktop.tsx";
 
 enum DetailsTabs {
@@ -87,21 +87,12 @@ export const AccountDetailsDesktop = () => {
             }}
           >
             {detailsTab === DetailsTabs.TRANSACTIONS ? (
-              <>
-                <Box display={"flex"} justifyContent={"flex-end"} m={2}>
-                  <Button
-                    variant={"contained"}
-                    onClick={() => openDialog(DialogType.TRANSACTION)}
-                  >
-                    Add transaction
-                  </Button>
-                </Box>
-                <AccountsTransactionsTable
-                  transactions={accountTransactions}
-                  onDeleteTransaction={onDeleteTransaction}
-                  isLoading={isLoading}
-                />
-              </>
+              <TransactionsDesktop
+                transactions={accountTransactions}
+                isLoading={isLoading}
+                onAddTransactionClick={() => openDialog(DialogType.TRANSACTION)}
+                onDeleteTransactionClick={onDeleteTransaction}
+              />
             ) : (
               <AssetsDesktop
                 assets={assets}
