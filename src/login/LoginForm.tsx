@@ -29,7 +29,7 @@ const LoginForm = () => {
 
             <div className="text-center">
                 <h1 className="text-6xl font-semibold mt-20 whitespace-normal">Welcome to AMS!</h1>
-                <p className="text-xl mt-4 whitespace-normal">Asset management system is the best place to keep track of all your investments</p>
+                <p className="text-xl mt-4 whitespace-normal">Asset management system is the best place <br/> to keep track of all your investments</p>
             </div>
             
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -67,7 +67,7 @@ const LoginForm = () => {
                 </div>
                 <div className="mt-12">
                     <button 
-                        className="w-full mt-4 h-12 text-xl bg-primary text-white rounded-xl shadow-lg" 
+                        className="w-full mt-4 h-12 text-xl bg-primary text-white rounded-xl shadow-lg select-none" 
                         type="submit" >
                         Sign in
                     </button>

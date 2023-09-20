@@ -1,7 +1,17 @@
-import RegisterForm from '../login/RegisterForm';
-import LoginPanel from '../login/LoginPanel';
+import RegisterForm from './RegisterForm';
+import LoginPanel from './LoginPanel';
+import { useNavigate } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import AuthContext from '../auth/auth-context';
 
 const Register = () => {
+    const { isLoggedIn } = useContext(AuthContext);
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (isLoggedIn) {
+            navigate("/");
+        }
+    }, [isLoggedIn, navigate]);
     
     return (
         <div className="flex w-full h-screen">

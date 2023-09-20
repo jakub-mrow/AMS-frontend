@@ -1,10 +1,11 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { AlertColor } from "@mui/material"
 import { useNavigate } from "react-router-dom";
-import { authenticateLogin } from './authRequests';
-
+import { ApiResponse } from './apiResponse';
+import AuthContext from '../auth/auth-context';
 
 export const useLogin = () => {
+    const authContext = useContext(AuthContext);
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [showAlert, setShowAlert] = useState<string | null>(null);
     const [alertSeverity, setAlertSeverity] = useState<AlertColor>("error");
@@ -42,8 +43,8 @@ export const useLogin = () => {
 
     const onSubmit = useCallback(async () => {
         try {
-            const response = await authenticateLogin(username, password);
-    
+            const response: ApiResponse = await authContext.onLogin(username, password);
+            
             if (response.success) {
                 changeToMainRoute();
             } else {
