@@ -9,18 +9,20 @@ import {
   TableRow,
 } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
-import { Account } from "./accounts-service.ts";
-import { useState } from "react";
+import { Account } from "./types.ts";
+import { MouseEvent, useState } from "react";
 import { ConfirmationDialog } from "../dialog/ConfirmationDialog.tsx";
 
 export const AccountsTable = ({
   accounts,
   onAccountDelete,
   onAccountUpdate,
+  goToAccount,
 }: {
   accounts: Account[];
   onAccountDelete: (accountId: number) => void;
   onAccountUpdate: (account: Account) => void;
+  goToAccount: (accountId: number) => void;
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [accountToDelete, setAccountToDelete] = useState<Account | null>(null);
@@ -43,12 +45,17 @@ export const AccountsTable = ({
           </TableHead>
           <TableBody>
             {accounts.map((account) => (
-              <TableRow key={account.id} hover onClick={() => {}}>
+              <TableRow
+                key={account.id}
+                hover
+                onClick={() => goToAccount(account.id)}
+              >
                 <TableCell>{account.id}</TableCell>
                 <TableCell>{account.name}</TableCell>
                 <TableCell>
                   <IconButton
-                    onClick={() => {
+                    onClick={(ev: MouseEvent<HTMLButtonElement>) => {
+                      ev.stopPropagation();
                       setAccountToDelete(account);
                       setIsDialogOpen(true);
                     }}

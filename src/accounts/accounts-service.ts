@@ -1,10 +1,6 @@
-export type AccountInput = {
-  name: string;
-};
+import { Account } from "./types.ts";
 
-export type Account = {
-  id: number;
-  userId: number;
+export type AccountInput = {
   name: string;
 };
 
@@ -34,7 +30,7 @@ export class AccountsService {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.token}`,
       },
-      body: JSON.stringify({ ...account, userId: 1 }), //TODO remove after getting token
+      body: JSON.stringify({ ...account }),
     });
     const data = await response.json();
     if (!response.ok) {

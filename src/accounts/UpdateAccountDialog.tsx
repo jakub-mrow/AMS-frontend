@@ -9,7 +9,8 @@ import {
 } from "@mui/material";
 import useInput from "../util/use-input.ts";
 import { useEffect } from "react";
-import { Account } from "./accounts-service.ts";
+
+import { Account } from "./types.ts";
 
 export const UpdateAccountDialog = ({
   isOpen,
@@ -39,8 +40,7 @@ export const UpdateAccountDialog = ({
   const updateHandler = () => {
     if (!nameInput.isValid) return;
     onUpdate({
-      id: accountToUpdate.id,
-      userId: accountToUpdate.userId,
+      ...accountToUpdate,
       name: nameInput.value,
     });
     onClose();

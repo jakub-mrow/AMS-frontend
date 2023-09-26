@@ -1,9 +1,11 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { apiUrl } from "../config.ts";
-import { Account, AccountInput, AccountsService } from "./accounts-service.ts";
+import { useNavigate } from "react-router-dom";
+import { AccountInput, AccountsService } from "./accounts-service.ts";
 import { useSnackbar } from "../snackbar/use-snackbar.ts";
 import { Severity } from "../snackbar/snackbar-context.ts";
 import AuthContext from "../auth/auth-context.ts";
+import { Account } from "./types.ts";
 
 export type UpdateDialogData = {
   isOpen: boolean;
@@ -19,9 +21,10 @@ export const useAccounts = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [updateDialogData, setUpdateDialogData] = useState<UpdateDialogData>({
     isOpen: false,
-    account: { id: 0, userId: 1, name: "" },
+    account: { id: 0, userId: 1, name: "", balances: [] },
   });
   const alert = useSnackbar();
+  const navigate = useNavigate();
 
   useEffect(() => {
     accountsService
@@ -51,7 +54,7 @@ export const useAccounts = () => {
   const closeUpdateDialog = useCallback(() => {
     setUpdateDialogData({
       isOpen: false,
-      account: { id: 0, userId: 1, name: "" },
+      account: { id: 0, userId: 1, name: "", balances: [] },
     });
   }, []);
 
@@ -100,6 +103,13 @@ export const useAccounts = () => {
     [accountsService, alert],
   );
 
+  const goToAccount = useCallback(
+    (accountId: number) => {
+      navigate(`/accounts/${accountId}`);
+    },
+    [navigate],
+  );
+
   return {
     accounts,
     openAddDialog,
@@ -111,5 +121,6 @@ export const useAccounts = () => {
     addAccount,
     removeAccount,
     updateAccount,
+    goToAccount,
   };
 };

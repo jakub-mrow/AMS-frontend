@@ -4,6 +4,7 @@ import { Accounts } from "./accounts/Accounts.tsx";
 import Login from "./login/Login.tsx"
 import Register from "./login/Register.tsx";
 import ProtectedRoute from "./ProtectedRoute.tsx";
+import {AccountDetails} from "./accountDetails/AccountDetails.tsx";
 
 const AppRoutes = () => {
   return (
@@ -22,6 +23,13 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <Accounts />
+          </ProtectedRoute>}
+      />
+      <Route
+        path="/accounts/:id"
+        element={
+          <ProtectedRoute>
+            <AccountDetails />
           </ProtectedRoute>}
       />
     </Routes>
