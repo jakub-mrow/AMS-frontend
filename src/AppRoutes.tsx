@@ -1,12 +1,29 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "./home/Home.tsx";
 import { Accounts } from "./accounts/Accounts.tsx";
+import Login from "./login/Login.tsx"
+import Register from "./login/Register.tsx";
+import ProtectedRoute from "./ProtectedRoute.tsx";
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/accounts" element={<Accounts />} />
+      <Route path="/login" element={<Login/>}/>
+      <Route path="/register" element={<Register/>}/>
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <Home/>
+          </ProtectedRoute>}
+      />
+      <Route
+        path="/accounts"
+        element={
+          <ProtectedRoute>
+            <Accounts />
+          </ProtectedRoute>}
+      />
     </Routes>
   );
 };

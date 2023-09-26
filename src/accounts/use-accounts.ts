@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { apiUrl } from "../config.ts";
 import { Account, AccountInput, AccountsService } from "./accounts-service.ts";
-import { useAuth } from "../util/use-auth.ts";
 import { useSnackbar } from "../snackbar/use-snackbar.ts";
 import { Severity } from "../snackbar/snackbar-context.ts";
+import AuthContext from "../auth/auth-context.ts";
 
 export type UpdateDialogData = {
   isOpen: boolean;
@@ -11,7 +11,7 @@ export type UpdateDialogData = {
 };
 
 export const useAccounts = () => {
-  const { token } = useAuth(); //TODO remove after getting token
+  const { token } = useContext(AuthContext);
   const accountsService = useMemo(() => {
     return new AccountsService(apiUrl, token);
   }, [token]);
