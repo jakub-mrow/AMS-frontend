@@ -50,7 +50,6 @@ export const AccountDetailsDesktop = () => {
     onDeleteTransaction,
   } = useAccountDetails();
   const [detailsTab, setDetailsTab] = useState(DetailsTabs.STOCKS);
-  console.log(detailsTab);
 
   if (!account) {
     return <Loading />;
