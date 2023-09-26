@@ -1,5 +1,6 @@
-import {Route, Routes} from "react-router-dom";
-import Home from "./pages/Home.tsx";
+import { Route, Routes } from "react-router-dom";
+import Home from "./home/Home.tsx";
+import { Accounts } from "./accounts/Accounts.tsx";
 import Login from "./login/Login.tsx"
 import Register from "./login/Register.tsx";
 import ProtectedRoute from "./ProtectedRoute.tsx";
@@ -9,15 +10,22 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/login" element={<Login/>}/>
       <Route path="/register" element={<Register/>}/>
-      <Route 
-        path="/" 
+      <Route
+        path="/"
         element={
           <ProtectedRoute>
             <Home/>
           </ProtectedRoute>}
       />
+      <Route
+        path="/accounts"
+        element={
+          <ProtectedRoute>
+            <Accounts />
+          </ProtectedRoute>}
+      />
     </Routes>
-  )
-}
+  );
+};
 
-export default AppRoutes
+export default AppRoutes;
