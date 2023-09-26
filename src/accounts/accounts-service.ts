@@ -30,7 +30,7 @@ export class AccountsService {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.token}`,
       },
-      body: JSON.stringify({ ...account, userId: 1 }), //TODO remove after getting token
+      body: JSON.stringify({ ...account }),
     });
     const data = await response.json();
     if (!response.ok) {

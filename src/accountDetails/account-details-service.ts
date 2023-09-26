@@ -78,6 +78,7 @@ export class AccountsDetailsService {
           amount,
           currency,
           type,
+          date: new Date().toISOString(),
         }),
       },
     );

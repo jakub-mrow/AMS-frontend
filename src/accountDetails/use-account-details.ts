@@ -1,23 +1,23 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   Account,
   AccountTransaction,
   AccountTransactionType,
 } from "../accounts/types.ts";
-import { useAuth } from "../util/use-auth.ts";
 import { apiUrl } from "../config.ts";
 import { AccountsDetailsService } from "./account-details-service.ts";
 import { useSnackbar } from "../snackbar/use-snackbar.ts";
 import { Severity } from "../snackbar/snackbar-context.ts";
 import { Asset } from "./assets-mock.ts";
+import AuthContext from "../auth/auth-context.ts";
 
 export enum DialogType {
   TRANSACTION,
 }
 
 export const useAccountDetails = () => {
-  const { token } = useAuth(); //TODO remove after getting token
+  const { token } = useContext(AuthContext);
   const accountDetailsService = useMemo(() => {
     return new AccountsDetailsService(apiUrl, token);
   }, [token]);

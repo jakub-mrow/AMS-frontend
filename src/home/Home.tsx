@@ -1,11 +1,16 @@
-import { Button, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { useSnackbar } from "../snackbar/use-snackbar.ts";
-import { Severity } from "../snackbar/snackbar-context.ts";
+import {Button, Typography} from "@mui/material";
+import {useNavigate} from "react-router-dom";
+import {useSnackbar} from "../snackbar/use-snackbar.ts";
+import {Severity} from "../snackbar/snackbar-context.ts";
+import {useContext} from "react";
+import AuthContext from "../auth/auth-context";
 
 const Home = () => {
   const navigate = useNavigate();
   const alert = useSnackbar();
+  const {isLoggedIn, token} = useContext(AuthContext);
+  console.log(isLoggedIn);
+  console.log(token);
   return (
     <>
       <Typography variant="h1">Hello AMS</Typography>
