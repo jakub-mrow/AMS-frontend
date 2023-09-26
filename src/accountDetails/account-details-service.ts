@@ -4,6 +4,7 @@ import {
   AccountTransactionType,
 } from "../accounts/types.ts";
 import { Asset, assets } from "./assets-mock.ts";
+import { Dayjs } from "dayjs";
 
 export type AccountInput = {
   name: string;
@@ -65,6 +66,7 @@ export class AccountsDetailsService {
     type: AccountTransactionType,
     amount: number,
     currency: string,
+    date: Dayjs,
   ) {
     const response = await fetch(
       `${this.apiUrl}/api/accounts/${id}/transactions`,
@@ -78,7 +80,7 @@ export class AccountsDetailsService {
           amount,
           currency,
           type,
-          date: new Date().toISOString(),
+          date,
         }),
       },
     );

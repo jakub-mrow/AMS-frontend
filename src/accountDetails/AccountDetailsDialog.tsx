@@ -15,8 +15,11 @@ import { AccountTransactionType } from "../accounts/types.ts";
 import { DialogType } from "./use-account-details.ts";
 import { Controller, useForm } from "react-hook-form";
 import { isValidAmount, isValidCurrency } from "../util/validations.ts";
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs, { Dayjs } from "dayjs";
 
 interface TransactionFormData {
+  date: Dayjs | null;
   amount: string;
   currency: string;
   type: string;
@@ -34,10 +37,18 @@ export const AccountDetailsDialog = ({
     amount: number,
     currency: string,
     type: AccountTransactionType,
+    date: Dayjs,
   ) => void;
   type: DialogType;
 }) => {
-  const { control, handleSubmit, reset } = useForm<TransactionFormData>();
+  const { control, handleSubmit, reset } = useForm<TransactionFormData>({
+    defaultValues: {
+      date: dayjs() as Dayjs | null,
+      amount: "",
+      currency: "",
+      type: AccountTransactionType.DEPOSIT,
+    },
+  });
 
   const cancelHandler = () => {
     onClose();
@@ -51,10 +62,14 @@ export const AccountDetailsDialog = ({
     } else {
       transactionType = AccountTransactionType.WITHDRAWAL;
     }
+    if (transactionFormData.date === null) {
+      return;
+    }
     onConfirm(
       Number(transactionFormData.amount),
       transactionFormData.currency.trim(),
       transactionType,
+      transactionFormData.date,
     );
     onClose();
     reset();
@@ -70,7 +85,6 @@ export const AccountDetailsDialog = ({
             <Controller
               name="type"
               control={control}
-              defaultValue={"deposit"}
               rules={{ required: true }}
               render={({ field }) => (
                 <RadioGroup {...field}>
@@ -88,10 +102,28 @@ export const AccountDetailsDialog = ({
               )}
             />
           </FormControl>
+          <FormControl margin="normal" fullWidth variant="standard">
+            <FormLabel id="date">Date</FormLabel>
+            <Controller
+              name="date"
+              control={control}
+              rules={{ required: true }}
+              defaultValue={null}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  slotProps={{
+                    textField: {
+                      variant: "standard",
+                    },
+                  }}
+                />
+              )}
+            />
+          </FormControl>
           <Controller
             name="amount"
             control={control}
-            defaultValue={""}
             rules={{ required: true, validate: isValidAmount }}
             render={({ field, fieldState: { error } }) => (
               <TextField
@@ -107,7 +139,6 @@ export const AccountDetailsDialog = ({
           <Controller
             name="currency"
             control={control}
-            defaultValue={""}
             rules={{ required: true, validate: isValidCurrency }}
             render={({ field, fieldState: { error } }) => (
               <TextField
