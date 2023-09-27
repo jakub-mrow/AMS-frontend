@@ -1,7 +1,7 @@
 import { DialogType, useAccountDetails } from "./use-account-details.ts";
 import { Loading } from "./Loading.tsx";
 import { AccountDetailsDialog } from "./AccountDetailsDialog.tsx";
-import { Box, Container, Paper, Tab, Tabs } from "@mui/material";
+import { Container, Paper, Tab, Tabs } from "@mui/material";
 import { Summary } from "./Summary.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { useState } from "react";
@@ -73,7 +73,7 @@ export const AccountDetailsDesktop = () => {
             <Tab label="Bonds" />
             <Tab label="Deposits" />
             <Tab label="Crypto" />
-            <Box flexGrow={1} />
+            <Tab disabled />
             <Tab label="Transactions" />
           </Tabs>
           <Paper
