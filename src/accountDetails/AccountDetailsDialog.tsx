@@ -11,10 +11,19 @@ import {
   RadioGroup,
   TextField,
 } from "@mui/material";
-import useInput from "../util/use-input.ts";
-import { isValidAmount, isValidCurrency } from "../util/validations.ts";
 import { AccountTransactionType } from "../accounts/types.ts";
 import { DialogType } from "./use-account-details.ts";
+import { Controller, useForm } from "react-hook-form";
+import { isValidAmount, isValidCurrency } from "../util/validations.ts";
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs, { Dayjs } from "dayjs";
+
+interface TransactionFormData {
+  date: Dayjs | null;
+  amount: string;
+  currency: string;
+  type: string;
+}
 
 export const AccountDetailsDialog = ({
   isOpen,
@@ -28,86 +37,121 @@ export const AccountDetailsDialog = ({
     amount: number,
     currency: string,
     type: AccountTransactionType,
+    date: Dayjs,
   ) => void;
   type: DialogType;
 }) => {
-  const amountInput = useInput(isValidAmount, "");
-  const currencyInput = useInput(isValidCurrency, "");
-  const typeInput = useInput(
-    (input) => !!input,
-    AccountTransactionType.DEPOSIT,
-  );
+  const { control, handleSubmit, reset } = useForm<TransactionFormData>({
+    defaultValues: {
+      date: dayjs() as Dayjs | null,
+      amount: "",
+      currency: "",
+      type: AccountTransactionType.DEPOSIT,
+    },
+  });
 
   const cancelHandler = () => {
     onClose();
-    amountInput.reset();
-    currencyInput.reset();
+    reset();
   };
 
-  const confirmHandler = () => {
+  const confirmHandler = handleSubmit((transactionFormData) => {
     let transactionType;
-    if (typeInput.value === AccountTransactionType.DEPOSIT) {
+    if (transactionFormData.type === AccountTransactionType.DEPOSIT) {
       transactionType = AccountTransactionType.DEPOSIT;
     } else {
       transactionType = AccountTransactionType.WITHDRAWAL;
     }
-    if (!amountInput.isValid || !currencyInput.isValid) return;
+    if (transactionFormData.date === null) {
+      return;
+    }
     onConfirm(
-      Number(amountInput.value),
-      currencyInput.value.trim(),
+      Number(transactionFormData.amount),
+      transactionFormData.currency.trim(),
       transactionType,
+      transactionFormData.date,
     );
     onClose();
-    amountInput.reset();
-    currencyInput.reset();
-  };
+    reset();
+  });
 
   return (
     <Dialog open={isOpen} onClose={cancelHandler}>
       <DialogTitle>{DialogType[type]}</DialogTitle>
       <DialogContent>
-        <FormControl>
-          <FormLabel id="type">Type</FormLabel>
-          <RadioGroup
-            defaultValue={AccountTransactionType.DEPOSIT}
-            value={typeInput.value}
-            onChange={typeInput.valueChangeHandler}
-            onBlur={amountInput.inputBlurHandler}
-          >
-            <FormControlLabel
-              value={AccountTransactionType.DEPOSIT}
-              control={<Radio />}
-              label="Deposit"
+        <form>
+          <FormControl>
+            <FormLabel id="type">Type</FormLabel>
+            <Controller
+              name="type"
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <RadioGroup {...field}>
+                  <FormControlLabel
+                    value={"deposit"}
+                    control={<Radio />}
+                    label="Deposit"
+                  />
+                  <FormControlLabel
+                    value={"withdrawal"}
+                    control={<Radio />}
+                    label="Withdrawal"
+                  />
+                </RadioGroup>
+              )}
             />
-            <FormControlLabel
-              value={AccountTransactionType.WITHDRAWAL}
-              control={<Radio />}
-              label="Withdrawal"
+          </FormControl>
+          <FormControl margin="normal" fullWidth variant="standard">
+            <FormLabel id="date">Date</FormLabel>
+            <Controller
+              name="date"
+              control={control}
+              rules={{ required: true }}
+              defaultValue={null}
+              render={({ field }) => (
+                <DatePicker
+                  {...field}
+                  slotProps={{
+                    textField: {
+                      variant: "standard",
+                    },
+                  }}
+                />
+              )}
             />
-          </RadioGroup>
-        </FormControl>
-        <TextField
-          margin="normal"
-          id="amount"
-          label="Amount"
-          fullWidth
-          variant="standard"
-          value={amountInput.value}
-          onChange={amountInput.valueChangeHandler}
-          onBlur={amountInput.inputBlurHandler}
-          error={amountInput.hasError}
-        />
-        <TextField
-          margin="normal"
-          id="currency"
-          label="Currency"
-          fullWidth
-          variant="standard"
-          value={currencyInput.value}
-          onChange={currencyInput.valueChangeHandler}
-          onBlur={currencyInput.inputBlurHandler}
-          error={currencyInput.hasError}
-        />
+          </FormControl>
+          <Controller
+            name="amount"
+            control={control}
+            rules={{ required: true, validate: isValidAmount }}
+            render={({ field, fieldState: { error } }) => (
+              <TextField
+                {...field}
+                margin="normal"
+                label="Amount"
+                fullWidth
+                variant="standard"
+                error={!!error}
+              />
+            )}
+          />
+          <Controller
+            name="currency"
+            control={control}
+            rules={{ required: true, validate: isValidCurrency }}
+            render={({ field, fieldState: { error } }) => (
+              <TextField
+                {...field}
+                margin="normal"
+                label="Currency"
+                fullWidth
+                variant="standard"
+                error={!!error}
+              />
+            )}
+          />
+        </form>
       </DialogContent>
       <DialogActions>
         <Button onClick={cancelHandler} color="secondary">

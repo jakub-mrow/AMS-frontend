@@ -11,6 +11,7 @@ import { useSnackbar } from "../snackbar/use-snackbar.ts";
 import { Severity } from "../snackbar/snackbar-context.ts";
 import { Asset } from "./assets-mock.ts";
 import AuthContext from "../auth/auth-context.ts";
+import { Dayjs } from "dayjs";
 
 export enum DialogType {
   TRANSACTION,
@@ -108,10 +109,11 @@ export const useAccountDetails = () => {
     amount: number,
     currency: string,
     type: AccountTransactionType,
+    date: Dayjs,
   ) => {
     if (account) {
       accountDetailsService
-        .addAccountTransaction(account.id, type, amount, currency)
+        .addAccountTransaction(account.id, type, amount, currency, date)
         .then(() => refreshAccountData())
         .catch((error) => {
           if (error instanceof Error) {
