@@ -5,7 +5,7 @@ import {
   Zoom,
 } from "@mui/material";
 import { DialogType, useAccountDetails } from "./use-account-details";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import {
   Add,
   Equalizer,
@@ -13,7 +13,7 @@ import {
   Settings,
   Timeline,
 } from "@mui/icons-material";
-import { Assets } from "./Assets.tsx";
+import { AssetsListWithTabs } from "./AssetsListWithTabs.tsx";
 import { Transactions } from "./Transactions.tsx";
 import { AccountDetailsDialog } from "./AccountDetailsDialog.tsx";
 import { Summary } from "./Summary.tsx";
@@ -29,7 +29,7 @@ enum MobilePage {
 
 type FabData = {
   value: MobilePage;
-  icon: JSX.Element;
+  icon: ReactElement;
   onClick: () => void;
 };
 
@@ -37,7 +37,10 @@ export const AccountDetailsMobile = () => {
   const {
     account,
     accountTransactions,
-    assets,
+    stocks,
+    bonds,
+    deposits,
+    cryptocurrencies,
     accountPreferences,
     isLoading,
     isDialogOpen,
@@ -79,7 +82,13 @@ export const AccountDetailsMobile = () => {
   return (
     <VerticalFlexBox fullHeight sx={{ minHeight: 0 }}>
       {mobilePage === MobilePage.ASSETS && (
-        <Assets assets={assets} isLoading={isLoading} />
+        <AssetsListWithTabs
+          stocks={stocks}
+          bonds={bonds}
+          deposits={deposits}
+          cryptocurrencies={cryptocurrencies}
+          isLoading={isLoading}
+        />
       )}
       {mobilePage === MobilePage.TRANSACTIONS && (
         <Transactions

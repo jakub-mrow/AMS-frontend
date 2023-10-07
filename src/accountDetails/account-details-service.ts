@@ -3,9 +3,14 @@ import {
   AccountTransaction,
   AccountTransactionType,
 } from "../accounts/types.ts";
-import { Asset, assets } from "./assets-mock.ts";
 import { Dayjs } from "dayjs";
-import { AccountPreferences } from "./types.ts";
+import {
+  AccountPreferences,
+  Bond,
+  Cryptocurrency,
+  Deposit,
+  Stock,
+} from "./types.ts";
 
 export type AccountInput = {
   name: string;
@@ -23,12 +28,36 @@ type AccountTransactionApi = {
   date: string;
 };
 
+type StockDto = {
+  isin: string;
+  name: string;
+  ticker: string;
+  exchange_code: string;
+  quantity: number;
+  value: number;
+  currency: string;
+  result: number;
+};
+
+const fromStockDto = (stock: StockDto): Stock => {
+  return new Stock(
+    stock.isin,
+    stock.name,
+    stock.ticker,
+    stock.exchange_code,
+    stock.quantity,
+    stock.value,
+    stock.currency,
+    stock.result,
+  );
+};
+
 type AccountPreferencesDto = {
   base_currency: string;
   tax_currency: string;
 };
 
-const fromDto = (
+const fromAccountPreferencesDto = (
   accountPreference: AccountPreferencesDto,
 ): AccountPreferences => {
   return {
@@ -120,11 +149,38 @@ export class AccountsDetailsService {
     }
   }
 
-  async fetchAssets(): Promise<Asset[]> {
+  async fetchStocks(accountId: number): Promise<Stock[]> {
+    const response = await fetch(
+      `${this.apiUrl}/api/stock_balances/${accountId}/list_dto`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      },
+    );
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to fetch stocks");
+    }
+    const stocks: StockDto[] = await response.json();
+    return stocks.map(fromStockDto);
+  }
+
+  async fetchBonds(_accountId: number): Promise<Bond[]> {
     return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(assets);
-      }, 1000);
+      resolve([]);
+    });
+  }
+
+  async fetchDeposits(_accountId: number): Promise<Deposit[]> {
+    return new Promise((resolve) => {
+      resolve([]);
+    });
+  }
+
+  async fetchCryptocurrencies(_accountId: number): Promise<Cryptocurrency[]> {
+    return new Promise((resolve) => {
+      resolve([]);
     });
   }
 
@@ -142,7 +198,7 @@ export class AccountsDetailsService {
       throw new Error(data.error ?? "Failed to fetch account preferences");
     }
     const accountPreferencesDto: AccountPreferencesDto = await response.json();
-    return fromDto(accountPreferencesDto);
+    return fromAccountPreferencesDto(accountPreferencesDto);
   }
 
   async updateAccountPreferences(
