@@ -15,7 +15,7 @@ export async function authenticateLogin(
     });
 
     if (!response.ok) {
-      let responseData: ApiResponse = {
+      const responseData: ApiResponse = {
         success: false,
         message: null,
         data: await response.json(),
@@ -62,22 +62,24 @@ export async function registerRequest(
       body: JSON.stringify({ username, password, email }),
     });
 
+    const data = await response.json();
+  
     if (!response.ok) {
-      let responseData: ApiResponse = {
+      const responseData: ApiResponse = {
         success: false,
         message: null,
-        data: await response.json(),
+        data: data,
       };
       if (response.status === 400) {
-        responseData.message = JSON.stringify(await response.json());
+        console.log(data)
+        responseData.message = JSON.stringify(data);
+        console.log(responseData)
         return responseData;
       } else if (response.status === 500) {
         responseData.message = "Internal server error";
         return responseData;
       }
     }
-
-    const data = await response.json();
 
     return {
       success: true,

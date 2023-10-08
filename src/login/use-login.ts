@@ -13,7 +13,7 @@ export const useLogin = () => {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
-    let navigate = useNavigate();
+    const navigate = useNavigate();
 
     
     const handleTogglePasswordVisibility = useCallback(() => {

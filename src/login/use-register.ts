@@ -1,11 +1,16 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useContext } from 'react'
 import { AlertColor } from "@mui/material"
 import { useNavigate } from 'react-router-dom';
 import { registerRequest } from './authRequests';
+import authContext from '../auth/auth-context';
+import { ApiResponse } from './apiResponse';
+import AuthContext from '../auth/auth-context';
 
 
 export const useRegister = () => {
+    const authContext = useContext(AuthContext);
     const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [showRepeatedPassword, setShowRepeatedPassword] = useState<boolean>(false);
     const [showAlert, setShowAlert] = useState<string | null>(null);
     const [alertSeverity, setAlertSeverity] = useState<AlertColor>("error");
 
@@ -15,7 +20,7 @@ export const useRegister = () => {
     const [email, setEmail] = useState<string>("");
 
     
-    let navigate = useNavigate();
+    const navigate = useNavigate();
     const changeToMainRoute = () => { 
         const path = "/"; 
         navigate(path);
@@ -26,7 +31,14 @@ export const useRegister = () => {
             const response = await registerRequest(username, password, email);
 
             if (response.success){
-                changeToMainRoute();
+                const loginResponse: ApiResponse = await authContext.onLogin(username, password);
+
+                if (loginResponse.success){
+                    changeToMainRoute();
+                } else {
+                    setAlertSeverity("error");
+                    setShowAlert(response.message as string);
+                }
 
             } else {
                 setAlertSeverity("error");
@@ -41,7 +53,11 @@ export const useRegister = () => {
 
     const togglePasswordVisibility = useCallback(() => {
         setShowPassword(!showPassword);
-    }, []);
+    }, [showPassword]);
+
+    const toggleRepeatedPasswordVisibility = useCallback(() => {
+        setShowRepeatedPassword(!showRepeatedPassword);
+    }, [showRepeatedPassword]);
 
     const updateUsername = useCallback((username: string) => {
         setUsername(username);
@@ -70,6 +86,7 @@ export const useRegister = () => {
 
     return {
         showPassword,
+        showRepeatedPassword,
         username,
         password,
         repeatedPassword,
@@ -81,6 +98,7 @@ export const useRegister = () => {
         updateRepeatedPassword,
         onSubmit,
         togglePasswordVisibility,
+        toggleRepeatedPasswordVisibility,
         updateAlertSeverity,
         updateAlertText,
         updateEmail

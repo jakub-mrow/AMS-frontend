@@ -12,11 +12,13 @@ const RegisterForm = () => {
         showPassword,
         showAlert,
         alertSeverity,
+        showRepeatedPassword,
         updateUsername,
         updatePassword,
         updateRepeatedPassword,
         onSubmit,
         togglePasswordVisibility,
+        toggleRepeatedPasswordVisibility,
         updateAlertText,
         updateEmail
     } = useRegister();
@@ -24,16 +26,16 @@ const RegisterForm = () => {
     const {register, handleSubmit, formState: { errors }} = useForm();
 
     return (
-        <>
-            <div className="w-48 h-48 flex items-center justify-center rounded-full bg-gradient-to-br from-primary via-purple-500 to-primary">
-                <FaDollarSign className="h-24 w-24 text-white" />
+        <div className="flex flex-col items-center justify-center space-y-10 m-8">
+            <div className="w-24 h-24 flex items-center justify-center rounded-full bg-gradient-to-br from-primary via-purple-500 to-primary">
+                <FaDollarSign className="h-12 w-12 text-white" />
             </div>
 
             <div className="text-center">
-                <h1 className="text-6xl font-semibold mt-20 whitespace-normal">Create your AMS account</h1>
+                <h1 className="text-4xl font-semibold whitespace-normal">Create your AMS account</h1>
             </div>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="mt-14">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+                <div className="flex flex-col items-center justify-center space-y-2">
                     <TextField 
                         id="username" 
                         label="Username" 
@@ -41,8 +43,6 @@ const RegisterForm = () => {
                         className="w-96"
                         onChange={(event) => updateUsername(event.target.value)}
                     />
-                </div>
-                <div className="mt-8">
                     <TextField 
                         id="email" 
                         label="Email" 
@@ -50,8 +50,6 @@ const RegisterForm = () => {
                         className="w-96"
                         onChange={(event) => updateEmail(event.target.value)}
                     />
-                </div>
-                <div className="mt-8">
                     <TextField
                         id="password"
                         label="Password"
@@ -68,40 +66,31 @@ const RegisterForm = () => {
                             ),
                         }}
                     />
-                </div>
-                <div className="mt-8">
                     <TextField
                         id="repeatPassword"
                         label="Repeat Password"
-                        type={showPassword ? 'text' : 'password'}
+                        type={showRepeatedPassword ? 'text' : 'password'}
                         onChange={(event) => updateRepeatedPassword(event.target.value)}
                         className="w-96"
                         InputProps={{
                             endAdornment: (
                             <InputAdornment position="end">
-                                <IconButton onClick={togglePasswordVisibility}>
-                                {showPassword ? <Visibility /> : <VisibilityOff />}
+                                <IconButton onClick={toggleRepeatedPasswordVisibility}>
+                                {showRepeatedPassword ? <Visibility /> : <VisibilityOff />}
                                 </IconButton>
                             </InputAdornment>
                             ),
                         }}
                     />
                 </div>
-                <div className="mt-16">
+                <div className="flex flex-col items-center justify-center space-y-4">
                     <button 
-                        className="w-full mt-4 h-12 text-xl bg-primary text-white rounded-xl shadow-lg" 
-                        type="submit" >
+                        className="w-full h-12 text-xl bg-primary text-white rounded-xl shadow-lg" 
+                        type="submit">
                         Register
                     </button>
-                </div>
-
-                <div className="flex items-center justify-center mt-8">
-                    <div className="border-b-2 w-1/3"></div>
-                    <div className="border-b-2 w-1/3"></div>
-                </div>
-
-                <div className="flex justify-center items-center mt-4">
-                    <Link to="/login" className="text-primary ml-4">
+                    <div className="border-b-2 w-4/5"></div>
+                    <Link to="/login" className="text-primary">
                         Back
                     </Link>
                 </div>
@@ -114,7 +103,7 @@ const RegisterForm = () => {
                 onClose={() => updateAlertText(null)}>
                     <Alert severity={alertSeverity}>{showAlert}</Alert>
             </Snackbar>                
-        </>
+        </div>
     )
 }
 

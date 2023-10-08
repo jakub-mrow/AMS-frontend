@@ -23,17 +23,17 @@ const LoginForm = () => {
 
     return (
         <>
-            <div className="w-48 h-48 flex items-center justify-center rounded-full bg-gradient-to-br from-primary via-purple-500 to-primary">
-                <FaDollarSign className="h-24 w-24 text-white" />
+            <div className="w-24 h-24 flex items-center justify-center rounded-full bg-gradient-to-br from-primary via-purple-500 to-primary mt-4">
+                <FaDollarSign className="h-12 w-12 text-white" />
             </div>
 
             <div className="text-center">
-                <h1 className="text-6xl font-semibold mt-20 whitespace-normal">Welcome to AMS!</h1>
+                <h1 className="text-5xl font-semibold mt-10 whitespace-normal">Welcome to AMS!</h1>
                 <p className="text-xl mt-4 whitespace-normal">Asset management system is the best place <br/> to keep track of all your investments</p>
             </div>
             
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="mt-14">
+                <div className="mt-10">
                     <TextField 
                         id="username" 
                         label="Username" 
@@ -75,7 +75,7 @@ const LoginForm = () => {
             
             </form>
 
-            <div className="flex items-center mt-4">
+            <div className="flex items-center mt-4 mb-4">
                 <h1>Don't have an account yet?</h1>
                 <Link to="/register" className="text-primary ml-4">
                     Sign up now
