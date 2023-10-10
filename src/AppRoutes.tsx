@@ -5,6 +5,8 @@ import Login from "./login/Login.tsx"
 import Register from "./login/Register.tsx";
 import ProtectedRoute from "./ProtectedRoute.tsx";
 import {AccountDetails} from "./accountDetails/AccountDetails.tsx";
+import TradingViewWidget from "./assetDetails/TradingViewWidget.tsx";
+import AssetDetails from "./assetDetails/AssetDetails.tsx";
 
 const AppRoutes = () => {
   return (
@@ -31,6 +33,14 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <AccountDetails />
           </ProtectedRoute>}
+      />
+      <Route
+        path="/chart"
+        element={
+          <ProtectedRoute>
+            <AssetDetails/>
+          </ProtectedRoute>
+        }
       />
     </Routes>
   );

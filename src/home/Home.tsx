@@ -17,6 +17,9 @@ const Home = () => {
       <Button variant="contained" onClick={() => navigate("/accounts")}>
         Accounts
       </Button>
+      <Button variant="contained" onClick={() => navigate("/chart")}>
+        Chart
+      </Button>
       <Button onClick={() => alert("Snackbar is working!", Severity.SUCCESS)}>
         Snackbar
       </Button>

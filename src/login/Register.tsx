@@ -18,7 +18,7 @@ const Register = () => {
             <div className="hidden lg:flex flex-col h-full w-1/2 items-center justify-center bg-primary">
                 <LoginPanel/>
             </div>
-            <div className="w-full lg:w-1/2 p-50">
+            <div className="flex items-center justify-center w-full lg:w-1/2 p-50">
                 <RegisterForm/>
             </div>
         </div>

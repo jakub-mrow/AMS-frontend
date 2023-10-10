@@ -65,7 +65,7 @@ const LoginForm = () => {
                         </button>
                     </div>
                 </div>
-                <div className="mt-12">
+                <div className="mt-8">
                     <button 
                         className="w-full mt-4 h-12 text-xl bg-primary text-white rounded-xl shadow-lg select-none" 
                         type="submit" >
