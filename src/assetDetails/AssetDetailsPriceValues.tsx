@@ -39,7 +39,7 @@ const AssetDetailsPriceValues = () => {
     }
 
     return (
-        <div className="grid grid-rows-2 grid-flow-col lg:grid-rows-1 justify-center items-center">
+        <div className="grid grid-rows-2 grid-flow-col lg:grid-rows-1">
             {Object.entries(priceValues).map(([key, value]) => (
                 <div
                     key={key}
