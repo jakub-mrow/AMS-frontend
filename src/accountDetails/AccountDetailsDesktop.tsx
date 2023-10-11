@@ -1,6 +1,6 @@
 import { DialogType, useAccountDetails } from "./use-account-details.ts";
 import { Loading } from "./Loading.tsx";
-import { AccountDetailsDialog } from "./AccountDetailsDialog.tsx";
+import { AccountTransactionDialog } from "./AccountTransactionDialog.tsx";
 import { Container, Paper, Tab, Tabs } from "@mui/material";
 import { Summary } from "./Summary.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
@@ -9,6 +9,7 @@ import { TransactionsDesktop } from "./TransactionsDesktop.tsx";
 import { AssetsDesktop } from "./AssetsDesktop.tsx";
 import { AccountPreferencesDialog } from "./AccountPreferencesDialog.tsx";
 import { Asset } from "./types.ts";
+import { StocksDialog } from "./StocksDialog.tsx";
 
 export enum DetailsTabs {
   STOCKS,
@@ -32,8 +33,8 @@ export const AccountDetailsDesktop = () => {
     isDialogOpen,
     openDialog,
     closeDialog,
-    onConfirmDialog,
-    dialogType,
+    onConfirmAccountTransactionDialog,
+    onConfirmStockDialog,
     onDeleteTransaction,
     isAccountPreferencesDialogOpen,
     openAccountPreferencesDialog,
@@ -101,7 +102,7 @@ export const AccountDetailsDesktop = () => {
                 assets={getAssetsOfType(detailsTab)}
                 type={detailsTab}
                 isLoading={isLoading}
-                onAddAssetClick={() => openDialog(DialogType.TRANSACTION)}
+                onAddAssetClick={() => openDialog(DialogType.STOCK)}
               />
             )}
           </Paper>
@@ -118,11 +119,16 @@ export const AccountDetailsDesktop = () => {
           />
         </Paper>
       </Container>
-      <AccountDetailsDialog
-        isOpen={isDialogOpen}
+      <AccountTransactionDialog
+        isOpen={isDialogOpen(DialogType.TRANSACTION)}
         onClose={closeDialog}
-        onConfirm={onConfirmDialog}
-        type={dialogType}
+        onConfirm={onConfirmAccountTransactionDialog}
+      />
+      <StocksDialog
+        stocks={stocks}
+        isOpen={isDialogOpen(DialogType.STOCK)}
+        onClose={closeDialog}
+        onConfirm={onConfirmStockDialog}
       />
       <AccountPreferencesDialog
         isOpen={isAccountPreferencesDialogOpen}

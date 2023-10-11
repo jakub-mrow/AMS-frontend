@@ -15,11 +15,12 @@ import {
 } from "@mui/icons-material";
 import { AssetsListWithTabs } from "./AssetsListWithTabs.tsx";
 import { Transactions } from "./Transactions.tsx";
-import { AccountDetailsDialog } from "./AccountDetailsDialog.tsx";
+import { AccountTransactionDialog } from "./AccountTransactionDialog.tsx";
 import { Summary } from "./Summary.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { Loading } from "./Loading.tsx";
 import { AccountPreferencesDialog } from "./AccountPreferencesDialog.tsx";
+import { StocksDialog } from "./StocksDialog.tsx";
 
 enum MobilePage {
   ASSETS,
@@ -46,8 +47,8 @@ export const AccountDetailsMobile = () => {
     isDialogOpen,
     openDialog,
     closeDialog,
-    onConfirmDialog,
-    dialogType,
+    onConfirmAccountTransactionDialog,
+    onConfirmStockDialog,
     onDeleteTransaction,
     isAccountPreferencesDialogOpen,
     openAccountPreferencesDialog,
@@ -61,7 +62,7 @@ export const AccountDetailsMobile = () => {
     {
       value: MobilePage.ASSETS,
       icon: <Add />,
-      onClick: () => openDialog(DialogType.TRANSACTION),
+      onClick: () => openDialog(DialogType.STOCK),
     },
     {
       value: MobilePage.TRANSACTIONS,
@@ -117,11 +118,16 @@ export const AccountDetailsMobile = () => {
         />
         <BottomNavigationAction label="Summary" icon={<Equalizer />} />
       </BottomNavigation>
-      <AccountDetailsDialog
-        isOpen={isDialogOpen}
+      <AccountTransactionDialog
+        isOpen={isDialogOpen(DialogType.TRANSACTION)}
         onClose={closeDialog}
-        onConfirm={onConfirmDialog}
-        type={dialogType}
+        onConfirm={onConfirmAccountTransactionDialog}
+      />
+      <StocksDialog
+        stocks={stocks}
+        isOpen={isDialogOpen(DialogType.STOCK)}
+        onClose={closeDialog}
+        onConfirm={onConfirmStockDialog}
       />
       <AccountPreferencesDialog
         isOpen={isAccountPreferencesDialogOpen}

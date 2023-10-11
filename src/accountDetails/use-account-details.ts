@@ -22,6 +22,7 @@ import {
 
 export enum DialogType {
   TRANSACTION,
+  STOCK,
 }
 
 export const useAccountDetails = () => {
@@ -29,7 +30,9 @@ export const useAccountDetails = () => {
   const accountDetailsService = useMemo(() => {
     return new AccountsDetailsService(apiUrl, token);
   }, [token]);
-  const { id: idStr } = useParams<{ id: string }>();
+  const { id: idStr } = useParams<{
+    id: string;
+  }>();
   const id = useMemo(() => {
     if (!idStr) {
       return null;
@@ -81,17 +84,17 @@ export const useAccountDetails = () => {
   const [dialogType, setDialogType] = useState<DialogType>(
     DialogType.TRANSACTION,
   );
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [isAccountPreferencesDialogOpen, setIsAccountPreferencesDialogOpen] =
     useState(false);
 
   const openDialog = useCallback((type: DialogType) => {
     setDialogType(type);
-    setIsDialogOpen(true);
+    setDialogOpen(true);
   }, []);
 
   const closeDialog = useCallback(() => {
-    setIsDialogOpen(false);
+    setDialogOpen(false);
   }, []);
 
   const refreshAccountData = useCallback(() => {
@@ -177,7 +180,7 @@ export const useAccountDetails = () => {
     refreshAccountData();
   }, [refreshAccountData]);
 
-  const onConfirmDialog = (
+  const onConfirmAccountTransactionDialog = (
     amount: number,
     currency: string,
     type: AccountTransactionType,
@@ -193,6 +196,39 @@ export const useAccountDetails = () => {
           }
         });
     }
+  };
+
+  const onConfirmStockDialog = async (
+    ticker: string,
+    exchange: string,
+    quantity: number,
+    price: number,
+    date: Dayjs,
+  ) => {
+    if (!account) {
+      return false;
+    }
+    try {
+      await accountDetailsService.buyStocks(
+        account.id,
+        ticker,
+        exchange,
+        quantity,
+        price,
+        date,
+      );
+      refreshAccountData();
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message, Severity.ERROR);
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const isDialogOpen = (type: DialogType) => {
+    return dialogOpen && dialogType === type;
   };
 
   const onDeleteTransaction = (transaction: AccountTransaction) => {
@@ -233,9 +269,9 @@ export const useAccountDetails = () => {
     isLoading,
     openDialog,
     closeDialog,
-    dialogType,
     isDialogOpen,
-    onConfirmDialog,
+    onConfirmAccountTransactionDialog,
+    onConfirmStockDialog,
     onDeleteTransaction,
     isAccountPreferencesDialogOpen,
     openAccountPreferencesDialog: () => setIsAccountPreferencesDialogOpen(true),

@@ -184,6 +184,37 @@ export class AccountsDetailsService {
     });
   }
 
+  async buyStocks(
+    accountId: number,
+    ticker: string,
+    exchange: string,
+    quantity: number,
+    price: number,
+    date: Dayjs,
+  ) {
+    const response = await fetch(
+      `${this.apiUrl}/api/stock/${accountId}/transaction/buy`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.token}`,
+        },
+        body: JSON.stringify({
+          ticker,
+          exchange_code: exchange,
+          quantity,
+          price,
+          date,
+        }),
+      },
+    );
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to add stock");
+    }
+  }
+
   async fetchAccountPreferences(id: number): Promise<AccountPreferences> {
     const response = await fetch(
       `${this.apiUrl}/api/accounts/${id}/get_preferences`,
