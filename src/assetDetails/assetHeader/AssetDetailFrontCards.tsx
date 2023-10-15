@@ -1,4 +1,4 @@
-import AssetDetailsCardTitle from './AssetDetailsCardTitle'
+import AssetDetailsCardTitle from '../assetBodyCards/AssetDetailsCardTitle'
 
 const AssetDetailFrontCards = () => {
     return (

@@ -5,7 +5,7 @@ import Login from "./login/Login.tsx"
 import Register from "./login/Register.tsx";
 import ProtectedRoute from "./ProtectedRoute.tsx";
 import {AccountDetails} from "./accountDetails/AccountDetails.tsx";
-import TradingViewWidget from "./assetDetails/TradingViewWidget.tsx";
+import TradingViewWidget from "./assetDetails/assetBodyCards/TradingViewWidget.tsx";
 import AssetDetails from "./assetDetails/AssetDetails.tsx";
 
 const AppRoutes = () => {
