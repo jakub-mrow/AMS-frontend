@@ -89,9 +89,9 @@ export const useAccounts = () => {
   );
 
   const updateAccount = useCallback(
-    async (account: Account) => {
+    async (account: Account, newName: string) => {
       try {
-        await accountsService.putAccount(account);
+        await accountsService.renameAccount(account, newName);
         const newAccounts = await accountsService.fetchAccounts();
         setAccounts(newAccounts);
       } catch (error) {
