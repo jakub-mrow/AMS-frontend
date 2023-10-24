@@ -71,9 +71,7 @@ export async function registerRequest(
         data: data,
       };
       if (response.status === 400) {
-        console.log(data)
         responseData.message = JSON.stringify(data);
-        console.log(responseData)
         return responseData;
       } else if (response.status === 500) {
         responseData.message = "Internal server error";

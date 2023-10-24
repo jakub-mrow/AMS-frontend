@@ -18,7 +18,7 @@ export const useLogin = () => {
     
     const handleTogglePasswordVisibility = useCallback(() => {
         setShowPassword(!showPassword);
-    }, [])
+    }, [showPassword])
 
     const updatePassword = useCallback((password: string) => {
         setPassword(password);
@@ -39,7 +39,7 @@ export const useLogin = () => {
     const changeToMainRoute = useCallback(() => { 
         const path = "/"; 
         navigate(path);
-    }, [])
+    }, [navigate])
 
     const onSubmit = useCallback(async () => {
         try {
@@ -54,7 +54,7 @@ export const useLogin = () => {
         } catch (e) {
             console.log(e);
         }
-    }, [username, password]); 
+    }, [authContext, username, password, changeToMainRoute, updateAlertSeverity, updateAlertText]); 
 
 
     return {

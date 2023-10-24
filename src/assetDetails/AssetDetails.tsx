@@ -1,6 +1,5 @@
 import AssetDetailsHeader from './assetHeader/AssetDetailsHeader';
 import AssetOverviewCard from './assetBodyCards/AssetOverviewCard'
-import AssetDescriptionCard from './assetBodyCards/AssetDescriptionCard'
 import AssetChartCard from './assetBodyCards/AssetChartCard'
 
 
@@ -12,7 +11,6 @@ const AssetDetails = () => {
                 <div className="flex flex-col md:flex-row justify-between md:space-x-4 space-y-2 md:space-y-0">
                     <div className="flex-1 space-y-4">
                         <AssetOverviewCard/>
-                        {/* <AssetDescriptionCard/> */}
                     </div>
                     <div className="flex-1 space-y-4">
                         <AssetChartCard/>

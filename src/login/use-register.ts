@@ -2,7 +2,6 @@ import { useState, useCallback, useContext } from 'react'
 import { AlertColor } from "@mui/material"
 import { useNavigate } from 'react-router-dom';
 import { registerRequest } from './authRequests';
-import authContext from '../auth/auth-context';
 import { ApiResponse } from './apiResponse';
 import AuthContext from '../auth/auth-context';
 
@@ -21,12 +20,14 @@ export const useRegister = () => {
 
     
     const navigate = useNavigate();
-    const changeToMainRoute = () => { 
-        const path = "/"; 
-        navigate(path);
-    }
+    
 
     const onSubmit = useCallback( async () => {
+        const changeToMainRoute = () => { 
+            const path = "/"; 
+            navigate(path);
+        }
+        
         try{
             const response = await registerRequest(username, password, email);
 
@@ -49,7 +50,7 @@ export const useRegister = () => {
             setAlertSeverity("error");
             setShowAlert("Internal server error");
         }
-    }, [username, password, email]);
+    }, [navigate, username, password, email, authContext]);
 
     const togglePasswordVisibility = useCallback(() => {
         setShowPassword(!showPassword);
