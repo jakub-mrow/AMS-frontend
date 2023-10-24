@@ -34,7 +34,7 @@ const AppRoutes = () => {
           </ProtectedRoute>}
       />
       <Route
-        path="/chart"
+        path="/assets/:assetCode"
         element={
           <ProtectedRoute>
             <AssetDetails/>

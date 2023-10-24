@@ -1,5 +1,7 @@
 import { FaSearch } from 'react-icons/fa'
+import { FaTimes } from 'react-icons/fa';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SearchBarInputField = (props: any) => {
     return (
         <div className="w-full h-10 rounded-3xl shadow-md bg-white flex items-center">
@@ -8,6 +10,9 @@ const SearchBarInputField = (props: any) => {
                 type="text"
                 placeholder="Type to search..."
                 onChange={(e) => props.setSearchText(e.target.value)}/>
+            <div onClick={() => props.setSearchText("")}>
+                <FaTimes className="text-black m-2 mr-4 hover:bg-gray-100"/>
+            </div>
         </div>
     )
 }
