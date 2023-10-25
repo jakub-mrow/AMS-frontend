@@ -62,7 +62,12 @@ export const AccountsTable = ({
                   >
                     <Delete />
                   </IconButton>
-                  <IconButton onClick={() => onAccountUpdate(account)}>
+                  <IconButton
+                    onClick={(ev: MouseEvent<HTMLButtonElement>) => {
+                      ev.stopPropagation();
+                      onAccountUpdate(account);
+                    }}
+                  >
                     <Edit />
                   </IconButton>
                 </TableCell>

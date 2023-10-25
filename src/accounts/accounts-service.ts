@@ -51,14 +51,16 @@ export class AccountsService {
     }
   }
 
-  async putAccount(account: Account): Promise<void> {
+  async renameAccount(account: Account, name: string): Promise<void> {
     const response = await fetch(`${this.apiUrl}/api/accounts/${account.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.token}`,
       },
-      body: JSON.stringify(account),
+      body: JSON.stringify({
+        name,
+      }),
     });
     const data = await response.json();
     if (!response.ok) {
