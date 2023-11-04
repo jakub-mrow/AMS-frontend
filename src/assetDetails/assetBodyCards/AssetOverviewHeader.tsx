@@ -10,7 +10,6 @@ const AssetOverviewHeader: React.FC<AssetDetailsDataProps> = ({ assetDetailsData
                         <span className="">{assetDetailsData.Currency}</span>
                         <span className="font-bold text-2xl text-green-700">+0.53%</span>
                     </div>
-                    
                 </div>
         
                 <div className="flex flex-row border rounded-lg space-x-4 p-2 justify-center items-center">

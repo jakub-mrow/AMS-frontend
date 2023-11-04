@@ -18,7 +18,7 @@ const AssetDetails = () => {
                                 <AssetOverviewCard assetDetailsData={assetDetailsData[0]} />
                             </div>
                             <div className="flex-1 space-y-4">
-                                <AssetChartCard />
+                                <AssetChartCard assetDetailsData={assetDetailsData[0]}/>
                             </div>
                         </div>
                     </div>

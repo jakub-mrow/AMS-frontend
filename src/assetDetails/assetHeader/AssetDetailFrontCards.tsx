@@ -5,12 +5,6 @@ const AssetDetailFrontCards: React.FC<AssetDetailsDataProps> = ({ assetDetailsDa
     return (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-white rounded">
-                <AssetDetailsCardTitle cardTitle='TER'/>
-                <div className="flex flex-col p-4">
-                    <span className="font-bold">0.07%</span>
-                </div>
-            </div>
-            <div className="bg-white rounded">
                 <AssetDetailsCardTitle cardTitle='Currency'/>
                 <div className="flex flex-col p-4">
                     <span className="font-bold">{assetDetailsData.Currency}</span>
@@ -23,9 +17,9 @@ const AssetDetailFrontCards: React.FC<AssetDetailsDataProps> = ({ assetDetailsDa
                 </div>
             </div>
             <div className="bg-white rounded">
-                <AssetDetailsCardTitle cardTitle='Distribution policy'/>
+                <AssetDetailsCardTitle cardTitle='Asset type'/>
                 <div className="flex flex-col p-4">
-                    <span className="font-bold">Dividends</span>
+                    <span className="font-bold">{assetDetailsData.Type}</span>
                 </div>
             </div>
 

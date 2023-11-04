@@ -10,7 +10,7 @@ const AssetOverviewCard: React.FC<AssetDetailsDataProps> = ({ assetDetailsData }
             <AssetDetailsCardTitle cardTitle="Overview" />
             <AssetOverviewHeader assetDetailsData={assetDetailsData} />
             <AssetDetailsPriceValues />
-            <AssetOverviewBody />
+            <AssetOverviewBody assetDetailsData={assetDetailsData} />
         </div>
     )
 }

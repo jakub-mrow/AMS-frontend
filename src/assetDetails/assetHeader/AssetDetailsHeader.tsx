@@ -12,6 +12,13 @@ import { AssetDetailsDataProps } from '../use-asset-details'
 const AssetDetailsHeader: React.FC<AssetDetailsDataProps> = ({ assetDetailsData }) => {
     let symbols: string[] = [];
     switch (assetDetailsData.Type) {
+        case 'Common Stock':
+            if (assetDetailsData.Exchange === "US"){
+                assetDetailsData.Exchange = "NASDAQ"
+            }
+            symbols = [`${assetDetailsData.Exchange}:${assetDetailsData.Code}`];
+            console.log(symbols);
+            break;
         case 'ETF':
             symbols = [`${assetDetailsData.Exchange}:${assetDetailsData.Code}`]
             break;

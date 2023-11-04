@@ -43,7 +43,7 @@ const useSearchBar = () => {
         }
         const timeoutId = setTimeout(() => {
             f();
-        }, 1000);
+        }, 200);
 
         return () => {
             clearTimeout(timeoutId)
