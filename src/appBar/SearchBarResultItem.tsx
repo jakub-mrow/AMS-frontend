@@ -4,12 +4,14 @@ import { useNavigate } from 'react-router-dom';
 
 interface SearchBarResultItemProps {
     result: Result
+    setSearchText: (text: string) => void;
 }
 
-const SearchBarResultItem: React.FC<SearchBarResultItemProps> = ({ result }) => {
+const SearchBarResultItem: React.FC<SearchBarResultItemProps> = ({ result, setSearchText }) => {
     const navigate = useNavigate()
 
     const handleClick = () => {
+        setSearchText("");
         navigate(`/assets/${result.Code}.${result.Exchange}`)
     }
 

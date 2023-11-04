@@ -9,7 +9,7 @@ const SearchBar = () => {
     return (
         <div className="w-2/5 mx-auto flex flex-col items-center min-w-40 space-y-12 relative">
             <SearchBarInputField setSearchText={setSearchText} />
-            {searchResults && searchResults.length > 0 && <SearchBarResultList results={searchResults} />}
+            {searchResults && searchResults.length > 0 && <SearchBarResultList results={searchResults} setSearchText={setSearchText}/>}
         </div>
     );
 }
