@@ -19,12 +19,14 @@ export const AssetsListWithTabs = ({
   deposits,
   cryptocurrencies,
   isLoading,
+  goToAsset,
 }: {
   stocks: Stock[];
   bonds: Bond[];
   deposits: Deposit[];
   cryptocurrencies: Cryptocurrency[];
   isLoading: boolean;
+  goToAsset: (isin: string) => void;
 }) => {
   const [assetsType, setAssetsType] = useState(AssetsType.STOCKS);
 
@@ -67,7 +69,11 @@ export const AssetsListWithTabs = ({
             minHeight: 0,
           }}
         >
-          <AssetsList assets={getAssetsOfType(assetsType)} type={assetsType} />
+          <AssetsList
+            assets={getAssetsOfType(assetsType)}
+            type={assetsType}
+            goToAsset={goToAsset}
+          />
         </VerticalFlexContainer>
       )}
     </>

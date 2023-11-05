@@ -8,7 +8,13 @@ import {
 import { Delete } from "@mui/icons-material";
 import { Asset, Stock } from "./types.ts";
 
-export const AssetsListItem = ({ asset }: { asset: Asset }) => {
+export const AssetsListItem = ({
+  asset,
+  goToAsset,
+}: {
+  asset: Asset;
+  goToAsset: () => void;
+}) => {
   const getListItem = () => {
     if (asset instanceof Stock) {
       return (
@@ -46,6 +52,7 @@ export const AssetsListItem = ({ asset }: { asset: Asset }) => {
             <Delete />
           </IconButton>
         }
+        onClick={goToAsset}
       >
         {getListItem()}
       </ListItem>

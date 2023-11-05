@@ -1,0 +1,104 @@
+import {
+  Account,
+  AccountTransaction,
+  AccountTransactionType,
+} from "../accounts/types.ts";
+import { Dayjs } from "dayjs";
+
+type ErrorResponse = {
+  error?: string;
+};
+
+type AccountTransactionApi = {
+  id: number;
+  type: AccountTransactionType;
+  amount: number;
+  currency: string;
+  date: string;
+};
+
+export class StockDetailsService {
+  constructor(
+    private readonly apiUrl: string,
+    private readonly token: string,
+  ) {}
+
+  async fetchAccount(id: number): Promise<Account> {
+    const response = await fetch(`${this.apiUrl}/api/accounts/${id}`, {
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to fetch account");
+    }
+    return await response.json();
+  }
+
+  async fetchAccountTransactions(id: number): Promise<AccountTransaction[]> {
+    const response = await fetch(
+      `${this.apiUrl}/api/accounts/${id}/transactions`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      },
+    );
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to fetch transactions");
+    }
+    const data: AccountTransactionApi[] = await response.json();
+    return data.map((transaction) => ({
+      ...transaction,
+      date: new Date(transaction.date),
+    }));
+  }
+
+  async deleteAccountTransaction(id: number, transactionId: number) {
+    const response = await fetch(
+      `${this.apiUrl}/api/accounts/${id}/transactions/${transactionId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      },
+    );
+    if (!response.ok) {
+      throw new Error("Failed to delete transaction");
+    }
+  }
+
+  async buyStocks(
+    accountId: number,
+    ticker: string,
+    exchange: string,
+    quantity: number,
+    price: number,
+    date: Dayjs,
+  ) {
+    const response = await fetch(
+      `${this.apiUrl}/api/stock/${accountId}/transaction/buy`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.token}`,
+        },
+        body: JSON.stringify({
+          ticker,
+          exchange_code: exchange,
+          quantity,
+          price,
+          date,
+        }),
+      },
+    );
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to add stock");
+    }
+  }
+}

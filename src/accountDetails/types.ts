@@ -39,7 +39,7 @@ export class Stock extends Asset {
 
 export class Bond extends Asset {
   constructor(
-    public id: number,
+    public isin: string,
     public result: number,
   ) {
     super();
@@ -50,13 +50,13 @@ export class Bond extends Asset {
   }
 
   getKey(): string {
-    return this.id.toString();
+    return this.isin;
   }
 }
 
 export class Deposit extends Asset {
   constructor(
-    public id: number,
+    public isin: string,
     public result: number,
   ) {
     super();
@@ -67,13 +67,13 @@ export class Deposit extends Asset {
   }
 
   getKey(): string {
-    return this.id.toString();
+    return this.isin;
   }
 }
 
 export class Cryptocurrency extends Asset {
   constructor(
-    public id: number,
+    public isin: string,
     public result: number,
   ) {
     super();
@@ -84,7 +84,7 @@ export class Cryptocurrency extends Asset {
   }
 
   getKey(): string {
-    return this.id.toString();
+    return this.isin;
   }
 }
 

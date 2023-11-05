@@ -8,9 +8,11 @@ import { Asset } from "./types.ts";
 export const AssetsList = ({
   assets,
   type,
+  goToAsset,
 }: {
   assets: Asset[];
   type: AssetsType;
+  goToAsset: (isin: string) => void;
 }) => {
   const getTypeName = () => {
     switch (type) {
@@ -45,7 +47,11 @@ export const AssetsList = ({
   return (
     <List sx={{ flex: 1, overflowY: "auto" }}>
       {assets.map((asset) => (
-        <AssetsListItem key={asset.getKey()} asset={asset} />
+        <AssetsListItem
+          key={asset.getKey()}
+          asset={asset}
+          goToAsset={() => goToAsset(asset.getKey())}
+        />
       ))}
     </List>
   );

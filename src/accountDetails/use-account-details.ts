@@ -258,6 +258,10 @@ export const useAccountDetails = () => {
       });
   };
 
+  const goToAsset = (isin: string) => {
+    navigate(`./assets/${isin}`, {});
+  };
+
   return {
     account,
     accountTransactions,
@@ -278,5 +282,6 @@ export const useAccountDetails = () => {
     closeAccountPreferencesDialog: () =>
       setIsAccountPreferencesDialogOpen(false),
     onConfirmPreferences,
+    goToAsset,
   };
 };

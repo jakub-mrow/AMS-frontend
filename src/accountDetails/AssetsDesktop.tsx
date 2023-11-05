@@ -28,11 +28,13 @@ export const AssetsDesktop = ({
   type,
   isLoading,
   onAddAssetClick,
+  goToAsset,
 }: {
   assets: Asset[];
   type: DetailsTabs;
   isLoading: boolean;
   onAddAssetClick: () => void;
+  goToAsset: (isin: string) => void;
 }) => {
   if (isLoading) {
     return <Loading />;
@@ -66,7 +68,7 @@ export const AssetsDesktop = ({
           Add asset
         </Button>
       </Box>
-      <AssetsTable assets={assets} />
+      <AssetsTable assets={assets} goToAsset={goToAsset} />
     </>
   );
 };

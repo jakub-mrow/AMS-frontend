@@ -40,6 +40,7 @@ export const AccountDetailsDesktop = () => {
     openAccountPreferencesDialog,
     closeAccountPreferencesDialog,
     onConfirmPreferences,
+    goToAsset,
   } = useAccountDetails();
   const [detailsTab, setDetailsTab] = useState(DetailsTabs.STOCKS);
 
@@ -103,6 +104,7 @@ export const AccountDetailsDesktop = () => {
                 type={detailsTab}
                 isLoading={isLoading}
                 onAddAssetClick={() => openDialog(DialogType.STOCK)}
+                goToAsset={goToAsset}
               />
             )}
           </Paper>

@@ -54,6 +54,7 @@ export const AccountDetailsMobile = () => {
     openAccountPreferencesDialog,
     closeAccountPreferencesDialog,
     onConfirmPreferences,
+    goToAsset,
   } = useAccountDetails();
 
   const [mobilePage, setMobilePage] = useState(MobilePage.ASSETS);
@@ -89,6 +90,7 @@ export const AccountDetailsMobile = () => {
           deposits={deposits}
           cryptocurrencies={cryptocurrencies}
           isLoading={isLoading}
+          goToAsset={goToAsset}
         />
       )}
       {mobilePage === MobilePage.TRANSACTIONS && (

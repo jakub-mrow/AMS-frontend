@@ -11,7 +11,13 @@ import {
 import { ChangeEvent, useState } from "react";
 import { Asset, Bond, Cryptocurrency, Deposit, Stock } from "./types";
 
-export const AssetsTable = ({ assets }: { assets: Asset[] }) => {
+export const AssetsTable = ({
+  assets,
+  goToAsset,
+}: {
+  assets: Asset[];
+  goToAsset: (isin: string) => void;
+}) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const handleChangeRowsPerPage = (
@@ -47,7 +53,7 @@ export const AssetsTable = ({ assets }: { assets: Asset[] }) => {
   const getTableRow = (asset: Asset) => {
     if (asset instanceof Stock) {
       return (
-        <TableRow key={asset.isin} hover>
+        <TableRow key={asset.isin} hover onClick={() => goToAsset(asset.isin)}>
           <TableCell>{asset.name}</TableCell>
           <TableCell>{asset.exchange}</TableCell>
           <TableCell>{`${asset.value} ${asset.currency}`}</TableCell>
@@ -62,7 +68,7 @@ export const AssetsTable = ({ assets }: { assets: Asset[] }) => {
       );
     } else if (asset instanceof Bond) {
       return (
-        <TableRow key={asset.id} hover>
+        <TableRow key={asset.isin} hover onClick={() => goToAsset(asset.isin)}>
           <TableCell
             sx={{
               color: asset.getResultColor(),
@@ -74,7 +80,7 @@ export const AssetsTable = ({ assets }: { assets: Asset[] }) => {
       );
     } else if (asset instanceof Deposit) {
       return (
-        <TableRow key={asset.id} hover>
+        <TableRow key={asset.isin} hover onClick={() => goToAsset(asset.isin)}>
           <TableCell
             sx={{
               color: asset.getResultColor(),
@@ -86,7 +92,7 @@ export const AssetsTable = ({ assets }: { assets: Asset[] }) => {
       );
     } else if (asset instanceof Cryptocurrency) {
       return (
-        <TableRow key={asset.id} hover>
+        <TableRow key={asset.isin} hover onClick={() => goToAsset(asset.isin)}>
           <TableCell
             sx={{
               color: asset.getResultColor(),
