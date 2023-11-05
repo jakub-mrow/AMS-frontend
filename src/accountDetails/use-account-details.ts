@@ -12,6 +12,7 @@ import { Severity } from "../snackbar/snackbar-context.ts";
 import { Asset } from "./assets-mock.ts";
 import AuthContext from "../auth/auth-context.ts";
 import { Dayjs } from "dayjs";
+import { AccountPreferences, DEFAULT_ACCOUNT_PREFERENCES } from "./types.ts";
 
 export enum DialogType {
   TRANSACTION,
@@ -34,18 +35,34 @@ export const useAccountDetails = () => {
   const [isAccountLoading, setIsAccountLoading] = useState(false);
   const [isTransactionsLoading, setIsTransactionsLoading] = useState(false);
   const [isAssetsLoading, setIsAssetsLoading] = useState(false);
+  const [isAccountPreferencesLoading, setIsAccountPreferencesLoading] =
+    useState(false);
   const isLoading = useMemo(() => {
-    return isAccountLoading || isTransactionsLoading || isAssetsLoading;
-  }, [isAccountLoading, isTransactionsLoading, isAssetsLoading]);
+    return (
+      isAccountLoading ||
+      isTransactionsLoading ||
+      isAssetsLoading ||
+      isAccountPreferencesLoading
+    );
+  }, [
+    isAccountLoading,
+    isTransactionsLoading,
+    isAssetsLoading,
+    isAccountPreferencesLoading,
+  ]);
   const [account, setAccount] = useState<Account | null>(null);
   const [accountTransactions, setAccountTransactions] = useState<
     AccountTransaction[]
   >([]);
   const [assets, setAssets] = useState<Asset[]>([]);
+  const [accountPreferences, setAccountPreferences] =
+    useState<AccountPreferences>(DEFAULT_ACCOUNT_PREFERENCES);
   const [dialogType, setDialogType] = useState<DialogType>(
     DialogType.TRANSACTION,
   );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAccountPreferencesDialogOpen, setIsAccountPreferencesDialogOpen] =
+    useState(false);
 
   const openDialog = useCallback((type: DialogType) => {
     setDialogType(type);
@@ -60,6 +77,7 @@ export const useAccountDetails = () => {
     setIsAccountLoading(true);
     setIsTransactionsLoading(true);
     setIsAssetsLoading(true);
+    setIsAccountPreferencesLoading(true);
     if (!id) {
       return;
     }
@@ -92,6 +110,18 @@ export const useAccountDetails = () => {
       .then((data) => {
         setAssets(data);
         setIsAssetsLoading(false);
+      })
+      .catch((error) => {
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+          navigate("/accounts", { replace: true });
+        }
+      });
+    accountDetailsService
+      .fetchAccountPreferences(Number(id))
+      .then((data) => {
+        setAccountPreferences(data);
+        setIsAccountPreferencesLoading(false);
       })
       .catch((error) => {
         if (error instanceof Error) {
@@ -136,10 +166,25 @@ export const useAccountDetails = () => {
     }
   };
 
+  const onConfirmPreferences = (accountPreferences: AccountPreferences) => {
+    if (!account) {
+      return;
+    }
+    accountDetailsService
+      .updateAccountPreferences(account.id, accountPreferences)
+      .then(() => refreshAccountData())
+      .catch((error) => {
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+        }
+      });
+  };
+
   return {
     account,
     accountTransactions,
     assets,
+    accountPreferences,
     isLoading,
     openDialog,
     closeDialog,
@@ -147,5 +192,10 @@ export const useAccountDetails = () => {
     isDialogOpen,
     onConfirmDialog,
     onDeleteTransaction,
+    isAccountPreferencesDialogOpen,
+    openAccountPreferencesDialog: () => setIsAccountPreferencesDialogOpen(true),
+    closeAccountPreferencesDialog: () =>
+      setIsAccountPreferencesDialogOpen(false),
+    onConfirmPreferences,
   };
 };

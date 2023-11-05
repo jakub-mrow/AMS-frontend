@@ -9,6 +9,7 @@ import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
 import { AssetTypes } from "./assets-mock.ts";
 import { TransactionsDesktop } from "./TransactionsDesktop.tsx";
 import { AssetsDesktop } from "./AssetsDesktop.tsx";
+import { AccountPreferencesDialog } from "./AccountPreferencesDialog.tsx";
 
 enum DetailsTabs {
   STOCKS,
@@ -41,6 +42,7 @@ export const AccountDetailsDesktop = () => {
     account,
     accountTransactions,
     assets,
+    accountPreferences,
     isLoading,
     isDialogOpen,
     openDialog,
@@ -48,6 +50,10 @@ export const AccountDetailsDesktop = () => {
     onConfirmDialog,
     dialogType,
     onDeleteTransaction,
+    isAccountPreferencesDialogOpen,
+    openAccountPreferencesDialog,
+    closeAccountPreferencesDialog,
+    onConfirmPreferences,
   } = useAccountDetails();
   const [detailsTab, setDetailsTab] = useState(DetailsTabs.STOCKS);
 
@@ -106,7 +112,12 @@ export const AccountDetailsDesktop = () => {
           elevation={4}
           sx={{ flex: 1, display: "flex", flexDirection: "column" }}
         >
-          <Summary isLoading={isLoading} account={account} />
+          <Summary
+            isLoading={isLoading}
+            account={account}
+            showOpenAccountPreferencesDialog={true}
+            openAccountPreferencesDialog={openAccountPreferencesDialog}
+          />
         </Paper>
       </Container>
       <AccountDetailsDialog
@@ -114,6 +125,12 @@ export const AccountDetailsDesktop = () => {
         onClose={closeDialog}
         onConfirm={onConfirmDialog}
         type={dialogType}
+      />
+      <AccountPreferencesDialog
+        isOpen={isAccountPreferencesDialogOpen}
+        onClose={closeAccountPreferencesDialog}
+        onConfirm={onConfirmPreferences}
+        currentPreferences={accountPreferences}
       />
     </>
   );

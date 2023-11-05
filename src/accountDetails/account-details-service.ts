@@ -5,6 +5,7 @@ import {
 } from "../accounts/types.ts";
 import { Asset, assets } from "./assets-mock.ts";
 import { Dayjs } from "dayjs";
+import { AccountPreferences } from "./types.ts";
 
 export type AccountInput = {
   name: string;
@@ -20,6 +21,20 @@ type AccountTransactionApi = {
   amount: number;
   currency: string;
   date: string;
+};
+
+type AccountPreferencesDto = {
+  base_currency: string;
+  tax_currency: string;
+};
+
+const fromDto = (
+  accountPreference: AccountPreferencesDto,
+): AccountPreferences => {
+  return {
+    baseCurrency: accountPreference.base_currency,
+    taxCurrency: accountPreference.tax_currency,
+  };
 };
 
 export class AccountsDetailsService {
@@ -111,5 +126,46 @@ export class AccountsDetailsService {
         resolve(assets);
       }, 1000);
     });
+  }
+
+  async fetchAccountPreferences(id: number): Promise<AccountPreferences> {
+    const response = await fetch(
+      `${this.apiUrl}/api/accounts/${id}/get_preferences`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      },
+    );
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to fetch account preferences");
+    }
+    const accountPreferencesDto: AccountPreferencesDto = await response.json();
+    return fromDto(accountPreferencesDto);
+  }
+
+  async updateAccountPreferences(
+    id: number,
+    accountPreferences: AccountPreferences,
+  ) {
+    const response = await fetch(
+      `${this.apiUrl}/api/accounts/${id}/set_preferences`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.token}`,
+        },
+        body: JSON.stringify({
+          base_currency: accountPreferences.baseCurrency,
+          tax_currency: accountPreferences.taxCurrency,
+        }),
+      },
+    );
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to update account preferences");
+    }
   }
 }

@@ -19,6 +19,7 @@ import { AccountDetailsDialog } from "./AccountDetailsDialog.tsx";
 import { Summary } from "./Summary.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { Loading } from "./Loading.tsx";
+import { AccountPreferencesDialog } from "./AccountPreferencesDialog.tsx";
 
 enum MobilePage {
   ASSETS,
@@ -37,6 +38,7 @@ export const AccountDetailsMobile = () => {
     account,
     accountTransactions,
     assets,
+    accountPreferences,
     isLoading,
     isDialogOpen,
     openDialog,
@@ -44,6 +46,10 @@ export const AccountDetailsMobile = () => {
     onConfirmDialog,
     dialogType,
     onDeleteTransaction,
+    isAccountPreferencesDialogOpen,
+    openAccountPreferencesDialog,
+    closeAccountPreferencesDialog,
+    onConfirmPreferences,
   } = useAccountDetails();
 
   const [mobilePage, setMobilePage] = useState(MobilePage.ASSETS);
@@ -62,7 +68,7 @@ export const AccountDetailsMobile = () => {
     {
       value: MobilePage.SUMMARY,
       icon: <Settings />,
-      onClick: () => openDialog(DialogType.TRANSACTION),
+      onClick: openAccountPreferencesDialog,
     },
   ];
 
@@ -83,7 +89,12 @@ export const AccountDetailsMobile = () => {
         />
       )}
       {mobilePage === MobilePage.SUMMARY && (
-        <Summary isLoading={isLoading} account={account} />
+        <Summary
+          isLoading={isLoading}
+          account={account}
+          showOpenAccountPreferencesDialog={false}
+          openAccountPreferencesDialog={openAccountPreferencesDialog}
+        />
       )}
       <BottomNavigation
         showLabels
@@ -102,6 +113,12 @@ export const AccountDetailsMobile = () => {
         onClose={closeDialog}
         onConfirm={onConfirmDialog}
         type={dialogType}
+      />
+      <AccountPreferencesDialog
+        isOpen={isAccountPreferencesDialogOpen}
+        onClose={closeAccountPreferencesDialog}
+        onConfirm={onConfirmPreferences}
+        currentPreferences={accountPreferences}
       />
       {fabs.map((fab) => (
         <Zoom
