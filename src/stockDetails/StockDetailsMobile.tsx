@@ -10,7 +10,7 @@ import { Add, Equalizer, FormatListNumbered } from "@mui/icons-material";
 import { Transactions } from "./Transactions.tsx";
 import { Summary } from "./Summary.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
-import { Loading } from "./Loading.tsx";
+import { Loading } from "../util/Loading.tsx";
 import { StocksDialog } from "./StocksDialog.tsx";
 
 enum MobilePage {

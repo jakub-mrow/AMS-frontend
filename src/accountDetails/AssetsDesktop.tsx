@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from "@mui/material";
 import { AssetsTable } from "./AssetsTable.tsx";
-import { Loading } from "./Loading.tsx";
+import { Loading } from "../util/Loading.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
 import { DetailsTabs } from "./AccountDetailsDesktop.tsx";

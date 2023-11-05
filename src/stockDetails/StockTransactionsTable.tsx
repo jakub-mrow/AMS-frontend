@@ -12,7 +12,7 @@ import {
 import { Delete } from "@mui/icons-material";
 import { ChangeEvent, useState } from "react";
 import { ConfirmationDialog } from "../dialog/ConfirmationDialog.tsx";
-import { Loading } from "./Loading.tsx";
+import { Loading } from "../util/Loading.tsx";
 import { getColor, getName, getSign } from "./transactions-util.ts";
 import { AccountTransaction } from "../accounts/types.ts";
 

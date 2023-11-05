@@ -1,5 +1,5 @@
 import { DialogType, useStockDetails } from "./use-stock-details.ts";
-import { Loading } from "./Loading.tsx";
+import { Loading } from "../util/Loading.tsx";
 import { Container, Paper } from "@mui/material";
 import { Summary } from "./Summary.tsx";
 import { TransactionsDesktop } from "./TransactionsDesktop.tsx";

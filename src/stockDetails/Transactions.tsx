@@ -3,7 +3,7 @@ import { AccountTransaction } from "../accounts/types.ts";
 import { ConfirmationDialog } from "../dialog/ConfirmationDialog.tsx";
 import { useState } from "react";
 import { VerticalFlexContainer } from "../util/VerticalFlexContainer.tsx";
-import { Loading } from "./Loading.tsx";
+import { Loading } from "../util/Loading.tsx";
 
 export const Transactions = ({
   transactions,

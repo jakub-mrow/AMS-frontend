@@ -2,7 +2,7 @@ import { Tab, Tabs } from "@mui/material";
 import { AssetsList } from "./AssetsList.tsx";
 import { useState } from "react";
 import { VerticalFlexContainer } from "../util/VerticalFlexContainer.tsx";
-import { Loading } from "./Loading.tsx";
+import { Loading } from "../util/Loading.tsx";
 import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
 import { Asset, Bond, Cryptocurrency, Deposit, Stock } from "./types.ts";
 

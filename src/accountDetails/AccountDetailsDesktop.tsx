@@ -1,5 +1,5 @@
 import { DialogType, useAccountDetails } from "./use-account-details.ts";
-import { Loading } from "./Loading.tsx";
+import { Loading } from "../util/Loading.tsx";
 import { AccountTransactionDialog } from "./AccountTransactionDialog.tsx";
 import { Container, Paper, Tab, Tabs } from "@mui/material";
 import { Summary } from "./Summary.tsx";

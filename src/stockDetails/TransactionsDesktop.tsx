@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from "@mui/material";
 import { StockTransactionsTable } from "./StockTransactionsTable.tsx";
-import { Loading } from "./Loading.tsx";
+import { Loading } from "../util/Loading.tsx";
 import { AccountTransaction } from "../accounts/types.ts";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 

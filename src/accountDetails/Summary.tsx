@@ -1,7 +1,7 @@
 import { Account } from "../accounts/types.ts";
 import { Divider, IconButton, Typography } from "@mui/material";
 import { VerticalFlexContainer } from "../util/VerticalFlexContainer.tsx";
-import { Loading } from "./Loading.tsx";
+import { Loading } from "../util/Loading.tsx";
 import { Settings } from "@mui/icons-material";
 
 export const Summary = ({
