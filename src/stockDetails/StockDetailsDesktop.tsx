@@ -2,19 +2,18 @@ import { DialogType, useStockDetails } from "./use-stock-details.ts";
 import { Loading } from "../util/Loading.tsx";
 import { Container, Paper } from "@mui/material";
 import { AssetSummary } from "./AssetSummary.tsx";
-import { TransactionsDesktop } from "./TransactionsDesktop.tsx";
+import { AssetTransactionsDesktop } from "./AssetTransactionsDesktop.tsx";
 import { StocksDialog } from "./StocksDialog.tsx";
 
 export const StockDetailsDesktop = () => {
   const {
     stock,
-    stockTransactions,
+    assetTransactions,
     isLoading,
     isDialogOpen,
     openDialog,
     closeDialog,
     onConfirmStockDialog,
-    onDeleteTransaction,
   } = useStockDetails();
 
   if (!stock) {
@@ -36,11 +35,11 @@ export const StockDetailsDesktop = () => {
             minHeight: 0,
           }}
         >
-          <TransactionsDesktop
-            transactions={stockTransactions}
+          <AssetTransactionsDesktop
+            asset={stock}
+            transactions={assetTransactions}
             isLoading={isLoading}
             onAddTransactionClick={() => openDialog(DialogType.TRANSACTION)}
-            onDeleteTransactionClick={onDeleteTransaction}
           />
         </Paper>
         <Paper

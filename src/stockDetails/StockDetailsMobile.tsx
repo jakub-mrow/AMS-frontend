@@ -7,7 +7,7 @@ import {
 import { DialogType, useStockDetails } from "./use-stock-details.ts";
 import { useState } from "react";
 import { Add, Equalizer, FormatListNumbered } from "@mui/icons-material";
-import { Transactions } from "./Transactions.tsx";
+import { AssetTransactionsMobile } from "./AssetTransactionsMobile.tsx";
 import { AssetSummary } from "./AssetSummary.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { Loading } from "../util/Loading.tsx";
@@ -21,13 +21,12 @@ enum MobilePage {
 export const StockDetailsMobile = () => {
   const {
     stock,
-    stockTransactions,
+    assetTransactions,
     isLoading,
     isDialogOpen,
     openDialog,
     closeDialog,
     onConfirmStockDialog,
-    onDeleteTransaction,
   } = useStockDetails();
 
   const [mobilePage, setMobilePage] = useState(MobilePage.TRANSACTIONS);
@@ -39,10 +38,10 @@ export const StockDetailsMobile = () => {
   return (
     <VerticalFlexBox fullHeight sx={{ minHeight: 0 }}>
       {mobilePage === MobilePage.TRANSACTIONS && (
-        <Transactions
-          transactions={stockTransactions}
+        <AssetTransactionsMobile
+          asset={stock}
+          transactions={assetTransactions}
           isLoading={isLoading}
-          onDelete={onDeleteTransaction}
         />
       )}
       {mobilePage === MobilePage.SUMMARY && (

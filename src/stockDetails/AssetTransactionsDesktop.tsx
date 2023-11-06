@@ -1,19 +1,19 @@
 import { Box, Button, Typography } from "@mui/material";
-import { StockTransactionsTable } from "./StockTransactionsTable.tsx";
+import { AssetTransactionsTable } from "./AssetTransactionsTable.tsx";
 import { Loading } from "../util/Loading.tsx";
-import { AccountTransaction } from "../types.ts";
+import { Asset, AssetTransaction } from "../types.ts";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 
-export const TransactionsDesktop = ({
+export const AssetTransactionsDesktop = ({
+  asset,
   transactions,
   isLoading,
   onAddTransactionClick,
-  onDeleteTransactionClick,
 }: {
-  transactions: AccountTransaction[];
+  asset: Asset;
+  transactions: AssetTransaction[];
   isLoading: boolean;
   onAddTransactionClick: () => void;
-  onDeleteTransactionClick: (transaction: AccountTransaction) => void;
 }) => {
   if (isLoading) {
     return <Loading />;
@@ -47,9 +47,9 @@ export const TransactionsDesktop = ({
           Add transaction
         </Button>
       </Box>
-      <StockTransactionsTable
+      <AssetTransactionsTable
+        asset={asset}
         transactions={transactions}
-        onDeleteTransaction={onDeleteTransactionClick}
         isLoading={isLoading}
       />
     </>

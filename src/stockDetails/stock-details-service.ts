@@ -1,17 +1,30 @@
-import { AccountTransaction, AccountTransactionType, Asset } from "../types.ts";
+import { Asset, AssetTransaction, AssetTransactionType } from "../types.ts";
 import { Dayjs } from "dayjs";
 
 type ErrorResponse = {
   error?: string;
 };
 
-type AccountTransactionApi = {
+type AssetTransactionDto = {
   id: number;
-  type: AccountTransactionType;
-  amount: number;
-  currency: string;
+  isin: string;
+  quantity: number;
+  price: number;
+  transaction_type: AssetTransactionType;
   date: string;
 };
+
+const fromAssetTransactionDto = (
+  transaction: AssetTransactionDto,
+): AssetTransaction =>
+  new AssetTransaction(
+    transaction.id,
+    transaction.isin,
+    transaction.quantity,
+    transaction.price,
+    transaction.transaction_type,
+    new Date(transaction.date),
+  );
 
 type AssetDto = {
   isin: string;
@@ -60,9 +73,12 @@ export class StockDetailsService {
     return fromAssetDto(data);
   }
 
-  async fetchAccountTransactions(id: number): Promise<AccountTransaction[]> {
+  async fetchAssetTransactions(
+    accountId: number,
+    isin: string,
+  ): Promise<AssetTransaction[]> {
     const response = await fetch(
-      `${this.apiUrl}/api/accounts/${id}/transactions`,
+      `${this.apiUrl}/api/stock/${accountId}/transaction`,
       {
         headers: {
           Authorization: `Bearer ${this.token}`,
@@ -73,11 +89,10 @@ export class StockDetailsService {
       const data: ErrorResponse = await response.json();
       throw new Error(data.error ?? "Failed to fetch transactions");
     }
-    const data: AccountTransactionApi[] = await response.json();
-    return data.map((transaction) => ({
-      ...transaction,
-      date: new Date(transaction.date),
-    }));
+    const data: AssetTransactionDto[] = await response.json();
+    return data
+      .filter((transaction) => transaction.isin === isin) //TODO remove after adding endpoint
+      .map(fromAssetTransactionDto);
   }
 
   async deleteAccountTransaction(id: number, transactionId: number) {

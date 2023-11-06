@@ -1,3 +1,5 @@
+import { exhaustiveGuard } from "./util/exhaustive-switch.ts";
+
 export type Account = {
   id: number;
   userId: number;
@@ -52,5 +54,54 @@ export class Asset {
       return "red";
     }
     return "black";
+  }
+}
+
+export enum AssetTransactionType {
+  BUY = "buy",
+  SELL = "sell",
+}
+
+export class AssetTransaction {
+  constructor(
+    public id: number,
+    public isin: string,
+    public quantity: number,
+    public price: number,
+    public type: AssetTransactionType,
+    public date: Date,
+  ) {}
+
+  getName(): string {
+    switch (this.type) {
+      case AssetTransactionType.BUY:
+        return "Buy";
+      case AssetTransactionType.SELL:
+        return "Sell";
+      default:
+        return exhaustiveGuard(this.type);
+    }
+  }
+
+  getSign(): string {
+    switch (this.type) {
+      case AssetTransactionType.BUY:
+        return "+";
+      case AssetTransactionType.SELL:
+        return "-";
+      default:
+        return exhaustiveGuard(this.type);
+    }
+  }
+
+  getColor(): string {
+    switch (this.type) {
+      case AssetTransactionType.BUY:
+        return "green";
+      case AssetTransactionType.SELL:
+        return "red";
+      default:
+        return exhaustiveGuard(this.type);
+    }
   }
 }

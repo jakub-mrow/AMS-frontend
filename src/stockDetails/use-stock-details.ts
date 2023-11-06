@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { AccountTransaction, Asset } from "../types.ts";
+import { Asset, AssetTransaction } from "../types.ts";
 import { apiUrl } from "../config.ts";
 import { StockDetailsService } from "./stock-details-service.ts";
 import { useSnackbar } from "../snackbar/use-snackbar.ts";
@@ -14,7 +14,7 @@ export enum DialogType {
 
 export const useStockDetails = () => {
   const { token } = useContext(AuthContext);
-  const accountDetailsService = useMemo(() => {
+  const stockDetailsService = useMemo(() => {
     return new StockDetailsService(apiUrl, token);
   }, [token]);
   const { id: idStr, isin } = useParams<{
@@ -35,8 +35,8 @@ export const useStockDetails = () => {
     return isStockLoading || isTransactionsLoading;
   }, [isStockLoading, isTransactionsLoading]);
   const [stock, setStock] = useState<Asset | null>(null);
-  const [accountTransactions, setAccountTransactions] = useState<
-    AccountTransaction[]
+  const [assetTransactions, setAssetTransactions] = useState<
+    AssetTransaction[]
   >([]);
   const [dialogType, setDialogType] = useState<DialogType>(
     DialogType.TRANSACTION,
@@ -62,24 +62,24 @@ export const useStockDetails = () => {
     const handleError = (error: unknown) => {
       if (error instanceof Error) {
         alert(error.message, Severity.ERROR);
-        navigate("/accounts", { replace: true });
+        navigate(`/accounts/${id}`, { replace: true });
       }
     };
-    accountDetailsService
+    stockDetailsService
       .fetchStockBalance(id, isin)
       .then((data) => {
         setStock(data);
         setIsStockLoading(false);
       })
       .catch(handleError);
-    accountDetailsService
-      .fetchAccountTransactions(Number(id))
+    stockDetailsService
+      .fetchAssetTransactions(Number(id), isin)
       .then((data) => {
-        setAccountTransactions(data);
+        setAssetTransactions(data);
         setIsTransactionsLoading(false);
       })
       .catch(handleError);
-  }, [id, alert, accountDetailsService, navigate]);
+  }, [id, isin, alert, stockDetailsService, navigate]);
 
   useEffect(() => {
     refreshStockData();
@@ -94,7 +94,7 @@ export const useStockDetails = () => {
       return false;
     }
     try {
-      await accountDetailsService.buyStocks(
+      await stockDetailsService.buyStocks(
         id,
         "PKN", //TODO
         "WAR", //TODO
@@ -116,27 +116,13 @@ export const useStockDetails = () => {
     return dialogOpen && dialogType === type;
   };
 
-  const onDeleteTransaction = (transaction: AccountTransaction) => {
-    if (id) {
-      accountDetailsService
-        .deleteAccountTransaction(id, transaction.id)
-        .then(() => refreshStockData())
-        .catch((error) => {
-          if (error instanceof Error) {
-            alert(error.message, Severity.ERROR);
-          }
-        });
-    }
-  };
-
   return {
     stock,
-    stockTransactions: accountTransactions,
+    assetTransactions,
     isLoading,
     openDialog,
     closeDialog,
     isDialogOpen,
     onConfirmStockDialog,
-    onDeleteTransaction,
   };
 };
