@@ -11,7 +11,7 @@ import {
   RadioGroup,
   TextField,
 } from "@mui/material";
-import { AccountTransactionType } from "../accounts/types.ts";
+import { AccountTransactionType } from "../types.ts";
 import { Controller, useForm } from "react-hook-form";
 import { isValidAmount, isValidCurrency } from "../util/validations.ts";
 import { DatePicker } from "@mui/x-date-pickers";

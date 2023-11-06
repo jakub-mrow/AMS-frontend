@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Account, AccountTransaction } from "../accounts/types.ts";
+import { Account, AccountTransaction } from "../types.ts";
 import { apiUrl } from "../config.ts";
 import { StockDetailsService } from "./stock-details-service.ts";
 import { useSnackbar } from "../snackbar/use-snackbar.ts";

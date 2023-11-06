@@ -1,4 +1,4 @@
-import { AccountTransaction } from "../accounts/types.ts";
+import { AccountTransaction } from "../types.ts";
 import {
   Box,
   Divider,

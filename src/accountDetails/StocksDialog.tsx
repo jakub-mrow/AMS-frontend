@@ -13,7 +13,7 @@ import { Controller, useForm } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { useMemo } from "react";
-import { Stock } from "./types.ts";
+import { Asset } from "../types.ts";
 
 interface StockTransactionFormData {
   ticker: string | null;
@@ -29,7 +29,7 @@ export const StocksDialog = ({
   onClose,
   onConfirm,
 }: {
-  stocks: Stock[];
+  stocks: Asset[];
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (

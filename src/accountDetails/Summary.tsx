@@ -1,4 +1,4 @@
-import { Account } from "../accounts/types.ts";
+import { Account } from "../types.ts";
 import { Divider, IconButton, Typography } from "@mui/material";
 import { VerticalFlexContainer } from "../util/VerticalFlexContainer.tsx";
 import { Loading } from "../util/Loading.tsx";

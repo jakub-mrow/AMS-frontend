@@ -4,7 +4,7 @@ import { Loading } from "../util/Loading.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
 import { DetailsTabs } from "./AccountDetailsDesktop.tsx";
-import { Asset } from "./types.ts";
+import { Asset } from "../types.ts";
 
 const getTypeName = (type: DetailsTabs) => {
   switch (type) {

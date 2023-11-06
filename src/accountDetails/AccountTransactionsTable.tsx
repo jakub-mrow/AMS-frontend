@@ -9,7 +9,7 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
-import { AccountTransaction } from "../accounts/types.ts";
+import { AccountTransaction } from "../types.ts";
 import { Delete } from "@mui/icons-material";
 import { ChangeEvent, useState } from "react";
 import { ConfirmationDialog } from "../dialog/ConfirmationDialog.tsx";

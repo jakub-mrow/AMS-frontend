@@ -1,16 +1,11 @@
 import {
   Account,
+  AccountPreferences,
   AccountTransaction,
   AccountTransactionType,
-} from "../accounts/types.ts";
+  Asset,
+} from "../types.ts";
 import { Dayjs } from "dayjs";
-import {
-  AccountPreferences,
-  Bond,
-  Cryptocurrency,
-  Deposit,
-  Stock,
-} from "./types.ts";
 
 export type AccountInput = {
   name: string;
@@ -28,7 +23,7 @@ type AccountTransactionApi = {
   date: string;
 };
 
-type StockDto = {
+type AssetDto = {
   isin: string;
   name: string;
   ticker: string;
@@ -39,8 +34,8 @@ type StockDto = {
   result: number;
 };
 
-const fromStockDto = (stock: StockDto): Stock => {
-  return new Stock(
+const fromAssetDto = (stock: AssetDto): Asset => {
+  return new Asset(
     stock.isin,
     stock.name,
     stock.ticker,
@@ -149,7 +144,7 @@ export class AccountsDetailsService {
     }
   }
 
-  async fetchStocks(accountId: number): Promise<Stock[]> {
+  async fetchStocks(accountId: number): Promise<Asset[]> {
     const response = await fetch(
       `${this.apiUrl}/api/stock_balances/${accountId}/list_dto`,
       {
@@ -162,23 +157,23 @@ export class AccountsDetailsService {
       const data: ErrorResponse = await response.json();
       throw new Error(data.error ?? "Failed to fetch stocks");
     }
-    const stocks: StockDto[] = await response.json();
-    return stocks.map(fromStockDto);
+    const stocks: AssetDto[] = await response.json();
+    return stocks.map(fromAssetDto);
   }
 
-  async fetchBonds(_accountId: number): Promise<Bond[]> {
+  async fetchBonds(_accountId: number): Promise<Asset[]> {
     return new Promise((resolve) => {
       resolve([]);
     });
   }
 
-  async fetchDeposits(_accountId: number): Promise<Deposit[]> {
+  async fetchDeposits(_accountId: number): Promise<Asset[]> {
     return new Promise((resolve) => {
       resolve([]);
     });
   }
 
-  async fetchCryptocurrencies(_accountId: number): Promise<Cryptocurrency[]> {
+  async fetchCryptocurrencies(_accountId: number): Promise<Asset[]> {
     return new Promise((resolve) => {
       resolve([]);
     });

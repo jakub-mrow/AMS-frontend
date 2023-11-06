@@ -3,7 +3,7 @@ import { AssetsListItem } from "./AssetsListItem.tsx";
 import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { AssetsType } from "./AssetsListWithTabs.tsx";
-import { Asset } from "./types.ts";
+import { Asset } from "../types.ts";
 
 export const AssetsList = ({
   assets,
@@ -48,9 +48,9 @@ export const AssetsList = ({
     <List sx={{ flex: 1, overflowY: "auto" }}>
       {assets.map((asset) => (
         <AssetsListItem
-          key={asset.getKey()}
+          key={asset.isin}
           asset={asset}
-          goToAsset={() => goToAsset(asset.getKey())}
+          goToAsset={() => goToAsset(asset.isin)}
         />
       ))}
     </List>

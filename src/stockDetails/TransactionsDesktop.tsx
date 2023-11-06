@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
 import { StockTransactionsTable } from "./StockTransactionsTable.tsx";
 import { Loading } from "../util/Loading.tsx";
-import { AccountTransaction } from "../accounts/types.ts";
+import { AccountTransaction } from "../types.ts";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 
 export const TransactionsDesktop = ({

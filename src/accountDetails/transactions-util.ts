@@ -1,4 +1,4 @@
-import { AccountTransactionType } from "../accounts/types.ts";
+import { AccountTransactionType } from "../types.ts";
 import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
 
 export const getName = (type: AccountTransactionType) => {

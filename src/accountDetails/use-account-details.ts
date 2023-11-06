@@ -2,23 +2,18 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   Account,
+  AccountPreferences,
   AccountTransaction,
   AccountTransactionType,
-} from "../accounts/types.ts";
+  Asset,
+  DEFAULT_ACCOUNT_PREFERENCES,
+} from "../types.ts";
 import { apiUrl } from "../config.ts";
 import { AccountsDetailsService } from "./account-details-service.ts";
 import { useSnackbar } from "../snackbar/use-snackbar.ts";
 import { Severity } from "../snackbar/snackbar-context.ts";
 import AuthContext from "../auth/auth-context.ts";
 import { Dayjs } from "dayjs";
-import {
-  AccountPreferences,
-  Bond,
-  Cryptocurrency,
-  DEFAULT_ACCOUNT_PREFERENCES,
-  Deposit,
-  Stock,
-} from "./types.ts";
 
 export enum DialogType {
   TRANSACTION,
@@ -73,12 +68,10 @@ export const useAccountDetails = () => {
   const [accountTransactions, setAccountTransactions] = useState<
     AccountTransaction[]
   >([]);
-  const [stocks, setStocks] = useState<Stock[]>([]);
-  const [bonds, setBonds] = useState<Bond[]>([]);
-  const [deposits, setDeposits] = useState<Deposit[]>([]);
-  const [cryptocurrencies, setCryptocurrencies] = useState<Cryptocurrency[]>(
-    [],
-  );
+  const [stocks, setStocks] = useState<Asset[]>([]);
+  const [bonds, setBonds] = useState<Asset[]>([]);
+  const [deposits, setDeposits] = useState<Asset[]>([]);
+  const [cryptocurrencies, setCryptocurrencies] = useState<Asset[]>([]);
   const [accountPreferences, setAccountPreferences] =
     useState<AccountPreferences>(DEFAULT_ACCOUNT_PREFERENCES);
   const [dialogType, setDialogType] = useState<DialogType>(

@@ -2,7 +2,7 @@ import {
   Account,
   AccountTransaction,
   AccountTransactionType,
-} from "../accounts/types.ts";
+} from "../types.ts";
 import { Dayjs } from "dayjs";
 
 type ErrorResponse = {

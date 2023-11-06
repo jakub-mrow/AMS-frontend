@@ -8,7 +8,7 @@ import { useState } from "react";
 import { TransactionsDesktop } from "./TransactionsDesktop.tsx";
 import { AssetsDesktop } from "./AssetsDesktop.tsx";
 import { AccountPreferencesDialog } from "./AccountPreferencesDialog.tsx";
-import { Asset } from "./types.ts";
+import { Asset } from "../types.ts";
 import { StocksDialog } from "./StocksDialog.tsx";
 
 export enum DetailsTabs {

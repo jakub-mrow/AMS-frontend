@@ -1,4 +1,4 @@
-import { AccountTransaction } from "../accounts/types.ts";
+import { AccountTransaction } from "../types.ts";
 import { List, Typography } from "@mui/material";
 import { TransactionsListItem } from "./TransactionsListItem.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";

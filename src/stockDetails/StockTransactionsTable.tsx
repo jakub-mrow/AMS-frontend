@@ -14,7 +14,7 @@ import { ChangeEvent, useState } from "react";
 import { ConfirmationDialog } from "../dialog/ConfirmationDialog.tsx";
 import { Loading } from "../util/Loading.tsx";
 import { getColor, getName, getSign } from "./transactions-util.ts";
-import { AccountTransaction } from "../accounts/types.ts";
+import { AccountTransaction } from "../types.ts";
 
 export const StockTransactionsTable = ({
   transactions,

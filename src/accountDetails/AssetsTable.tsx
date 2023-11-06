@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { ChangeEvent, useState } from "react";
-import { Asset, Bond, Cryptocurrency, Deposit, Stock } from "./types";
+import { Asset } from "../types.ts";
 
 export const AssetsTable = ({
   assets,
@@ -27,83 +27,31 @@ export const AssetsTable = ({
     setPage(0);
   };
 
-  const getTableHeader = () => {
-    if (assets[0] instanceof Stock) {
-      return (
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Exchange</TableCell>
-            <TableCell>Value</TableCell>
-            <TableCell>Result</TableCell>
-          </TableRow>
-        </TableHead>
-      );
-    } else {
-      return (
-        <TableHead>
-          <TableRow>
-            <TableCell>Result</TableCell>
-          </TableRow>
-        </TableHead>
-      );
-    }
-  };
+  const getTableHeader = () => (
+    <TableHead>
+      <TableRow>
+        <TableCell>Name</TableCell>
+        <TableCell>Exchange</TableCell>
+        <TableCell>Value</TableCell>
+        <TableCell>Result</TableCell>
+      </TableRow>
+    </TableHead>
+  );
 
-  const getTableRow = (asset: Asset) => {
-    if (asset instanceof Stock) {
-      return (
-        <TableRow key={asset.isin} hover onClick={() => goToAsset(asset.isin)}>
-          <TableCell>{asset.name}</TableCell>
-          <TableCell>{asset.exchange}</TableCell>
-          <TableCell>{`${asset.value} ${asset.currency}`}</TableCell>
-          <TableCell
-            sx={{
-              color: asset.getResultColor(),
-            }}
-          >
-            {`${asset.getResult()}%`}
-          </TableCell>
-        </TableRow>
-      );
-    } else if (asset instanceof Bond) {
-      return (
-        <TableRow key={asset.isin} hover onClick={() => goToAsset(asset.isin)}>
-          <TableCell
-            sx={{
-              color: asset.getResultColor(),
-            }}
-          >
-            {`${asset.result}%`}
-          </TableCell>
-        </TableRow>
-      );
-    } else if (asset instanceof Deposit) {
-      return (
-        <TableRow key={asset.isin} hover onClick={() => goToAsset(asset.isin)}>
-          <TableCell
-            sx={{
-              color: asset.getResultColor(),
-            }}
-          >
-            {`${asset.result}%`}
-          </TableCell>
-        </TableRow>
-      );
-    } else if (asset instanceof Cryptocurrency) {
-      return (
-        <TableRow key={asset.isin} hover onClick={() => goToAsset(asset.isin)}>
-          <TableCell
-            sx={{
-              color: asset.getResultColor(),
-            }}
-          >
-            {`${asset.result}%`}
-          </TableCell>
-        </TableRow>
-      );
-    }
-  };
+  const getTableRow = (asset: Asset) => (
+    <TableRow key={asset.isin} hover onClick={() => goToAsset(asset.isin)}>
+      <TableCell>{asset.name}</TableCell>
+      <TableCell>{asset.exchange}</TableCell>
+      <TableCell>{`${asset.value} ${asset.currency}`}</TableCell>
+      <TableCell
+        sx={{
+          color: asset.getResultColor(),
+        }}
+      >
+        {`${asset.result}%`}
+      </TableCell>
+    </TableRow>
+  );
 
   return (
     <>

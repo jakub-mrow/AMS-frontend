@@ -10,7 +10,7 @@ import {
 import useInput from "../util/use-input.ts";
 import { useEffect } from "react";
 
-import { Account } from "./types.ts";
+import { Account } from "../types.ts";
 
 export const UpdateAccountDialog = ({
   isOpen,
