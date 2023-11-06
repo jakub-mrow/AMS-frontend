@@ -37,7 +37,7 @@ const AppRoutes = () => {
         }
       />
       <Route
-        path="/accounts/:id/assets/:isin"
+        path="/accounts/:accountId/assets/:isin"
         element={
           <ProtectedRoute>
             <StockDetails />

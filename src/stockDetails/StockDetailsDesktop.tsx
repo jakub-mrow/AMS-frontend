@@ -1,16 +1,16 @@
-import { DialogType, useStockDetails } from "./use-stock-details.ts";
+import { useStockDetails } from "./use-stock-details.ts";
 import { Loading } from "../util/Loading.tsx";
 import { Container, Paper } from "@mui/material";
 import { AssetSummary } from "./AssetSummary.tsx";
 import { AssetTransactionsDesktop } from "./AssetTransactionsDesktop.tsx";
-import { StocksDialog } from "./StocksDialog.tsx";
+import { AssetTransactionDialog } from "./AssetTransactionDialog.tsx";
 
 export const StockDetailsDesktop = () => {
   const {
     stock,
     assetTransactions,
     isLoading,
-    isDialogOpen,
+    dialogOpen,
     openDialog,
     closeDialog,
     onConfirmStockDialog,
@@ -39,7 +39,7 @@ export const StockDetailsDesktop = () => {
             asset={stock}
             transactions={assetTransactions}
             isLoading={isLoading}
-            onAddTransactionClick={() => openDialog(DialogType.TRANSACTION)}
+            onAddTransactionClick={openDialog}
           />
         </Paper>
         <Paper
@@ -49,8 +49,8 @@ export const StockDetailsDesktop = () => {
           <AssetSummary isLoading={isLoading} stock={stock} />
         </Paper>
       </Container>
-      <StocksDialog
-        isOpen={isDialogOpen(DialogType.TRANSACTION)}
+      <AssetTransactionDialog
+        isOpen={dialogOpen}
         onClose={closeDialog}
         onConfirm={onConfirmStockDialog}
       />

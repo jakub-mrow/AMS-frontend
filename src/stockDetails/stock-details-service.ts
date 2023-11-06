@@ -110,16 +110,16 @@ export class StockDetailsService {
     }
   }
 
-  async buyStocks(
+  async addAssetTransaction(
     accountId: number,
-    ticker: string,
-    exchange: string,
+    isin: string,
     quantity: number,
     price: number,
+    transactionType: AssetTransactionType,
     date: Dayjs,
   ) {
     const response = await fetch(
-      `${this.apiUrl}/api/stock/${accountId}/transaction/buy`,
+      `${this.apiUrl}/api/stock/${accountId}/transaction`,
       {
         method: "POST",
         headers: {
@@ -127,17 +127,17 @@ export class StockDetailsService {
           Authorization: `Bearer ${this.token}`,
         },
         body: JSON.stringify({
-          ticker,
-          exchange_code: exchange,
+          isin,
           quantity,
           price,
+          transaction_type: transactionType,
           date,
         }),
       },
     );
     if (!response.ok) {
       const data: ErrorResponse = await response.json();
-      throw new Error(data.error ?? "Failed to add stock");
+      throw new Error(data.error ?? "Failed to add transaction");
     }
   }
 }

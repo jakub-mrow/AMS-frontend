@@ -5,32 +5,43 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
+  FormControlLabel,
   FormLabel,
+  Radio,
+  RadioGroup,
   TextField,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
+import { AssetTransactionType } from "../types.ts";
 
 interface StockTransactionFormData {
   quantity: number;
   price: number;
+  type: AssetTransactionType;
   date: Dayjs | null;
 }
 
-export const StocksDialog = ({
+export const AssetTransactionDialog = ({
   isOpen,
   onClose,
   onConfirm,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (quantity: number, price: number, date: Dayjs) => Promise<boolean>;
+  onConfirm: (
+    quantity: number,
+    price: number,
+    type: AssetTransactionType,
+    date: Dayjs,
+  ) => Promise<boolean>;
 }) => {
   const { control, handleSubmit, reset } = useForm<StockTransactionFormData>({
     defaultValues: {
       quantity: 0,
       price: 0,
+      type: AssetTransactionType.BUY,
       date: dayjs() as Dayjs | null,
     },
   });
@@ -43,12 +54,14 @@ export const StocksDialog = ({
     if (data.date === null) {
       return;
     }
-    onConfirm(data.quantity, data.price, data.date).then((success) => {
-      if (success) {
-        onClose();
-        reset();
-      }
-    });
+    onConfirm(data.quantity, data.price, data.type, data.date).then(
+      (success) => {
+        if (success) {
+          onClose();
+          reset();
+        }
+      },
+    );
   });
 
   return (
@@ -56,6 +69,28 @@ export const StocksDialog = ({
       <DialogTitle>Buy stocks</DialogTitle>
       <DialogContent>
         <form>
+          <FormControl>
+            <FormLabel id="type">Type</FormLabel>
+            <Controller
+              name="type"
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <RadioGroup {...field}>
+                  <FormControlLabel
+                    value={"buy"}
+                    control={<Radio />}
+                    label="Buy"
+                  />
+                  <FormControlLabel
+                    value={"sell"}
+                    control={<Radio />}
+                    label="Sell"
+                  />
+                </RadioGroup>
+              )}
+            />
+          </FormControl>
           <FormControl margin="normal" fullWidth variant="standard">
             <FormLabel id="date">Date</FormLabel>
             <Controller

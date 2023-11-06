@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Asset, AssetTransaction } from "../types.ts";
+import { Asset, AssetTransaction, AssetTransactionType } from "../types.ts";
 import { apiUrl } from "../config.ts";
 import { StockDetailsService } from "./stock-details-service.ts";
 import { useSnackbar } from "../snackbar/use-snackbar.ts";
@@ -8,25 +8,21 @@ import { Severity } from "../snackbar/snackbar-context.ts";
 import AuthContext from "../auth/auth-context.ts";
 import { Dayjs } from "dayjs";
 
-export enum DialogType {
-  TRANSACTION,
-}
-
 export const useStockDetails = () => {
   const { token } = useContext(AuthContext);
   const stockDetailsService = useMemo(() => {
     return new StockDetailsService(apiUrl, token);
   }, [token]);
-  const { id: idStr, isin } = useParams<{
-    id: string;
+  const { accountId: accountIdStr, isin } = useParams<{
+    accountId: string;
     isin: string;
   }>();
-  const id = useMemo(() => {
-    if (!idStr) {
+  const accountId = useMemo(() => {
+    if (!accountIdStr) {
       return null;
     }
-    return Number(idStr);
-  }, [idStr]);
+    return Number(accountIdStr);
+  }, [accountIdStr]);
   const alert = useSnackbar();
   const navigate = useNavigate();
   const [isStockLoading, setIsStockLoading] = useState(false);
@@ -38,48 +34,40 @@ export const useStockDetails = () => {
   const [assetTransactions, setAssetTransactions] = useState<
     AssetTransaction[]
   >([]);
-  const [dialogType, setDialogType] = useState<DialogType>(
-    DialogType.TRANSACTION,
-  );
   const [dialogOpen, setDialogOpen] = useState(false);
-
-  const openDialog = useCallback((type: DialogType) => {
-    setDialogType(type);
-    setDialogOpen(true);
-  }, []);
-
-  const closeDialog = useCallback(() => {
-    setDialogOpen(false);
-  }, []);
 
   const refreshStockData = useCallback(() => {
     setIsStockLoading(true);
     setIsTransactionsLoading(true);
-    if (!id || !isin) {
+    if (!accountId || !isin) {
       return;
     }
 
     const handleError = (error: unknown) => {
       if (error instanceof Error) {
         alert(error.message, Severity.ERROR);
-        navigate(`/accounts/${id}`, { replace: true });
+        navigate(`/accounts/${accountId}`, { replace: true });
       }
     };
     stockDetailsService
-      .fetchStockBalance(id, isin)
+      .fetchStockBalance(accountId, isin)
       .then((data) => {
+        if (data.quantity === 0) {
+          navigate(`/accounts/${accountId}`, { replace: true });
+          return;
+        }
         setStock(data);
         setIsStockLoading(false);
       })
       .catch(handleError);
     stockDetailsService
-      .fetchAssetTransactions(Number(id), isin)
+      .fetchAssetTransactions(Number(accountId), isin)
       .then((data) => {
         setAssetTransactions(data);
         setIsTransactionsLoading(false);
       })
       .catch(handleError);
-  }, [id, isin, alert, stockDetailsService, navigate]);
+  }, [accountId, isin, alert, stockDetailsService, navigate]);
 
   useEffect(() => {
     refreshStockData();
@@ -88,18 +76,19 @@ export const useStockDetails = () => {
   const onConfirmStockDialog = async (
     quantity: number,
     price: number,
+    type: AssetTransactionType,
     date: Dayjs,
   ) => {
-    if (!id || !stock) {
+    if (!accountId || !isin) {
       return false;
     }
     try {
-      await stockDetailsService.buyStocks(
-        id,
-        "PKN", //TODO
-        "WAR", //TODO
+      await stockDetailsService.addAssetTransaction(
+        accountId,
+        isin,
         quantity,
         price,
+        type,
         date,
       );
       refreshStockData();
@@ -112,17 +101,13 @@ export const useStockDetails = () => {
     return true;
   };
 
-  const isDialogOpen = (type: DialogType) => {
-    return dialogOpen && dialogType === type;
-  };
-
   return {
     stock,
     assetTransactions,
     isLoading,
-    openDialog,
-    closeDialog,
-    isDialogOpen,
+    openDialog: () => setDialogOpen(true),
+    closeDialog: () => setDialogOpen(false),
+    dialogOpen,
     onConfirmStockDialog,
   };
 };

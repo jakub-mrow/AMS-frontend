@@ -4,14 +4,14 @@ import {
   Fab,
   Zoom,
 } from "@mui/material";
-import { DialogType, useStockDetails } from "./use-stock-details.ts";
+import { useStockDetails } from "./use-stock-details.ts";
 import { useState } from "react";
 import { Add, Equalizer, FormatListNumbered } from "@mui/icons-material";
 import { AssetTransactionsMobile } from "./AssetTransactionsMobile.tsx";
 import { AssetSummary } from "./AssetSummary.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { Loading } from "../util/Loading.tsx";
-import { StocksDialog } from "./StocksDialog.tsx";
+import { AssetTransactionDialog } from "./AssetTransactionDialog.tsx";
 
 enum MobilePage {
   TRANSACTIONS,
@@ -23,7 +23,7 @@ export const StockDetailsMobile = () => {
     stock,
     assetTransactions,
     isLoading,
-    isDialogOpen,
+    dialogOpen,
     openDialog,
     closeDialog,
     onConfirmStockDialog,
@@ -58,8 +58,8 @@ export const StockDetailsMobile = () => {
         />
         <BottomNavigationAction label="Summary" icon={<Equalizer />} />
       </BottomNavigation>
-      <StocksDialog
-        isOpen={isDialogOpen(DialogType.TRANSACTION)}
+      <AssetTransactionDialog
+        isOpen={dialogOpen}
         onClose={closeDialog}
         onConfirm={onConfirmStockDialog}
       />
@@ -67,7 +67,7 @@ export const StockDetailsMobile = () => {
         <Fab
           color="primary"
           sx={{ position: "fixed", bottom: 68, right: 24 }}
-          onClick={() => openDialog(DialogType.TRANSACTION)}
+          onClick={openDialog}
         >
           <Add />
         </Fab>
