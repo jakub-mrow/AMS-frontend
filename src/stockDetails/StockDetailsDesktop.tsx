@@ -1,7 +1,7 @@
 import { DialogType, useStockDetails } from "./use-stock-details.ts";
 import { Loading } from "../util/Loading.tsx";
 import { Container, Paper } from "@mui/material";
-import { Summary } from "./Summary.tsx";
+import { AssetSummary } from "./AssetSummary.tsx";
 import { TransactionsDesktop } from "./TransactionsDesktop.tsx";
 import { StocksDialog } from "./StocksDialog.tsx";
 
@@ -47,7 +47,7 @@ export const StockDetailsDesktop = () => {
           elevation={4}
           sx={{ flex: 1, display: "flex", flexDirection: "column" }}
         >
-          <Summary isLoading={isLoading} stock={stock} />
+          <AssetSummary isLoading={isLoading} stock={stock} />
         </Paper>
       </Container>
       <StocksDialog

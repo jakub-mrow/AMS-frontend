@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { ChangeEvent, useState } from "react";
 import { Asset } from "../types.ts";
+import { displayCurrency } from "../util/display-currency.ts";
 
 export const AssetsTable = ({
   assets,
@@ -42,7 +43,7 @@ export const AssetsTable = ({
     <TableRow key={asset.isin} hover onClick={() => goToAsset(asset.isin)}>
       <TableCell>{asset.name}</TableCell>
       <TableCell>{asset.exchange}</TableCell>
-      <TableCell>{`${asset.value} ${asset.currency}`}</TableCell>
+      <TableCell>{displayCurrency(asset.value, asset.currency)}</TableCell>
       <TableCell
         sx={{
           color: asset.getResultColor(),

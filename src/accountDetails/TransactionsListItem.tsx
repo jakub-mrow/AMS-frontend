@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import { getColor, getName, getSign } from "./transactions-util.ts";
+import { displayCurrency } from "../util/display-currency.ts";
 
 export const TransactionsListItem = ({
   transaction,
@@ -34,9 +35,10 @@ export const TransactionsListItem = ({
         >
           <ListItemText primary={getName(transaction.type)} />
           <ListItemText
-            primary={`${getSign(transaction.type)}${transaction.amount} ${
-              transaction.currency
-            }`}
+            primary={`${getSign(transaction.type)} ${displayCurrency(
+              transaction.amount,
+              transaction.currency,
+            )}`}
             primaryTypographyProps={{
               align: "right",
               color: getColor(transaction.type),

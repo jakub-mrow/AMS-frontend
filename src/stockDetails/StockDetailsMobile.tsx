@@ -8,7 +8,7 @@ import { DialogType, useStockDetails } from "./use-stock-details.ts";
 import { useState } from "react";
 import { Add, Equalizer, FormatListNumbered } from "@mui/icons-material";
 import { Transactions } from "./Transactions.tsx";
-import { Summary } from "./Summary.tsx";
+import { AssetSummary } from "./AssetSummary.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { Loading } from "../util/Loading.tsx";
 import { StocksDialog } from "./StocksDialog.tsx";
@@ -46,7 +46,7 @@ export const StockDetailsMobile = () => {
         />
       )}
       {mobilePage === MobilePage.SUMMARY && (
-        <Summary isLoading={isLoading} stock={stock} />
+        <AssetSummary isLoading={isLoading} stock={stock} />
       )}
       <BottomNavigation
         showLabels

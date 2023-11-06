@@ -1,8 +1,4 @@
-import {
-  Account,
-  AccountTransaction,
-  AccountTransactionType,
-} from "../types.ts";
+import { AccountTransaction, AccountTransactionType, Asset } from "../types.ts";
 import { Dayjs } from "dayjs";
 
 type ErrorResponse = {
@@ -17,23 +13,51 @@ type AccountTransactionApi = {
   date: string;
 };
 
+type AssetDto = {
+  isin: string;
+  name: string;
+  ticker: string;
+  exchange_code: string;
+  quantity: number;
+  value: number;
+  currency: string;
+  result: number;
+};
+
+const fromAssetDto = (stock: AssetDto): Asset => {
+  return new Asset(
+    stock.isin,
+    stock.name,
+    stock.ticker,
+    stock.exchange_code,
+    stock.quantity,
+    stock.value,
+    stock.currency,
+    stock.result,
+  );
+};
+
 export class StockDetailsService {
   constructor(
     private readonly apiUrl: string,
     private readonly token: string,
   ) {}
 
-  async fetchAccount(id: number): Promise<Account> {
-    const response = await fetch(`${this.apiUrl}/api/accounts/${id}`, {
-      headers: {
-        Authorization: `Bearer ${this.token}`,
+  async fetchStockBalance(accountId: number, isin: string): Promise<Asset> {
+    const response = await fetch(
+      `${this.apiUrl}/api/stock_balances/${accountId}/${isin}/dto`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
       },
-    });
+    );
     if (!response.ok) {
       const data: ErrorResponse = await response.json();
-      throw new Error(data.error ?? "Failed to fetch account");
+      throw new Error(data.error ?? "Failed to fetch stock balance");
     }
-    return await response.json();
+    const data: AssetDto = await response.json();
+    return fromAssetDto(data);
   }
 
   async fetchAccountTransactions(id: number): Promise<AccountTransaction[]> {

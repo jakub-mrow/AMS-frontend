@@ -7,6 +7,7 @@ import {
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import { Asset } from "../types.ts";
+import { displayCurrency } from "../util/display-currency.ts";
 
 export const AssetsListItem = ({
   asset,
@@ -26,7 +27,7 @@ export const AssetsListItem = ({
       >
         <ListItemText primary={asset.name} secondary={asset.exchange} />
         <ListItemText
-          primary={`${asset.value} ${asset.currency}`}
+          primary={displayCurrency(asset.value, asset.currency)}
           primaryTypographyProps={{ align: "right" }}
           secondary={`${asset.result}%`}
           secondaryTypographyProps={{

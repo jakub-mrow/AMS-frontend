@@ -15,6 +15,7 @@ import { ChangeEvent, useState } from "react";
 import { ConfirmationDialog } from "../dialog/ConfirmationDialog.tsx";
 import { Loading } from "../util/Loading.tsx";
 import { getColor, getName, getSign } from "./transactions-util.ts";
+import { displayCurrency } from "../util/display-currency.ts";
 
 export const AccountsTransactionsTable = ({
   transactions,
@@ -72,9 +73,10 @@ export const AccountsTransactionsTable = ({
                 <TableCell>{getName(transaction.type)}</TableCell>
                 <TableCell
                   sx={{ color: getColor(transaction.type) }}
-                >{`${getSign(transaction.type)}${transaction.amount} ${
-                  transaction.currency
-                }`}</TableCell>
+                >{`${getSign(transaction.type)} ${displayCurrency(
+                  transaction.amount,
+                  transaction.currency,
+                )}`}</TableCell>
                 <TableCell>{transaction.date.toLocaleDateString()}</TableCell>
                 <TableCell>
                   <IconButton

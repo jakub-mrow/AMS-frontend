@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Account, AccountTransaction } from "../types.ts";
+import { AccountTransaction, Asset } from "../types.ts";
 import { apiUrl } from "../config.ts";
 import { StockDetailsService } from "./stock-details-service.ts";
 import { useSnackbar } from "../snackbar/use-snackbar.ts";
@@ -17,8 +17,9 @@ export const useStockDetails = () => {
   const accountDetailsService = useMemo(() => {
     return new StockDetailsService(apiUrl, token);
   }, [token]);
-  const { id: idStr } = useParams<{
+  const { id: idStr, isin } = useParams<{
     id: string;
+    isin: string;
   }>();
   const id = useMemo(() => {
     if (!idStr) {
@@ -28,12 +29,12 @@ export const useStockDetails = () => {
   }, [idStr]);
   const alert = useSnackbar();
   const navigate = useNavigate();
-  const [isAccountLoading, setIsAccountLoading] = useState(false);
+  const [isStockLoading, setIsStockLoading] = useState(false);
   const [isTransactionsLoading, setIsTransactionsLoading] = useState(false);
   const isLoading = useMemo(() => {
-    return isAccountLoading || isTransactionsLoading;
-  }, [isAccountLoading, isTransactionsLoading]);
-  const [account, setAccount] = useState<Account | null>(null);
+    return isStockLoading || isTransactionsLoading;
+  }, [isStockLoading, isTransactionsLoading]);
+  const [stock, setStock] = useState<Asset | null>(null);
   const [accountTransactions, setAccountTransactions] = useState<
     AccountTransaction[]
   >([]);
@@ -51,10 +52,10 @@ export const useStockDetails = () => {
     setDialogOpen(false);
   }, []);
 
-  const refreshAccountData = useCallback(() => {
-    setIsAccountLoading(true);
+  const refreshStockData = useCallback(() => {
+    setIsStockLoading(true);
     setIsTransactionsLoading(true);
-    if (!id) {
+    if (!id || !isin) {
       return;
     }
 
@@ -65,17 +66,12 @@ export const useStockDetails = () => {
       }
     };
     accountDetailsService
-      .fetchAccount(Number(id))
+      .fetchStockBalance(id, isin)
       .then((data) => {
-        setAccount(data);
-        setIsAccountLoading(false);
+        setStock(data);
+        setIsStockLoading(false);
       })
-      .catch((error) => {
-        if (error instanceof Error) {
-          alert(error.message, Severity.ERROR);
-          navigate("/accounts", { replace: true });
-        }
-      });
+      .catch(handleError);
     accountDetailsService
       .fetchAccountTransactions(Number(id))
       .then((data) => {
@@ -86,27 +82,27 @@ export const useStockDetails = () => {
   }, [id, alert, accountDetailsService, navigate]);
 
   useEffect(() => {
-    refreshAccountData();
-  }, [refreshAccountData]);
+    refreshStockData();
+  }, [refreshStockData]);
 
   const onConfirmStockDialog = async (
     quantity: number,
     price: number,
     date: Dayjs,
   ) => {
-    if (!account) {
+    if (!id || !stock) {
       return false;
     }
     try {
       await accountDetailsService.buyStocks(
-        account.id,
+        id,
         "PKN", //TODO
         "WAR", //TODO
         quantity,
         price,
         date,
       );
-      refreshAccountData();
+      refreshStockData();
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message, Severity.ERROR);
@@ -121,10 +117,10 @@ export const useStockDetails = () => {
   };
 
   const onDeleteTransaction = (transaction: AccountTransaction) => {
-    if (account) {
+    if (id) {
       accountDetailsService
-        .deleteAccountTransaction(account.id, transaction.id)
-        .then(() => refreshAccountData())
+        .deleteAccountTransaction(id, transaction.id)
+        .then(() => refreshStockData())
         .catch((error) => {
           if (error instanceof Error) {
             alert(error.message, Severity.ERROR);
@@ -134,7 +130,7 @@ export const useStockDetails = () => {
   };
 
   return {
-    stock: account,
+    stock,
     stockTransactions: accountTransactions,
     isLoading,
     openDialog,
