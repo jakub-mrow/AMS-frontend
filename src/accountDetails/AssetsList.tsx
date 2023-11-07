@@ -1,33 +1,33 @@
 import { List, Typography } from "@mui/material";
 import { AssetsListItem } from "./AssetsListItem.tsx";
 import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
-import { Asset, AssetTypes } from "./assets-mock.ts";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
-
-const getTypeName = (type: AssetTypes) => {
-  switch (type) {
-    case AssetTypes.STOCKS:
-      return "stocks";
-    case AssetTypes.BONDS:
-      return "bonds";
-    case AssetTypes.DEPOSITS:
-      return "deposits";
-    case AssetTypes.CRYPTO:
-      return "crypto";
-    default:
-      exhaustiveGuard(type);
-  }
-};
+import { AssetsType } from "./AssetsListWithTabs.tsx";
+import { Asset } from "./types.ts";
 
 export const AssetsList = ({
   assets,
   type,
 }: {
   assets: Asset[];
-  type: AssetTypes;
+  type: AssetsType;
 }) => {
-  const assetsOfType = assets.filter((asset) => asset.type === type);
-  if (assetsOfType.length === 0) {
+  const getTypeName = () => {
+    switch (type) {
+      case AssetsType.STOCKS:
+        return "stocks";
+      case AssetsType.BONDS:
+        return "bonds";
+      case AssetsType.DEPOSITS:
+        return "deposits";
+      case AssetsType.CRYPTO:
+        return "crypto";
+      default:
+        exhaustiveGuard(type);
+    }
+  };
+
+  if (assets.length === 0) {
     return (
       <VerticalFlexBox
         fullHeight
@@ -37,15 +37,15 @@ export const AssetsList = ({
         }}
       >
         <Typography align="center" variant="h3">
-          You don't have any {getTypeName(type)} yet
+          You don't have any {getTypeName()} yet
         </Typography>
       </VerticalFlexBox>
     );
   }
   return (
     <List sx={{ flex: 1, overflowY: "auto" }}>
-      {assetsOfType.map((asset) => (
-        <AssetsListItem key={asset.isin} asset={asset} />
+      {assets.map((asset) => (
+        <AssetsListItem key={asset.getKey()} asset={asset} />
       ))}
     </List>
   );

@@ -1,19 +1,22 @@
 import { Box, Button, Typography } from "@mui/material";
 import { AssetsTable } from "./AssetsTable.tsx";
-import { Asset, AssetTypes } from "./assets-mock.ts";
 import { Loading } from "./Loading.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
+import { DetailsTabs } from "./AccountDetailsDesktop.tsx";
+import { Asset } from "./types.ts";
 
-const getTypeName = (type: AssetTypes) => {
+const getTypeName = (type: DetailsTabs) => {
   switch (type) {
-    case AssetTypes.STOCKS:
+    case DetailsTabs.STOCKS:
+    case DetailsTabs.TRANSACTIONS:
+    case DetailsTabs.EMPTY:
       return "stocks";
-    case AssetTypes.BONDS:
+    case DetailsTabs.BONDS:
       return "bonds";
-    case AssetTypes.DEPOSITS:
+    case DetailsTabs.DEPOSITS:
       return "deposits";
-    case AssetTypes.CRYPTO:
+    case DetailsTabs.CRYPTO:
       return "crypto";
     default:
       exhaustiveGuard(type);
@@ -27,17 +30,15 @@ export const AssetsDesktop = ({
   onAddAssetClick,
 }: {
   assets: Asset[];
-  type: AssetTypes;
+  type: DetailsTabs;
   isLoading: boolean;
   onAddAssetClick: () => void;
 }) => {
-  const assetsOfType = assets.filter((asset) => asset.type === type);
-
   if (isLoading) {
     return <Loading />;
   }
 
-  if (assetsOfType.length === 0) {
+  if (assets.length === 0) {
     return (
       <VerticalFlexBox
         fullHeight
@@ -65,7 +66,7 @@ export const AssetsDesktop = ({
           Add asset
         </Button>
       </Box>
-      <AssetsTable assets={assetsOfType} />
+      <AssetsTable assets={assets} />
     </>
   );
 };

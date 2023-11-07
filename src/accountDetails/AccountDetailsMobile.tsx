@@ -5,7 +5,7 @@ import {
   Zoom,
 } from "@mui/material";
 import { DialogType, useAccountDetails } from "./use-account-details";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import {
   Add,
   Equalizer,
@@ -13,13 +13,14 @@ import {
   Settings,
   Timeline,
 } from "@mui/icons-material";
-import { Assets } from "./Assets.tsx";
+import { AssetsListWithTabs } from "./AssetsListWithTabs.tsx";
 import { Transactions } from "./Transactions.tsx";
-import { AccountDetailsDialog } from "./AccountDetailsDialog.tsx";
+import { AccountTransactionDialog } from "./AccountTransactionDialog.tsx";
 import { Summary } from "./Summary.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { Loading } from "./Loading.tsx";
 import { AccountPreferencesDialog } from "./AccountPreferencesDialog.tsx";
+import { StocksDialog } from "./StocksDialog.tsx";
 
 enum MobilePage {
   ASSETS,
@@ -29,7 +30,7 @@ enum MobilePage {
 
 type FabData = {
   value: MobilePage;
-  icon: JSX.Element;
+  icon: ReactElement;
   onClick: () => void;
 };
 
@@ -37,14 +38,17 @@ export const AccountDetailsMobile = () => {
   const {
     account,
     accountTransactions,
-    assets,
+    stocks,
+    bonds,
+    deposits,
+    cryptocurrencies,
     accountPreferences,
     isLoading,
     isDialogOpen,
     openDialog,
     closeDialog,
-    onConfirmDialog,
-    dialogType,
+    onConfirmAccountTransactionDialog,
+    onConfirmStockDialog,
     onDeleteTransaction,
     isAccountPreferencesDialogOpen,
     openAccountPreferencesDialog,
@@ -58,7 +62,7 @@ export const AccountDetailsMobile = () => {
     {
       value: MobilePage.ASSETS,
       icon: <Add />,
-      onClick: () => openDialog(DialogType.TRANSACTION),
+      onClick: () => openDialog(DialogType.STOCK),
     },
     {
       value: MobilePage.TRANSACTIONS,
@@ -79,7 +83,13 @@ export const AccountDetailsMobile = () => {
   return (
     <VerticalFlexBox fullHeight sx={{ minHeight: 0 }}>
       {mobilePage === MobilePage.ASSETS && (
-        <Assets assets={assets} isLoading={isLoading} />
+        <AssetsListWithTabs
+          stocks={stocks}
+          bonds={bonds}
+          deposits={deposits}
+          cryptocurrencies={cryptocurrencies}
+          isLoading={isLoading}
+        />
       )}
       {mobilePage === MobilePage.TRANSACTIONS && (
         <Transactions
@@ -108,11 +118,16 @@ export const AccountDetailsMobile = () => {
         />
         <BottomNavigationAction label="Summary" icon={<Equalizer />} />
       </BottomNavigation>
-      <AccountDetailsDialog
-        isOpen={isDialogOpen}
+      <AccountTransactionDialog
+        isOpen={isDialogOpen(DialogType.TRANSACTION)}
         onClose={closeDialog}
-        onConfirm={onConfirmDialog}
-        type={dialogType}
+        onConfirm={onConfirmAccountTransactionDialog}
+      />
+      <StocksDialog
+        stocks={stocks}
+        isOpen={isDialogOpen(DialogType.STOCK)}
+        onClose={closeDialog}
+        onConfirm={onConfirmStockDialog}
       />
       <AccountPreferencesDialog
         isOpen={isAccountPreferencesDialogOpen}

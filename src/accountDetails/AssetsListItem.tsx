@@ -5,40 +5,51 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
-import { Asset, getAssetResultColor } from "./assets-mock.ts";
 import { Delete } from "@mui/icons-material";
+import { Asset, Stock } from "./types.ts";
 
-export const AssetsListItem = ({ asset }: { asset: Asset }) => (
-  <>
-    <ListItem
-      secondaryAction={
-        <IconButton edge="end">
-          <Delete />
-        </IconButton>
-      }
-    >
-      <ListItemText>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <ListItemText primary={asset.name} secondary={asset.exchange} />
-          <ListItemText
-            primary={`${asset.total} ${asset.currency}`}
-            primaryTypographyProps={{ align: "right" }}
-            secondary={`${asset.result}%`}
-            secondaryTypographyProps={{
-              align: "right",
-              color: getAssetResultColor(asset),
+export const AssetsListItem = ({ asset }: { asset: Asset }) => {
+  const getListItem = () => {
+    if (asset instanceof Stock) {
+      return (
+        <ListItemText>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
-            sx={{ mr: 2 }}
-          />
-        </Box>
-      </ListItemText>
-    </ListItem>
-    <Divider />
-  </>
-);
+          >
+            <ListItemText primary={asset.name} secondary={asset.exchange} />
+            <ListItemText
+              primary={`${asset.value} ${asset.currency}`}
+              primaryTypographyProps={{ align: "right" }}
+              secondary={`${asset.getResult()}%`}
+              secondaryTypographyProps={{
+                align: "right",
+                color: asset.getResultColor(),
+              }}
+              sx={{ mr: 2 }}
+            />
+          </Box>
+        </ListItemText>
+      );
+    } else {
+      return <ListItemText>Not implemented</ListItemText>;
+    }
+  };
+  return (
+    <>
+      <ListItem
+        secondaryAction={
+          <IconButton edge="end">
+            <Delete />
+          </IconButton>
+        }
+      >
+        {getListItem()}
+      </ListItem>
+      <Divider />
+    </>
+  );
+};
