@@ -78,7 +78,10 @@ export class StockDetailsService {
     isin: string,
   ): Promise<AssetTransaction[]> {
     const response = await fetch(
-      `${this.apiUrl}/api/stock/${accountId}/transaction`,
+      `${this.apiUrl}/api/stock/${accountId}/transaction?` +
+        new URLSearchParams({
+          isin,
+        }),
       {
         headers: {
           Authorization: `Bearer ${this.token}`,
@@ -90,9 +93,7 @@ export class StockDetailsService {
       throw new Error(data.error ?? "Failed to fetch transactions");
     }
     const data: AssetTransactionDto[] = await response.json();
-    return data
-      .filter((transaction) => transaction.isin === isin) //TODO remove after adding endpoint
-      .map(fromAssetTransactionDto);
+    return data.map(fromAssetTransactionDto);
   }
 
   async deleteAccountTransaction(id: number, transactionId: number) {
