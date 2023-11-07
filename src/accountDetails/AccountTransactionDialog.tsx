@@ -14,7 +14,7 @@ import {
 import { AccountTransactionType } from "../types.ts";
 import { Controller, useForm } from "react-hook-form";
 import { isValidAmount, isValidCurrency } from "../util/validations.ts";
-import { DatePicker } from "@mui/x-date-pickers";
+import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 
 interface TransactionFormData {
@@ -107,7 +107,7 @@ export const AccountTransactionDialog = ({
               rules={{ required: true }}
               defaultValue={null}
               render={({ field }) => (
-                <DatePicker
+                <DateTimePicker
                   {...field}
                   slotProps={{
                     textField: {

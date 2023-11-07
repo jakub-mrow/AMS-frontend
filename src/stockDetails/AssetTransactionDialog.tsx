@@ -12,7 +12,7 @@ import {
   TextField,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-import { DatePicker } from "@mui/x-date-pickers";
+import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { AssetTransactionType } from "../types.ts";
 
@@ -99,7 +99,7 @@ export const AssetTransactionDialog = ({
               rules={{ required: true }}
               defaultValue={null}
               render={({ field }) => (
-                <DatePicker
+                <DateTimePicker
                   {...field}
                   slotProps={{
                     textField: {

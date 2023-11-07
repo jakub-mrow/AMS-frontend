@@ -1,8 +1,7 @@
+import { getUserLocale } from "./locale.ts";
+
 export const displayCurrency = (value: number, currency: string) => {
-  const userLocale =
-    navigator.languages && navigator.languages.length
-      ? navigator.languages[0]
-      : navigator.language;
+  const userLocale = getUserLocale();
   return new Intl.NumberFormat(userLocale, {
     style: "currency",
     currency,
