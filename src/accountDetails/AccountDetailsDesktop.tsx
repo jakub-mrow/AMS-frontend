@@ -1,16 +1,17 @@
 import { DialogType, useAccountDetails } from "./use-account-details.ts";
 import { Loading } from "./Loading.tsx";
-import { AccountDetailsDialog } from "./AccountDetailsDialog.tsx";
+import { AccountTransactionDialog } from "./AccountTransactionDialog.tsx";
 import { Container, Paper, Tab, Tabs } from "@mui/material";
 import { Summary } from "./Summary.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { useState } from "react";
-import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
-import { AssetTypes } from "./assets-mock.ts";
 import { TransactionsDesktop } from "./TransactionsDesktop.tsx";
 import { AssetsDesktop } from "./AssetsDesktop.tsx";
+import { AccountPreferencesDialog } from "./AccountPreferencesDialog.tsx";
+import { Asset } from "./types.ts";
+import { StocksDialog } from "./StocksDialog.tsx";
 
-enum DetailsTabs {
+export enum DetailsTabs {
   STOCKS,
   BONDS,
   DEPOSITS,
@@ -19,37 +20,41 @@ enum DetailsTabs {
   TRANSACTIONS,
 }
 
-const toAssetsType = (tab: DetailsTabs) => {
-  switch (tab) {
-    case DetailsTabs.EMPTY:
-    case DetailsTabs.TRANSACTIONS:
-    case DetailsTabs.STOCKS:
-      return AssetTypes.STOCKS;
-    case DetailsTabs.BONDS:
-      return AssetTypes.BONDS;
-    case DetailsTabs.DEPOSITS:
-      return AssetTypes.DEPOSITS;
-    case DetailsTabs.CRYPTO:
-      return AssetTypes.CRYPTO;
-    default:
-      exhaustiveGuard(tab);
-  }
-};
-
 export const AccountDetailsDesktop = () => {
   const {
     account,
     accountTransactions,
-    assets,
+    stocks,
+    bonds,
+    deposits,
+    cryptocurrencies,
+    accountPreferences,
     isLoading,
     isDialogOpen,
     openDialog,
     closeDialog,
-    onConfirmDialog,
-    dialogType,
+    onConfirmAccountTransactionDialog,
+    onConfirmStockDialog,
     onDeleteTransaction,
+    isAccountPreferencesDialogOpen,
+    openAccountPreferencesDialog,
+    closeAccountPreferencesDialog,
+    onConfirmPreferences,
   } = useAccountDetails();
   const [detailsTab, setDetailsTab] = useState(DetailsTabs.STOCKS);
+
+  const getAssetsOfType = (type: DetailsTabs): Asset[] => {
+    if (type === DetailsTabs.STOCKS) {
+      return stocks;
+    } else if (type === DetailsTabs.BONDS) {
+      return bonds;
+    } else if (type === DetailsTabs.DEPOSITS) {
+      return deposits;
+    } else if (type === DetailsTabs.CRYPTO) {
+      return cryptocurrencies;
+    }
+    return [];
+  };
 
   if (!account) {
     return <Loading />;
@@ -94,10 +99,10 @@ export const AccountDetailsDesktop = () => {
               />
             ) : (
               <AssetsDesktop
-                assets={assets}
-                type={toAssetsType(detailsTab)}
+                assets={getAssetsOfType(detailsTab)}
+                type={detailsTab}
                 isLoading={isLoading}
-                onAddAssetClick={() => openDialog(DialogType.TRANSACTION)}
+                onAddAssetClick={() => openDialog(DialogType.STOCK)}
               />
             )}
           </Paper>
@@ -106,14 +111,30 @@ export const AccountDetailsDesktop = () => {
           elevation={4}
           sx={{ flex: 1, display: "flex", flexDirection: "column" }}
         >
-          <Summary isLoading={isLoading} account={account} />
+          <Summary
+            isLoading={isLoading}
+            account={account}
+            showOpenAccountPreferencesDialog={true}
+            openAccountPreferencesDialog={openAccountPreferencesDialog}
+          />
         </Paper>
       </Container>
-      <AccountDetailsDialog
-        isOpen={isDialogOpen}
+      <AccountTransactionDialog
+        isOpen={isDialogOpen(DialogType.TRANSACTION)}
         onClose={closeDialog}
-        onConfirm={onConfirmDialog}
-        type={dialogType}
+        onConfirm={onConfirmAccountTransactionDialog}
+      />
+      <StocksDialog
+        stocks={stocks}
+        isOpen={isDialogOpen(DialogType.STOCK)}
+        onClose={closeDialog}
+        onConfirm={onConfirmStockDialog}
+      />
+      <AccountPreferencesDialog
+        isOpen={isAccountPreferencesDialogOpen}
+        onClose={closeAccountPreferencesDialog}
+        onConfirm={onConfirmPreferences}
+        currentPreferences={accountPreferences}
       />
     </>
   );

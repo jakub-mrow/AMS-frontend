@@ -1,18 +1,48 @@
 import { Tab, Tabs } from "@mui/material";
 import { AssetsList } from "./AssetsList.tsx";
-import { Asset, AssetTypes } from "./assets-mock.ts";
 import { useState } from "react";
 import { VerticalFlexContainer } from "../util/VerticalFlexContainer.tsx";
 import { Loading } from "./Loading.tsx";
+import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
+import { Asset, Bond, Cryptocurrency, Deposit, Stock } from "./types.ts";
 
-export const Assets = ({
-  assets,
+export enum AssetsType {
+  STOCKS,
+  BONDS,
+  DEPOSITS,
+  CRYPTO,
+}
+
+export const AssetsListWithTabs = ({
+  stocks,
+  bonds,
+  deposits,
+  cryptocurrencies,
   isLoading,
 }: {
-  assets: Asset[];
+  stocks: Stock[];
+  bonds: Bond[];
+  deposits: Deposit[];
+  cryptocurrencies: Cryptocurrency[];
   isLoading: boolean;
 }) => {
-  const [assetsType, setAssetsType] = useState(AssetTypes.STOCKS);
+  const [assetsType, setAssetsType] = useState(AssetsType.STOCKS);
+
+  const getAssetsOfType = (type: AssetsType): Asset[] => {
+    switch (type) {
+      case AssetsType.STOCKS:
+        return stocks;
+      case AssetsType.BONDS:
+        return bonds;
+      case AssetsType.DEPOSITS:
+        return deposits;
+      case AssetsType.CRYPTO:
+        return cryptocurrencies;
+      default:
+        exhaustiveGuard(type);
+    }
+  };
+
   return (
     <>
       <Tabs
@@ -37,7 +67,7 @@ export const Assets = ({
             minHeight: 0,
           }}
         >
-          <AssetsList assets={assets} type={assetsType} />
+          <AssetsList assets={getAssetsOfType(assetsType)} type={assetsType} />
         </VerticalFlexContainer>
       )}
     </>

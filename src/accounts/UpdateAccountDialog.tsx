@@ -20,7 +20,7 @@ export const UpdateAccountDialog = ({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onUpdate: (account: Account) => void;
+  onUpdate: (account: Account, newName: string) => void;
   accountToUpdate: Account;
 }) => {
   const nameInput = useInput(
@@ -39,10 +39,7 @@ export const UpdateAccountDialog = ({
 
   const updateHandler = () => {
     if (!nameInput.isValid) return;
-    onUpdate({
-      ...accountToUpdate,
-      name: nameInput.value,
-    });
+    onUpdate(accountToUpdate, nameInput.value);
     onClose();
     nameInput.reset();
   };

@@ -12,7 +12,6 @@ import {
   TextField,
 } from "@mui/material";
 import { AccountTransactionType } from "../accounts/types.ts";
-import { DialogType } from "./use-account-details.ts";
 import { Controller, useForm } from "react-hook-form";
 import { isValidAmount, isValidCurrency } from "../util/validations.ts";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -25,11 +24,10 @@ interface TransactionFormData {
   type: string;
 }
 
-export const AccountDetailsDialog = ({
+export const AccountTransactionDialog = ({
   isOpen,
   onClose,
   onConfirm,
-  type,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -39,7 +37,6 @@ export const AccountDetailsDialog = ({
     type: AccountTransactionType,
     date: Dayjs,
   ) => void;
-  type: DialogType;
 }) => {
   const { control, handleSubmit, reset } = useForm<TransactionFormData>({
     defaultValues: {
@@ -77,7 +74,7 @@ export const AccountDetailsDialog = ({
 
   return (
     <Dialog open={isOpen} onClose={cancelHandler}>
-      <DialogTitle>{DialogType[type]}</DialogTitle>
+      <DialogTitle>Add transaction</DialogTitle>
       <DialogContent>
         <form>
           <FormControl>

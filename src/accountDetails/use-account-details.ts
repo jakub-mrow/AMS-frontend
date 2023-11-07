@@ -9,12 +9,20 @@ import { apiUrl } from "../config.ts";
 import { AccountsDetailsService } from "./account-details-service.ts";
 import { useSnackbar } from "../snackbar/use-snackbar.ts";
 import { Severity } from "../snackbar/snackbar-context.ts";
-import { Asset } from "./assets-mock.ts";
 import AuthContext from "../auth/auth-context.ts";
 import { Dayjs } from "dayjs";
+import {
+  AccountPreferences,
+  Bond,
+  Cryptocurrency,
+  DEFAULT_ACCOUNT_PREFERENCES,
+  Deposit,
+  Stock,
+} from "./types.ts";
 
 export enum DialogType {
   TRANSACTION,
+  STOCK,
 }
 
 export const useAccountDetails = () => {
@@ -22,7 +30,9 @@ export const useAccountDetails = () => {
   const accountDetailsService = useMemo(() => {
     return new AccountsDetailsService(apiUrl, token);
   }, [token]);
-  const { id: idStr } = useParams<{ id: string }>();
+  const { id: idStr } = useParams<{
+    id: string;
+  }>();
   const id = useMemo(() => {
     if (!idStr) {
       return null;
@@ -33,36 +43,78 @@ export const useAccountDetails = () => {
   const navigate = useNavigate();
   const [isAccountLoading, setIsAccountLoading] = useState(false);
   const [isTransactionsLoading, setIsTransactionsLoading] = useState(false);
-  const [isAssetsLoading, setIsAssetsLoading] = useState(false);
+  const [isStocksLoading, setIsStocksLoading] = useState(false);
+  const [isBondsLoading, setIsBondsLoading] = useState(false);
+  const [isDepositsLoading, setIsDepositsLoading] = useState(false);
+  const [isCryptocurrenciesLoading, setIsCryptocurrenciesLoading] =
+    useState(false);
+  const [isAccountPreferencesLoading, setIsAccountPreferencesLoading] =
+    useState(false);
   const isLoading = useMemo(() => {
-    return isAccountLoading || isTransactionsLoading || isAssetsLoading;
-  }, [isAccountLoading, isTransactionsLoading, isAssetsLoading]);
+    return (
+      isAccountLoading ||
+      isTransactionsLoading ||
+      isStocksLoading ||
+      isBondsLoading ||
+      isDepositsLoading ||
+      isCryptocurrenciesLoading ||
+      isAccountPreferencesLoading
+    );
+  }, [
+    isAccountLoading,
+    isTransactionsLoading,
+    isStocksLoading,
+    isBondsLoading,
+    isDepositsLoading,
+    isCryptocurrenciesLoading,
+    isAccountPreferencesLoading,
+  ]);
   const [account, setAccount] = useState<Account | null>(null);
   const [accountTransactions, setAccountTransactions] = useState<
     AccountTransaction[]
   >([]);
-  const [assets, setAssets] = useState<Asset[]>([]);
+  const [stocks, setStocks] = useState<Stock[]>([]);
+  const [bonds, setBonds] = useState<Bond[]>([]);
+  const [deposits, setDeposits] = useState<Deposit[]>([]);
+  const [cryptocurrencies, setCryptocurrencies] = useState<Cryptocurrency[]>(
+    [],
+  );
+  const [accountPreferences, setAccountPreferences] =
+    useState<AccountPreferences>(DEFAULT_ACCOUNT_PREFERENCES);
   const [dialogType, setDialogType] = useState<DialogType>(
     DialogType.TRANSACTION,
   );
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [isAccountPreferencesDialogOpen, setIsAccountPreferencesDialogOpen] =
+    useState(false);
 
   const openDialog = useCallback((type: DialogType) => {
     setDialogType(type);
-    setIsDialogOpen(true);
+    setDialogOpen(true);
   }, []);
 
   const closeDialog = useCallback(() => {
-    setIsDialogOpen(false);
+    setDialogOpen(false);
   }, []);
 
   const refreshAccountData = useCallback(() => {
     setIsAccountLoading(true);
     setIsTransactionsLoading(true);
-    setIsAssetsLoading(true);
+    setIsStocksLoading(true);
+    setIsBondsLoading(true);
+    setIsDepositsLoading(true);
+    setIsCryptocurrenciesLoading(true);
+    setIsAccountPreferencesLoading(true);
     if (!id) {
       return;
     }
+
+    const handleError = (error: unknown) => {
+      if (error instanceof Error) {
+        alert(error.message, Severity.ERROR);
+        navigate("/accounts", { replace: true });
+      }
+    };
     accountDetailsService
       .fetchAccount(Number(id))
       .then((data) => {
@@ -81,17 +133,40 @@ export const useAccountDetails = () => {
         setAccountTransactions(data);
         setIsTransactionsLoading(false);
       })
-      .catch((error) => {
-        if (error instanceof Error) {
-          alert(error.message, Severity.ERROR);
-          navigate("/accounts", { replace: true });
-        }
-      });
+      .catch(handleError);
     accountDetailsService
-      .fetchAssets()
+      .fetchStocks(Number(id))
       .then((data) => {
-        setAssets(data);
-        setIsAssetsLoading(false);
+        setStocks(data);
+        setIsStocksLoading(false);
+      })
+      .catch(handleError);
+    accountDetailsService
+      .fetchBonds(Number(id))
+      .then((data) => {
+        setBonds(data);
+        setIsBondsLoading(false);
+      })
+      .catch(handleError);
+    accountDetailsService
+      .fetchDeposits(Number(id))
+      .then((data) => {
+        setDeposits(data);
+        setIsDepositsLoading(false);
+      })
+      .catch(handleError);
+    accountDetailsService
+      .fetchCryptocurrencies(Number(id))
+      .then((data) => {
+        setCryptocurrencies(data);
+        setIsCryptocurrenciesLoading(false);
+      })
+      .catch(handleError);
+    accountDetailsService
+      .fetchAccountPreferences(Number(id))
+      .then((data) => {
+        setAccountPreferences(data);
+        setIsAccountPreferencesLoading(false);
       })
       .catch((error) => {
         if (error instanceof Error) {
@@ -105,7 +180,7 @@ export const useAccountDetails = () => {
     refreshAccountData();
   }, [refreshAccountData]);
 
-  const onConfirmDialog = (
+  const onConfirmAccountTransactionDialog = (
     amount: number,
     currency: string,
     type: AccountTransactionType,
@@ -123,6 +198,39 @@ export const useAccountDetails = () => {
     }
   };
 
+  const onConfirmStockDialog = async (
+    ticker: string,
+    exchange: string,
+    quantity: number,
+    price: number,
+    date: Dayjs,
+  ) => {
+    if (!account) {
+      return false;
+    }
+    try {
+      await accountDetailsService.buyStocks(
+        account.id,
+        ticker,
+        exchange,
+        quantity,
+        price,
+        date,
+      );
+      refreshAccountData();
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message, Severity.ERROR);
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const isDialogOpen = (type: DialogType) => {
+    return dialogOpen && dialogType === type;
+  };
+
   const onDeleteTransaction = (transaction: AccountTransaction) => {
     if (account) {
       accountDetailsService
@@ -136,16 +244,39 @@ export const useAccountDetails = () => {
     }
   };
 
+  const onConfirmPreferences = (accountPreferences: AccountPreferences) => {
+    if (!account) {
+      return;
+    }
+    accountDetailsService
+      .updateAccountPreferences(account.id, accountPreferences)
+      .then(() => refreshAccountData())
+      .catch((error) => {
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+        }
+      });
+  };
+
   return {
     account,
     accountTransactions,
-    assets,
+    stocks,
+    bonds,
+    deposits,
+    cryptocurrencies,
+    accountPreferences,
     isLoading,
     openDialog,
     closeDialog,
-    dialogType,
     isDialogOpen,
-    onConfirmDialog,
+    onConfirmAccountTransactionDialog,
+    onConfirmStockDialog,
     onDeleteTransaction,
+    isAccountPreferencesDialogOpen,
+    openAccountPreferencesDialog: () => setIsAccountPreferencesDialogOpen(true),
+    closeAccountPreferencesDialog: () =>
+      setIsAccountPreferencesDialogOpen(false),
+    onConfirmPreferences,
   };
 };
