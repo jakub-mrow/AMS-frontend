@@ -7,7 +7,6 @@ import {
   ListItemText,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
-import { getColor, getName, getSign } from "./transactions-util.ts";
 import { displayCurrency } from "../util/display-currency.ts";
 
 export const TransactionsListItem = ({
@@ -33,15 +32,15 @@ export const TransactionsListItem = ({
             alignItems: "center",
           }}
         >
-          <ListItemText primary={getName(transaction.type)} />
+          <ListItemText primary={transaction.getName()} />
           <ListItemText
-            primary={`${getSign(transaction.type)} ${displayCurrency(
+            primary={`${transaction.getSign()} ${displayCurrency(
               transaction.amount,
               transaction.currency,
             )}`}
             primaryTypographyProps={{
               align: "right",
-              color: getColor(transaction.type),
+              color: transaction.getColor(),
             }}
             secondary={transaction.date.toLocaleDateString()}
             secondaryTypographyProps={{ align: "right" }}

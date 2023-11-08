@@ -15,15 +15,64 @@ export type AccountBalance = {
 export enum AccountTransactionType {
   DEPOSIT = "deposit",
   WITHDRAWAL = "withdrawal",
+  BUY = "buy",
+  SELL = "sell",
 }
 
-export type AccountTransaction = {
-  id: number;
-  type: AccountTransactionType;
-  amount: number;
-  currency: string;
-  date: Date;
-};
+export class AccountTransaction {
+  constructor(
+    public id: number,
+    public type: AccountTransactionType,
+    public amount: number,
+    public currency: string,
+    public date: Date,
+  ) {}
+
+  getName() {
+    switch (this.type) {
+      case AccountTransactionType.DEPOSIT:
+        return "Deposit";
+      case AccountTransactionType.WITHDRAWAL:
+        return "Withdrawal";
+      case AccountTransactionType.BUY:
+        return "Buy assets";
+      case AccountTransactionType.SELL:
+        return "Sell assets";
+      default:
+        return exhaustiveGuard(this.type);
+    }
+  }
+
+  getSign() {
+    switch (this.type) {
+      case AccountTransactionType.DEPOSIT:
+        return "+";
+      case AccountTransactionType.WITHDRAWAL:
+        return "-";
+      case AccountTransactionType.BUY:
+        return "-";
+      case AccountTransactionType.SELL:
+        return "+";
+      default:
+        return exhaustiveGuard(this.type);
+    }
+  }
+
+  getColor() {
+    switch (this.type) {
+      case AccountTransactionType.DEPOSIT:
+        return "green";
+      case AccountTransactionType.WITHDRAWAL:
+        return "red";
+      case AccountTransactionType.BUY:
+        return "red";
+      case AccountTransactionType.SELL:
+        return "green";
+      default:
+        return exhaustiveGuard(this.type);
+    }
+  }
+}
 
 export type AccountPreferences = {
   baseCurrency: string;

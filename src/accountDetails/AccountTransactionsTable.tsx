@@ -14,7 +14,6 @@ import { Delete } from "@mui/icons-material";
 import { ChangeEvent, useState } from "react";
 import { ConfirmationDialog } from "../dialog/ConfirmationDialog.tsx";
 import { Loading } from "../util/Loading.tsx";
-import { getColor, getName, getSign } from "./transactions-util.ts";
 import { displayCurrency } from "../util/display-currency.ts";
 
 export const AccountsTransactionsTable = ({
@@ -70,10 +69,10 @@ export const AccountsTransactionsTable = ({
               : transactions
             ).map((transaction) => (
               <TableRow key={transaction.id} hover>
-                <TableCell>{getName(transaction.type)}</TableCell>
+                <TableCell>{transaction.getName()}</TableCell>
                 <TableCell
-                  sx={{ color: getColor(transaction.type) }}
-                >{`${getSign(transaction.type)} ${displayCurrency(
+                  sx={{ color: transaction.getColor() }}
+                >{`${transaction.getSign()} ${displayCurrency(
                   transaction.amount,
                   transaction.currency,
                 )}`}</TableCell>

@@ -15,12 +15,24 @@ type ErrorResponse = {
   error?: string;
 };
 
-type AccountTransactionApi = {
+type AccountTransactionDto = {
   id: number;
   type: AccountTransactionType;
   amount: number;
   currency: string;
   date: string;
+};
+
+const fromAccountTransactionDto = (
+  transaction: AccountTransactionDto,
+): AccountTransaction => {
+  return new AccountTransaction(
+    transaction.id,
+    transaction.type,
+    transaction.amount,
+    transaction.currency,
+    new Date(transaction.date),
+  );
 };
 
 type AssetDto = {
@@ -93,11 +105,8 @@ export class AccountsDetailsService {
       const data: ErrorResponse = await response.json();
       throw new Error(data.error ?? "Failed to fetch transactions");
     }
-    const data: AccountTransactionApi[] = await response.json();
-    return data.map((transaction) => ({
-      ...transaction,
-      date: new Date(transaction.date),
-    }));
+    const data: AccountTransactionDto[] = await response.json();
+    return data.map(fromAccountTransactionDto);
   }
 
   async addAccountTransaction(
