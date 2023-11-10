@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
-import { Account } from "./types.ts";
+import { Account } from "../types.ts";
 import { MouseEvent, useState } from "react";
 import { ConfirmationDialog } from "../dialog/ConfirmationDialog.tsx";
 

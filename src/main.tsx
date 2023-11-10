@@ -9,6 +9,10 @@ import AuthProvider from "./auth/AuthProvider.tsx";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { SnackbarContextProvider } from "./snackbar/SnackbarContextProvider.tsx";
+import "dayjs/locale/pl.js";
+import { getDayjsLocale, loadLocale } from "./util/locale.ts";
+
+loadLocale();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -16,7 +20,10 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       <AuthProvider>
         <CssBaseline />
         <ThemeProvider theme={theme}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <LocalizationProvider
+            dateAdapter={AdapterDayjs}
+            adapterLocale={getDayjsLocale()}
+          >
             <SnackbarContextProvider>
               <App />
             </SnackbarContextProvider>

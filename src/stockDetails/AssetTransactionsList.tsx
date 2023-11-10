@@ -1,14 +1,14 @@
-import { AccountTransaction } from "../types.ts";
+import { Asset, AssetTransaction } from "../types.ts";
 import { List, Typography } from "@mui/material";
-import { TransactionsListItem } from "./TransactionsListItem.tsx";
+import { AssetTransactionsListItem } from "./AssetTransactionsListItem.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 
-export const TransactionsList = ({
+export const AssetTransactionsList = ({
+  asset,
   transactions,
-  onDeleteClick,
 }: {
-  transactions: AccountTransaction[];
-  onDeleteClick: (transaction: AccountTransaction) => void;
+  asset: Asset;
+  transactions: AssetTransaction[];
 }) => {
   if (transactions.length === 0) {
     return (
@@ -28,10 +28,10 @@ export const TransactionsList = ({
   return (
     <List sx={{ flex: 1, overflowY: "auto" }}>
       {transactions.map((transaction) => (
-        <TransactionsListItem
+        <AssetTransactionsListItem
           key={transaction.id}
+          asset={asset}
           transaction={transaction}
-          onDeleteClick={onDeleteClick}
         />
       ))}
     </List>

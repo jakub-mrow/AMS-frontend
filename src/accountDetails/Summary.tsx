@@ -1,8 +1,9 @@
-import { Account } from "../accounts/types.ts";
+import { Account } from "../types.ts";
 import { Divider, IconButton, Typography } from "@mui/material";
 import { VerticalFlexContainer } from "../util/VerticalFlexContainer.tsx";
-import { Loading } from "./Loading.tsx";
+import { Loading } from "../util/Loading.tsx";
 import { Settings } from "@mui/icons-material";
+import { displayCurrency } from "../util/display-currency.ts";
 
 export const Summary = ({
   account,
@@ -41,7 +42,7 @@ export const Summary = ({
           <Typography variant="h4">Balances</Typography>
           {account.balances.map((balance) => (
             <Typography variant="h5" key={balance.currency}>
-              {balance.currency} {balance.amount}
+              {displayCurrency(balance.amount, balance.currency)}
             </Typography>
           ))}
           <Divider />

@@ -10,7 +10,7 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { isValidCurrency } from "../util/validations.ts";
 import { CURRENCIES } from "../util/currencies.ts";
-import { AccountPreferences } from "./types.ts";
+import { AccountPreferences } from "../types.ts";
 
 interface AccountPreferencesFormData {
   baseCurrency: string;
