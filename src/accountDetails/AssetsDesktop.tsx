@@ -1,10 +1,10 @@
 import { Box, Button, Typography } from "@mui/material";
 import { AssetsTable } from "./AssetsTable.tsx";
-import { Loading } from "./Loading.tsx";
+import { Loading } from "../util/Loading.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
 import { DetailsTabs } from "./AccountDetailsDesktop.tsx";
-import { Asset } from "./types.ts";
+import { Asset } from "../types.ts";
 
 const getTypeName = (type: DetailsTabs) => {
   switch (type) {
@@ -28,11 +28,13 @@ export const AssetsDesktop = ({
   type,
   isLoading,
   onAddAssetClick,
+  goToAsset,
 }: {
   assets: Asset[];
   type: DetailsTabs;
   isLoading: boolean;
   onAddAssetClick: () => void;
+  goToAsset: (isin: string) => void;
 }) => {
   if (isLoading) {
     return <Loading />;
@@ -66,7 +68,7 @@ export const AssetsDesktop = ({
           Add asset
         </Button>
       </Box>
-      <AssetsTable assets={assets} />
+      <AssetsTable assets={assets} goToAsset={goToAsset} />
     </>
   );
 };

@@ -1,29 +1,16 @@
-import { AccountTransaction } from "../types.ts";
-import {
-  Box,
-  Divider,
-  IconButton,
-  ListItem,
-  ListItemText,
-} from "@mui/material";
-import { Delete } from "@mui/icons-material";
+import { Asset, AssetTransaction } from "../types.ts";
+import { Box, Divider, ListItem, ListItemText } from "@mui/material";
 import { displayCurrency } from "../util/display-currency.ts";
 
-export const TransactionsListItem = ({
+export const AssetTransactionsListItem = ({
+  asset,
   transaction,
-  onDeleteClick,
 }: {
-  transaction: AccountTransaction;
-  onDeleteClick: (transaction: AccountTransaction) => void;
+  asset: Asset;
+  transaction: AssetTransaction;
 }) => (
   <>
-    <ListItem
-      secondaryAction={
-        <IconButton edge="end" onClick={() => onDeleteClick(transaction)}>
-          <Delete />
-        </IconButton>
-      }
-    >
+    <ListItem>
       <ListItemText>
         <Box
           sx={{
@@ -35,8 +22,8 @@ export const TransactionsListItem = ({
           <ListItemText primary={transaction.getName()} />
           <ListItemText
             primary={`${transaction.getSign()} ${displayCurrency(
-              transaction.amount,
-              transaction.currency,
+              transaction.price,
+              asset.currency,
             )}`}
             primaryTypographyProps={{
               align: "right",

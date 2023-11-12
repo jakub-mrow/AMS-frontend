@@ -32,6 +32,7 @@ const SearchBarResultItem: React.FC<SearchBarResultItemProps> = ({ result, setSe
                             </span>
                         </div>
                     </div>
+                    <span className="text-black">{result.ISIN}</span>
                     <span className="flex flex-row items-baseline space-x-1">
                         <span className="text-black font-bold text-xl">{result.previousClose}</span>
                         <span className="text-black text-sm">{result.Currency}</span>

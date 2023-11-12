@@ -1,5 +1,5 @@
 import { DialogType, useAccountDetails } from "./use-account-details.ts";
-import { Loading } from "./Loading.tsx";
+import { Loading } from "../util/Loading.tsx";
 import { AccountTransactionDialog } from "./AccountTransactionDialog.tsx";
 import { Container, Paper, Tab, Tabs } from "@mui/material";
 import { Summary } from "./Summary.tsx";
@@ -8,7 +8,7 @@ import { useState } from "react";
 import { TransactionsDesktop } from "./TransactionsDesktop.tsx";
 import { AssetsDesktop } from "./AssetsDesktop.tsx";
 import { AccountPreferencesDialog } from "./AccountPreferencesDialog.tsx";
-import { Asset } from "./types.ts";
+import { Asset } from "../types.ts";
 import { StocksDialog } from "./StocksDialog.tsx";
 
 export enum DetailsTabs {
@@ -40,6 +40,7 @@ export const AccountDetailsDesktop = () => {
     openAccountPreferencesDialog,
     closeAccountPreferencesDialog,
     onConfirmPreferences,
+    goToAsset,
   } = useAccountDetails();
   const [detailsTab, setDetailsTab] = useState(DetailsTabs.STOCKS);
 
@@ -103,6 +104,7 @@ export const AccountDetailsDesktop = () => {
                 type={detailsTab}
                 isLoading={isLoading}
                 onAddAssetClick={() => openDialog(DialogType.STOCK)}
+                goToAsset={goToAsset}
               />
             )}
           </Paper>

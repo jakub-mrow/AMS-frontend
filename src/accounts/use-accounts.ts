@@ -5,7 +5,7 @@ import { AccountInput, AccountsService } from "./accounts-service.ts";
 import { useSnackbar } from "../snackbar/use-snackbar.ts";
 import { Severity } from "../snackbar/snackbar-context.ts";
 import AuthContext from "../auth/auth-context.ts";
-import { Account } from "./types.ts";
+import { Account } from "../types.ts";
 
 export type UpdateDialogData = {
   isOpen: boolean;

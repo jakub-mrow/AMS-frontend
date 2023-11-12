@@ -2,9 +2,9 @@ import { Tab, Tabs } from "@mui/material";
 import { AssetsList } from "./AssetsList.tsx";
 import { useState } from "react";
 import { VerticalFlexContainer } from "../util/VerticalFlexContainer.tsx";
-import { Loading } from "./Loading.tsx";
+import { Loading } from "../util/Loading.tsx";
 import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
-import { Asset, Bond, Cryptocurrency, Deposit, Stock } from "./types.ts";
+import { Asset } from "../types.ts";
 
 export enum AssetsType {
   STOCKS,
@@ -19,12 +19,14 @@ export const AssetsListWithTabs = ({
   deposits,
   cryptocurrencies,
   isLoading,
+  goToAsset,
 }: {
-  stocks: Stock[];
-  bonds: Bond[];
-  deposits: Deposit[];
-  cryptocurrencies: Cryptocurrency[];
+  stocks: Asset[];
+  bonds: Asset[];
+  deposits: Asset[];
+  cryptocurrencies: Asset[];
   isLoading: boolean;
+  goToAsset: (isin: string) => void;
 }) => {
   const [assetsType, setAssetsType] = useState(AssetsType.STOCKS);
 
@@ -67,7 +69,11 @@ export const AssetsListWithTabs = ({
             minHeight: 0,
           }}
         >
-          <AssetsList assets={getAssetsOfType(assetsType)} type={assetsType} />
+          <AssetsList
+            assets={getAssetsOfType(assetsType)}
+            type={assetsType}
+            goToAsset={goToAsset}
+          />
         </VerticalFlexContainer>
       )}
     </>

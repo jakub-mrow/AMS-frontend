@@ -1,4 +1,4 @@
-import { Account } from "./types.ts";
+import { Account } from "../types.ts";
 
 export type AccountInput = {
   name: string;
