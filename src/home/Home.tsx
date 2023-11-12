@@ -1,11 +1,11 @@
 import { useContext } from "react";
 import AuthContext from "../auth/auth-context";
-import { FaArrowRight, FaPlus, FaWallet } from 'react-icons/fa';
+import { FaPlus, FaWallet } from 'react-icons/fa';
 import Exchanges from "./Exchanges.tsx";
 import { useAccounts } from "../accounts/use-accounts.ts";
-import { Button } from "@mui/material";
 import { AddAccountDialog } from "../accounts/AddAccountDialog.tsx";
 import { TickerTape } from "react-tradingview-embed"
+import AccountCard from "./AccountCard.tsx";
 
 const Home = () => {
   useContext(AuthContext);
@@ -30,22 +30,12 @@ const Home = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-14">
             {
               accounts.map((account) => (
-                <div className="flex flex-col rounded-xl shadow-lg transform hover:scale-105 transition-transform">
-                  <div className="h-44 w-full bg-blue-100 rounded-t-lg"></div>
-                  <div className="flex flex-col space-y-1 p-2 m-1">
-                    <h2 className="text-xl font-semibold mt-4 font-poppins">{account.name}</h2>
-                    <span className="font-poppins">Current value: 1200 USD</span>
-                  </div>
-                  <Button
-                    className="absolute bottom-4 right-4 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 font-bold rounded"
-                    onClick={() => goToAccount(account.id)}>
-                    <FaArrowRight className="w-4 h-4 inline-block" />
-                  </Button>
-                </div>
+                <AccountCard account={account} goToAccount={goToAccount}/>
               ))
             }
-            <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4 p-4 flex items-center justify-center">
-              <button className="w-12 h-12 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-full flex items-center justify-center hover:scale-110 transition-transform" onClick={openAddDialog}
+            <div className="w-full  p-4 flex items-center justify-center">
+              <button className="w-12 h-12 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-full flex items-center hover:scale-110 transition-transform justify-center" 
+                onClick={openAddDialog}
               >
                 <FaPlus className="w-6 h-6" />
               </button>

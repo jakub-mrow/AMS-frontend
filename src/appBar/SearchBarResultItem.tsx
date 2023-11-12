@@ -24,15 +24,19 @@ const SearchBarResultItem: React.FC<SearchBarResultItemProps> = ({ result, setSe
                     <div className="flex flex-col">
                         <span className="text-black">{result.Name} ({result.Currency})</span>
                         <div className="flex flex-row space-x-2">
-                            <span className="text-black">
-                                {result.Code}
+                            {result.ISIN && (
+                                <span className="text-black text-sm">
+                                    {result.ISIN}
+                                </span>
+                            )}
+                            <span className="text-black text-sm">
+                                {result.Code} |
                             </span>
-                            <span className="text-black">
+                            <span className="text-black text-sm">
                                 {result.Exchange}
                             </span>
                         </div>
                     </div>
-                    <span className="text-black">{result.ISIN}</span>
                     <span className="flex flex-row items-baseline space-x-1">
                         <span className="text-black font-bold text-xl">{result.previousClose}</span>
                         <span className="text-black text-sm">{result.Currency}</span>
