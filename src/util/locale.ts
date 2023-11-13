@@ -14,3 +14,24 @@ export const getDayjsLocale = () => {
 export const loadLocale = () => {
   dayjs.locale(getDayjsLocale());
 };
+
+export const getDateFormatString = () => {
+  const formatObj = new Intl.DateTimeFormat(getUserLocale()).formatToParts(
+    new Date(),
+  );
+
+  return formatObj
+    .map((obj) => {
+      switch (obj.type) {
+        case "day":
+          return "DD";
+        case "month":
+          return "MM";
+        case "year":
+          return "YYYY";
+        default:
+          return obj.value;
+      }
+    })
+    .join("");
+};

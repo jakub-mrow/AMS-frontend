@@ -1,5 +1,10 @@
-import { Asset, AssetTransaction, AssetTransactionType } from "../types.ts";
-import { Dayjs } from "dayjs";
+import {
+  Asset,
+  AssetBalanceHistory,
+  AssetTransaction,
+  AssetTransactionType,
+} from "../types.ts";
+import dayjs, { Dayjs } from "dayjs";
 
 type ErrorResponse = {
   error?: string;
@@ -48,6 +53,25 @@ const fromAssetDto = (stock: AssetDto): Asset => {
     stock.currency,
     stock.result,
   );
+};
+
+type AssetBalanceHistoryDto = {
+  isin: string;
+  quantity: number;
+  value: number;
+  date: string;
+  result: number;
+};
+
+const fromAssetBalanceHistoryDto = (
+  history: AssetBalanceHistoryDto,
+): AssetBalanceHistory => {
+  return {
+    date: dayjs(history.date),
+    quantity: history.quantity,
+    value: history.value,
+    result: history.result,
+  };
 };
 
 export class StockDetailsService {
@@ -140,5 +164,25 @@ export class StockDetailsService {
       const data: ErrorResponse = await response.json();
       throw new Error(data.error ?? "Failed to add transaction");
     }
+  }
+
+  async fetchStockBalanceHistory(
+    accountId: number,
+    isin: string,
+  ): Promise<AssetBalanceHistory[]> {
+    const response = await fetch(
+      `${this.apiUrl}/api/stock_balances/${accountId}/${isin}/history`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      },
+    );
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to fetch stock balance history");
+    }
+    const data: AssetBalanceHistoryDto[] = await response.json();
+    return data.map(fromAssetBalanceHistoryDto);
   }
 }

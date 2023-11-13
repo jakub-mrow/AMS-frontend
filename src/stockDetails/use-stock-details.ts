@@ -1,6 +1,11 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Asset, AssetTransaction, AssetTransactionType } from "../types.ts";
+import {
+  Asset,
+  AssetBalanceHistory,
+  AssetTransaction,
+  AssetTransactionType,
+} from "../types.ts";
 import { apiUrl } from "../config.ts";
 import { StockDetailsService } from "./stock-details-service.ts";
 import { useSnackbar } from "../snackbar/use-snackbar.ts";
@@ -27,18 +32,23 @@ export const useStockDetails = () => {
   const navigate = useNavigate();
   const [isStockLoading, setIsStockLoading] = useState(false);
   const [isTransactionsLoading, setIsTransactionsLoading] = useState(false);
+  const [isHistoryLoading, setIsHistoryLoading] = useState(false);
   const isLoading = useMemo(() => {
-    return isStockLoading || isTransactionsLoading;
-  }, [isStockLoading, isTransactionsLoading]);
+    return isStockLoading || isTransactionsLoading || isHistoryLoading;
+  }, [isStockLoading, isTransactionsLoading, isHistoryLoading]);
   const [stock, setStock] = useState<Asset | null>(null);
   const [assetTransactions, setAssetTransactions] = useState<
     AssetTransaction[]
+  >([]);
+  const [assetBalanceHistories, setAssetBalanceHistories] = useState<
+    AssetBalanceHistory[]
   >([]);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const refreshStockData = useCallback(() => {
     setIsStockLoading(true);
     setIsTransactionsLoading(true);
+    setIsHistoryLoading(true);
     if (!accountId || !isin) {
       return;
     }
@@ -65,6 +75,13 @@ export const useStockDetails = () => {
       .then((data) => {
         setAssetTransactions(data);
         setIsTransactionsLoading(false);
+      })
+      .catch(handleError);
+    stockDetailsService
+      .fetchStockBalanceHistory(accountId, isin)
+      .then((data) => {
+        setAssetBalanceHistories(data);
+        setIsHistoryLoading(false);
       })
       .catch(handleError);
   }, [accountId, isin, alert, stockDetailsService, navigate]);
@@ -104,6 +121,7 @@ export const useStockDetails = () => {
   return {
     stock,
     assetTransactions,
+    assetBalanceHistories,
     isLoading,
     openDialog: () => setDialogOpen(true),
     closeDialog: () => setDialogOpen(false),
