@@ -27,13 +27,13 @@ const Home = () => {
             <FaWallet className="flex text-2xl" />
             <h1 className="text-2xl font-bold">Your accounts</h1>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-14">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-14">
             {
               accounts.map((account) => (
                 <AccountCard account={account} goToAccount={goToAccount}/>
               ))
             }
-            <div className="w-full  p-4 flex items-center justify-center">
+            <div className="w-full p-4 flex items-center justify-center">
               <button className="w-12 h-12 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-full flex items-center hover:scale-110 transition-transform justify-center" 
                 onClick={openAddDialog}
               >
