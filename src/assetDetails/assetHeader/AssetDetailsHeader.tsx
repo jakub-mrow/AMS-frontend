@@ -23,7 +23,12 @@ const AssetDetailsHeader: React.FC<AssetDetailsDataProps> = ({ assetDetailsData 
             symbols = [`${assetDetailsData.Exchange}:${assetDetailsData.Code}`]
             break;
         case 'Currency':
-            symbols = ["COINBASE:BTCUSD"]
+            if (assetDetailsData.Exchange === "CC"){
+                symbols = [`${assetDetailsData.Code.split("-").join("")}`];
+                break;
+            } else {
+                symbols = [];
+            }
             break;
         default:
             symbols = [`${assetDetailsData.Code}`]
