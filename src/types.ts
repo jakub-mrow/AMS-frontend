@@ -136,9 +136,9 @@ export class AssetTransaction {
   getSign(): string {
     switch (this.type) {
       case AssetTransactionType.BUY:
-        return "+";
-      case AssetTransactionType.SELL:
         return "-";
+      case AssetTransactionType.SELL:
+        return "+";
       default:
         return exhaustiveGuard(this.type);
     }
@@ -147,9 +147,9 @@ export class AssetTransaction {
   getColor(): string {
     switch (this.type) {
       case AssetTransactionType.BUY:
-        return "green";
-      case AssetTransactionType.SELL:
         return "red";
+      case AssetTransactionType.SELL:
+        return "green";
       default:
         return exhaustiveGuard(this.type);
     }
