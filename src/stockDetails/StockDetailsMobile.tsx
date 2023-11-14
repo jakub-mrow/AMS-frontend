@@ -22,6 +22,7 @@ export const StockDetailsMobile = () => {
   const {
     stock,
     assetTransactions,
+    assetBalanceHistories,
     isLoading,
     dialogOpen,
     openDialog,
@@ -45,7 +46,12 @@ export const StockDetailsMobile = () => {
         />
       )}
       {mobilePage === MobilePage.SUMMARY && (
-        <AssetSummary isLoading={isLoading} stock={stock} />
+        <AssetSummary
+          isLoading={isLoading}
+          stock={stock}
+          histories={assetBalanceHistories}
+          isMobile={true}
+        />
       )}
       <BottomNavigation
         showLabels

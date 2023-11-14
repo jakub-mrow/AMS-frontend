@@ -1,15 +1,20 @@
-import { Asset } from "../types.ts";
+import { Asset, AssetBalanceHistory } from "../types.ts";
 import { Box, Divider, Typography } from "@mui/material";
 import { VerticalFlexContainer } from "../util/VerticalFlexContainer.tsx";
 import { Loading } from "../util/Loading.tsx";
 import { displayCurrency } from "../util/display-currency.ts";
+import { AssetChart } from "./AssetChart.tsx";
 
 export const AssetSummary = ({
   stock,
+  histories,
   isLoading,
+  isMobile,
 }: {
   isLoading: boolean;
+  histories: AssetBalanceHistory[];
   stock: Asset;
+  isMobile: boolean;
 }) => {
   return (
     <>
@@ -43,6 +48,14 @@ export const AssetSummary = ({
             </Typography>
           </Box>
           <Divider />
+          {isMobile && (
+            <AssetChart
+              isLoading={isLoading}
+              histories={histories}
+              isMobile={isMobile}
+              stockCurrency={stock.currency}
+            />
+          )}
         </VerticalFlexContainer>
       )}
     </>

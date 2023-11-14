@@ -11,8 +11,33 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { SnackbarContextProvider } from "./snackbar/SnackbarContextProvider.tsx";
 import "dayjs/locale/pl.js";
 import { getDayjsLocale, loadLocale } from "./util/locale.ts";
+import {
+  Chart,
+  Decimation,
+  Filler,
+  LinearScale,
+  LineElement,
+  PointElement,
+  TimeScale,
+  TimeSeriesScale,
+  Tooltip,
+} from "chart.js";
+import "chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm";
+import ZoomPlugin from "chartjs-plugin-zoom";
 
 loadLocale();
+
+Chart.register(
+  TimeScale,
+  TimeSeriesScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  ZoomPlugin,
+  Decimation,
+  Filler,
+  Tooltip,
+);
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

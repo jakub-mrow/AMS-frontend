@@ -1,4 +1,5 @@
 import { exhaustiveGuard } from "./util/exhaustive-switch.ts";
+import { Dayjs } from "dayjs";
 
 export type Account = {
   id: number;
@@ -154,3 +155,10 @@ export class AssetTransaction {
     }
   }
 }
+
+export type AssetBalanceHistory = {
+  date: Dayjs;
+  quantity: number;
+  value: number;
+  result: number;
+};
