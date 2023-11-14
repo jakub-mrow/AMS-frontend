@@ -23,7 +23,7 @@ export const AssetChart = ({
 
   const mapHistory = (history: AssetBalanceHistory) => ({
     x: history.date.valueOf(),
-    y: history.value,
+    y: history.price * history.quantity,
   });
 
   return (

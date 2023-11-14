@@ -92,7 +92,7 @@ export class Asset {
     public ticker: string,
     public exchange: string,
     public quantity: number,
-    public value: number,
+    public price: number,
     public currency: string,
     public result: number,
   ) {}
@@ -159,6 +159,6 @@ export class AssetTransaction {
 export type AssetBalanceHistory = {
   date: Dayjs;
   quantity: number;
-  value: number;
+  price: number;
   result: number;
 };
