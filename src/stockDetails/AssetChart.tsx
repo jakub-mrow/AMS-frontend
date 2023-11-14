@@ -113,12 +113,15 @@ export const AssetChart = ({
                   x: {
                     min: "original",
                     max: "original",
-                    minRange: 1000 * 60 * 60 * 24,
+                    minRange: 1000 * 60 * 60 * 24 * 7,
                   },
                   y: {
                     min: 0,
                     max: "original",
-                    minRange: 10,
+                    minRange:
+                      histories
+                        .map((history) => history.price * history.quantity)
+                        .reduce((a, b) => Math.max(a, b), 0) / 10,
                   },
                 },
               },
