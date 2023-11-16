@@ -14,11 +14,11 @@ const Register = () => {
     }, [isLoggedIn, navigate]);
     
     return (
-        <div className="flex w-full h-screen">
+        <div className="flex w-full h-screen overflow-hidden">
             <div className="hidden lg:flex flex-col h-full w-1/2 items-center justify-center bg-primary">
                 <LoginPanel/>
             </div>
-            <div className="w-full flex flex-col items-center justify-center lg:w-1/2 p-50">
+            <div className="flex items-center justify-center w-full lg:w-1/2 p-50">
                 <RegisterForm/>
             </div>
         </div>

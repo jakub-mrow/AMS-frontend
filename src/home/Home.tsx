@@ -1,29 +1,56 @@
-import {Button, Typography} from "@mui/material";
-import {useNavigate} from "react-router-dom";
-import {useSnackbar} from "../snackbar/use-snackbar.ts";
-import {Severity} from "../snackbar/snackbar-context.ts";
-import {useContext} from "react";
+import { useContext } from "react";
 import AuthContext from "../auth/auth-context";
+import { FaPlus, FaWallet } from 'react-icons/fa';
+import Exchanges from "./Exchanges.tsx";
+import { useAccounts } from "../accounts/use-accounts.ts";
+import { AddAccountDialog } from "../accounts/AddAccountDialog.tsx";
+import { TickerTape } from "react-tradingview-embed"
+import AccountCard from "./AccountCard.tsx";
 
 const Home = () => {
-  const navigate = useNavigate();
-  const alert = useSnackbar();
-  const {isLoggedIn, token} = useContext(AuthContext);
-  console.log(isLoggedIn);
-  console.log(token);
+  useContext(AuthContext);
+
+  const {
+    accounts,
+    openAddDialog,
+    closeAddDialog,
+    isAddDialogOpen,
+    addAccount,
+    goToAccount,
+  } = useAccounts();
+
   return (
-    <>
-      <Typography variant="h1">Hello AMS</Typography>
-      <Button variant="contained" onClick={() => navigate("/accounts")}>
-        Accounts
-      </Button>
-      <Button onClick={() => alert("Snackbar is working!", Severity.SUCCESS)}>
-        Snackbar
-      </Button>
-      <Button onClick={() => alert("Snackbar is working!", Severity.ERROR)}>
-        Other snackbar
-      </Button>
-    </>
+    <div className="container mx-auto p-1">
+      <div className="flex flex-col m-10 space-y-10">
+        <div className="space-y-5">
+          <div className="flex flex-row items-center space-x-4">
+            <FaWallet className="flex text-2xl" />
+            <h1 className="text-2xl font-bold">Your accounts</h1>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-14">
+            {
+              accounts.map((account) => (
+                <AccountCard account={account} goToAccount={goToAccount}/>
+              ))
+            }
+            <div className="w-full p-4 flex items-center justify-center">
+              <button className="w-12 h-12 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-full flex items-center hover:scale-110 transition-transform justify-center" 
+                onClick={openAddDialog}
+              >
+                <FaPlus className="w-6 h-6" />
+              </button>
+              <AddAccountDialog
+                isOpen={isAddDialogOpen}
+                onClose={closeAddDialog}
+                onAdd={addAccount}
+              />
+            </div>
+          </div>
+        </div>
+        <TickerTape widgetProps={{ colorTheme: "light" }}/>
+        <Exchanges />
+      </div>
+    </div>
   );
 };
 

@@ -8,6 +8,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  important: "#root",
   theme: {
     extend: {
       colors: {
@@ -16,6 +17,21 @@ export default {
         white: theme.palette.white.main,
         black: theme.palette.black.main,
       },
+      fontFamily: {
+        poppins: [
+          'Poppins',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'Roboto',
+          'Helvetica Neue',
+          'Arial',
+          'sans-serif',
+          'Apple Color Emoji',
+          'Segoe UI Emoji',
+          'Segoe UI Symbol',
+        ],
+      }
     },
   },
   plugins: [],

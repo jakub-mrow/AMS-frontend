@@ -4,6 +4,7 @@ import { Accounts } from "./accounts/Accounts.tsx";
 import Login from "./login/Login.tsx";
 import Register from "./login/Register.tsx";
 import ProtectedRoute from "./ProtectedRoute.tsx";
+import AssetDetails from "./assetDetails/AssetDetails.tsx";
 import { AccountDetails } from "./accountDetails/AccountDetails.tsx";
 import { StockDetails } from "./stockDetails/StockDetails.tsx";
 
@@ -41,6 +42,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <StockDetails />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/assets/:assetCode"
+        element={
+          <ProtectedRoute>
+            <AssetDetails/>
           </ProtectedRoute>
         }
       />
