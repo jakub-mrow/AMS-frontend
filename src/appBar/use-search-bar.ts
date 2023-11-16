@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
 import AuthContext from '../auth/auth-context';
 import { apiUrl } from '../config';
+import { AlertColor } from '@mui/material';
 
 export interface Result {
     Code: string;
@@ -16,29 +17,51 @@ export interface Result {
 
 const useSearchBar = () => {
     const { token } = useContext(AuthContext);
-    const [searchResults, setSearchResults] = useState<Result[] | null>(null);
+    const [searchResults, setSearchResults] = useState<Result[]>([]);
     const [searchText, setSearchText] = useState<string>('');
-    
-    const getSearchResult = useCallback( async () => {
-        const response = await fetch(`${apiUrl}/api/search/?query_string=${searchText}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-        });
+    const [showAlert, setShowAlert] = useState<string | null>(null);
+    const [alertSeverity, setAlertSeverity] = useState<AlertColor>("error");
 
-        return await response.json();
-    }, [searchText, token])
 
-    
+    const updateAlertSeverity = useCallback((severity: AlertColor) => {
+        setAlertSeverity(severity);
+    }, [])
+
+    const updateAlertText = useCallback((text: string | null) => {
+        setShowAlert(text);
+    }, [])
+
+    const getSearchResult = useCallback(async () => {
+        try {
+
+            const response = await fetch(`${apiUrl}/api/search/?query_string=${searchText}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Could not load search results");
+            }
+
+            return await response.json();
+
+        } catch (error) {
+            setAlertSeverity('error');
+            setShowAlert((error as Error).message);
+        }
+    }, [searchText, token, setAlertSeverity, setShowAlert])
+
+
     useEffect(() => {
         const f = async () => {
-            if (searchText !== ""){
+            if (searchText !== "") {
                 setSearchResults(await getSearchResult());
             } else {
                 setSearchText("")
-                setSearchResults(null);
+                setSearchResults([]);
             }
         }
         const timeoutId = setTimeout(() => {
@@ -50,10 +73,13 @@ const useSearchBar = () => {
         }
     }, [getSearchResult, searchText])
 
-
     return {
         searchResults,
-        setSearchText
+        setSearchText,
+        updateAlertSeverity,
+        updateAlertText,
+        alertSeverity,
+        showAlert
     }
 }
 
