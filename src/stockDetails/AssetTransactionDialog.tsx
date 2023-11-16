@@ -37,14 +37,15 @@ export const AssetTransactionDialog = ({
     date: Dayjs,
   ) => Promise<boolean>;
 }) => {
-  const { control, handleSubmit, reset } = useForm<StockTransactionFormData>({
-    defaultValues: {
-      quantity: 0,
-      price: 0,
-      type: AssetTransactionType.BUY,
-      date: dayjs() as Dayjs | null,
-    },
-  });
+  const { control, handleSubmit, reset, watch } =
+    useForm<StockTransactionFormData>({
+      defaultValues: {
+        quantity: 0,
+        price: 0,
+        type: AssetTransactionType.BUY,
+        date: dayjs() as Dayjs | null,
+      },
+    });
   const cancelHandler = () => {
     onClose();
     reset();
@@ -86,6 +87,11 @@ export const AssetTransactionDialog = ({
                     value={"sell"}
                     control={<Radio />}
                     label="Sell"
+                  />
+                  <FormControlLabel
+                    value={"dividend"}
+                    control={<Radio />}
+                    label="Dividend"
                   />
                 </RadioGroup>
               )}
@@ -142,7 +148,9 @@ export const AssetTransactionDialog = ({
               <TextField
                 {...field}
                 margin="normal"
-                label="Price"
+                label={
+                  watch("type") === "dividend" ? "Dividend per stock" : "Price"
+                }
                 type="number"
                 inputProps={{
                   step: 0.01,
