@@ -1,7 +1,8 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
 import AuthContext from '../auth/auth-context';
 import { apiUrl } from '../config';
-import { AlertColor } from '@mui/material';
+import { useSnackbar } from '../snackbar/use-snackbar';
+import { Severity } from '../snackbar/snackbar-context';
 
 export interface Result {
     Code: string;
@@ -16,20 +17,11 @@ export interface Result {
 }
 
 const useSearchBar = () => {
+    const snackBar = useSnackbar();
+    
     const { token } = useContext(AuthContext);
     const [searchResults, setSearchResults] = useState<Result[]>([]);
     const [searchText, setSearchText] = useState<string>('');
-    const [showAlert, setShowAlert] = useState<string | null>(null);
-    const [alertSeverity, setAlertSeverity] = useState<AlertColor>("error");
-
-
-    const updateAlertSeverity = useCallback((severity: AlertColor) => {
-        setAlertSeverity(severity);
-    }, [])
-
-    const updateAlertText = useCallback((text: string | null) => {
-        setShowAlert(text);
-    }, [])
 
     const getSearchResult = useCallback(async () => {
         try {
@@ -49,10 +41,9 @@ const useSearchBar = () => {
             return await response.json();
 
         } catch (error) {
-            setAlertSeverity('error');
-            setShowAlert((error as Error).message);
+            snackBar("Could not load search results", Severity.ERROR);
         }
-    }, [searchText, token, setAlertSeverity, setShowAlert])
+    }, [searchText, snackBar, token])
 
 
     useEffect(() => {
@@ -75,11 +66,7 @@ const useSearchBar = () => {
 
     return {
         searchResults,
-        setSearchText,
-        updateAlertSeverity,
-        updateAlertText,
-        alertSeverity,
-        showAlert
+        setSearchText
     }
 }
 

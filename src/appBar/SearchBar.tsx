@@ -1,11 +1,10 @@
-import { Alert, Snackbar } from "@mui/material";
 import SearchBarInputField from "./SearchBarInputField";
 import SearchBarResultList from "./SearchBarResultList";
 import useSearchBar from "./use-search-bar";
 
 
 const SearchBar = () => {
-    const { searchResults, setSearchText, showAlert, alertSeverity, updateAlertText } = useSearchBar();
+    const { searchResults, setSearchText } = useSearchBar();
 
     return (
         <>
@@ -13,14 +12,6 @@ const SearchBar = () => {
                 <SearchBarInputField setSearchText={setSearchText} />
                 {searchResults && searchResults.length > 0 && <SearchBarResultList results={searchResults} setSearchText={setSearchText} />}
             </div>
-            <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                key={'bottom' + 'right'}
-                open={showAlert !== null}
-                autoHideDuration={5000}
-                onClose={() => updateAlertText(null)}>
-                <Alert severity={alertSeverity}>{showAlert}</Alert>
-            </Snackbar>
         </>
     );
 }
