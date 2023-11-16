@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Button,
   Dialog,
   DialogActions,
@@ -16,6 +17,7 @@ import { Controller, useForm } from "react-hook-form";
 import { isValidAmount, isValidCurrency } from "../util/validations.ts";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
+import { CURRENCIES } from "../util/currencies.ts";
 
 interface TransactionFormData {
   date: Dayjs | null;
@@ -136,15 +138,29 @@ export const AccountTransactionDialog = ({
           <Controller
             name="currency"
             control={control}
-            rules={{ required: true, validate: isValidCurrency }}
+            rules={{
+              required: true,
+              validate: isValidCurrency,
+            }}
             render={({ field, fieldState: { error } }) => (
-              <TextField
+              <Autocomplete
                 {...field}
-                margin="normal"
-                label="Currency"
+                onChange={(_event, newValue) => {
+                  field.onChange(newValue);
+                }}
+                options={CURRENCIES}
                 fullWidth
-                variant="standard"
-                error={!!error}
+                autoHighlight
+                autoSelect
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    margin="normal"
+                    label="Currency"
+                    variant="standard"
+                    error={!!error}
+                  />
+                )}
               />
             )}
           />
