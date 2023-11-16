@@ -10,7 +10,6 @@ const AssetChartCard: React.FC<AssetDetailsDataProps> = ({ assetDetailsData }) =
                 assetDetailsData.Exchange = "NASDAQ"
             }
             symbol = `${assetDetailsData.Exchange}:${assetDetailsData.Code}`;
-            console.log(symbol);
             break;
         case 'ETF':
             symbol = `${assetDetailsData.Exchange}:${assetDetailsData.Code}`

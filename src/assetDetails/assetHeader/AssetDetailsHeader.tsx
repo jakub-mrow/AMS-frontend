@@ -17,7 +17,6 @@ const AssetDetailsHeader: React.FC<AssetDetailsDataProps> = ({ assetDetailsData 
                 assetDetailsData.Exchange = "NASDAQ"
             }
             symbols = [`${assetDetailsData.Exchange}:${assetDetailsData.Code}`];
-            console.log(symbols);
             break;
         case 'ETF':
             symbols = [`${assetDetailsData.Exchange}:${assetDetailsData.Code}`]

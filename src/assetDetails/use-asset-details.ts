@@ -10,10 +10,10 @@ export interface AssetDetailsDataProps {
 
 export const useAssetDetails = () => {
     const { token } = useContext(AuthContext);
-    const [assetDetailsData, setAssetDetailsData] = useState<Result[] | null>(null);
+    const [assetDetailsData, setAssetDetailsData] = useState<Result | null>(null);
     const { assetCode } = useParams();
 
-    const getSearchResult = useCallback( async () => {
+    const getSearchResult = useCallback( async (): Promise<Result> => {
         const response = await fetch(`${apiUrl}/api/search/?query_string=${assetCode}`, {
             method: "GET",
             headers: {
@@ -21,8 +21,8 @@ export const useAssetDetails = () => {
                 Authorization: `Bearer ${token}`
             },
         });
-
-        return await response.json();
+        const result: Result[] = await response.json();
+        return result[0];
     }, [token, assetCode])
 
 
