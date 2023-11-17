@@ -15,6 +15,8 @@ import { Controller, useForm } from "react-hook-form";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { AssetTransactionType } from "../types.ts";
+import { useState } from "react";
+import { LoadingButton } from "@mui/lab";
 
 interface StockTransactionFormData {
   quantity: number;
@@ -45,6 +47,8 @@ export const AssetTransactionDialog = ({
       date: dayjs() as Dayjs | null,
     },
   });
+  const [isLoading, setIsLoading] = useState(false);
+
   const cancelHandler = () => {
     onClose();
     reset();
@@ -54,10 +58,12 @@ export const AssetTransactionDialog = ({
     if (data.date === null) {
       return;
     }
+    setIsLoading(true);
     onConfirm(data.quantity, data.price, data.type, data.date).then(
       (success) => {
         if (success) {
           onClose();
+          setIsLoading(false);
           reset();
         }
       },
@@ -159,7 +165,13 @@ export const AssetTransactionDialog = ({
         <Button onClick={cancelHandler} color="secondary">
           Cancel
         </Button>
-        <Button onClick={confirmHandler}>Confirm</Button>
+        <LoadingButton
+          loading={isLoading}
+          onClick={confirmHandler}
+          variant="outlined"
+        >
+          <span>Confirm</span>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );

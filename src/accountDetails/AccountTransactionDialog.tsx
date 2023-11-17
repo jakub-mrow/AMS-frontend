@@ -18,6 +18,8 @@ import { isValidAmount, isValidCurrency } from "../util/validations.ts";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { CURRENCIES } from "../util/currencies.ts";
+import { useState } from "react";
+import { LoadingButton } from "@mui/lab";
 
 interface TransactionFormData {
   date: Dayjs | null;
@@ -48,6 +50,7 @@ export const AccountTransactionDialog = ({
       type: AccountTransactionType.DEPOSIT,
     },
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const cancelHandler = () => {
     onClose();
@@ -64,6 +67,7 @@ export const AccountTransactionDialog = ({
     if (transactionFormData.date === null) {
       return;
     }
+    setIsLoading(true);
     onConfirm(
       Number(transactionFormData.amount),
       transactionFormData.currency.trim(),
@@ -71,6 +75,7 @@ export const AccountTransactionDialog = ({
       transactionFormData.date,
     );
     onClose();
+    setIsLoading(false);
     reset();
   });
 
@@ -170,7 +175,13 @@ export const AccountTransactionDialog = ({
         <Button onClick={cancelHandler} color="secondary">
           Cancel
         </Button>
-        <Button onClick={confirmHandler}>Confirm</Button>
+        <LoadingButton
+          loading={isLoading}
+          onClick={confirmHandler}
+          variant="outlined"
+        >
+          <span>Confirm</span>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );

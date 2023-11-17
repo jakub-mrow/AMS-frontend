@@ -12,8 +12,9 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Asset } from "../types.ts";
+import { LoadingButton } from "@mui/lab";
 
 interface StockTransactionFormData {
   ticker: string | null;
@@ -59,6 +60,8 @@ export const StocksDialog = ({
     return [...new Set(allExchanges)];
   }, [stocks]);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const cancelHandler = () => {
     onClose();
     reset();
@@ -68,6 +71,7 @@ export const StocksDialog = ({
     if (data.ticker === null || data.exchange === null || data.date === null) {
       return;
     }
+    setIsLoading(true);
     onConfirm(
       data.ticker.trim(),
       data.exchange.trim(),
@@ -77,6 +81,7 @@ export const StocksDialog = ({
     ).then((success) => {
       if (success) {
         onClose();
+        setIsLoading(false);
         reset();
       }
     });
@@ -216,7 +221,13 @@ export const StocksDialog = ({
         <Button onClick={cancelHandler} color="secondary">
           Cancel
         </Button>
-        <Button onClick={confirmHandler}>Confirm</Button>
+        <LoadingButton
+          loading={isLoading}
+          onClick={confirmHandler}
+          variant="outlined"
+        >
+          <span>Confirm</span>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );

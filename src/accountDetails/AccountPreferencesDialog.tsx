@@ -11,6 +11,8 @@ import { Controller, useForm } from "react-hook-form";
 import { isValidCurrency } from "../util/validations.ts";
 import { CURRENCIES } from "../util/currencies.ts";
 import { AccountPreferences } from "../types.ts";
+import { LoadingButton } from "@mui/lab";
+import { useState } from "react";
 
 interface AccountPreferencesFormData {
   baseCurrency: string;
@@ -33,6 +35,7 @@ export const AccountPreferencesDialog = ({
       ...currentPreferences,
     },
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const cancelHandler = () => {
     onClose();
@@ -40,12 +43,14 @@ export const AccountPreferencesDialog = ({
   };
 
   const confirmHandler = handleSubmit((accountPreferencesFormData) => {
+    setIsLoading(true);
     const newAccountPreferences = {
       baseCurrency: accountPreferencesFormData.baseCurrency.trim(),
       taxCurrency: accountPreferencesFormData.taxCurrency.trim(),
     };
     onConfirm(newAccountPreferences);
     onClose();
+    setIsLoading(false);
     reset(newAccountPreferences);
   });
 
@@ -118,7 +123,13 @@ export const AccountPreferencesDialog = ({
         <Button onClick={cancelHandler} color="secondary">
           Cancel
         </Button>
-        <Button onClick={confirmHandler}>Confirm</Button>
+        <LoadingButton
+          loading={isLoading}
+          onClick={confirmHandler}
+          variant="outlined"
+        >
+          <span>Confirm</span>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );

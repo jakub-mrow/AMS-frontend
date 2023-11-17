@@ -9,6 +9,8 @@ import {
 } from "@mui/material";
 import useInput from "../util/use-input.ts";
 import { AccountInput } from "./accounts-service.ts";
+import { useState } from "react";
+import { LoadingButton } from "@mui/lab";
 
 export const AddAccountDialog = ({
   isOpen,
@@ -20,6 +22,7 @@ export const AddAccountDialog = ({
   onAdd: (account: AccountInput) => void;
 }) => {
   const nameInput = useInput((value) => value.trim().length > 0, "");
+  const [isLoading, setIsLoading] = useState(false);
 
   const cancelHandler = () => {
     onClose();
@@ -28,8 +31,10 @@ export const AddAccountDialog = ({
 
   const addHandler = () => {
     if (!nameInput.isValid) return;
+    setIsLoading(true);
     onAdd({ name: nameInput.value });
     onClose();
+    setIsLoading(false);
     nameInput.reset();
   };
 
@@ -56,7 +61,13 @@ export const AddAccountDialog = ({
         <Button onClick={cancelHandler} color="secondary">
           Cancel
         </Button>
-        <Button onClick={addHandler}>Create</Button>
+        <LoadingButton
+          loading={isLoading}
+          onClick={addHandler}
+          variant="outlined"
+        >
+          <span>Create</span>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );

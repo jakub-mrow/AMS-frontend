@@ -8,9 +8,10 @@ import {
   TextField,
 } from "@mui/material";
 import useInput from "../util/use-input.ts";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { Account } from "../types.ts";
+import { LoadingButton } from "@mui/lab";
 
 export const UpdateAccountDialog = ({
   isOpen,
@@ -27,6 +28,7 @@ export const UpdateAccountDialog = ({
     (value) => value.trim().length > 0,
     accountToUpdate.name,
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     nameInput.reset();
@@ -39,8 +41,10 @@ export const UpdateAccountDialog = ({
 
   const updateHandler = () => {
     if (!nameInput.isValid) return;
+    setIsLoading(true);
     onUpdate(accountToUpdate, nameInput.value);
     onClose();
+    setIsLoading(false);
     nameInput.reset();
   };
 
@@ -65,7 +69,13 @@ export const UpdateAccountDialog = ({
         <Button onClick={cancelHandler} color="secondary">
           Cancel
         </Button>
-        <Button onClick={updateHandler}>Update</Button>
+        <LoadingButton
+          loading={isLoading}
+          onClick={updateHandler}
+          variant="outlined"
+        >
+          <span>Update</span>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );
