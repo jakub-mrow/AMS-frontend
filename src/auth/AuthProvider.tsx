@@ -13,7 +13,7 @@ const AuthProvider = (props: any) => {
         if (localStorage.getItem("token")){
             const token = localStorage.getItem("token");
             setToken(token!);
-            setIsLoggedIn(true)
+            setIsLoggedIn(true);
         }
 
     }, []);

@@ -41,7 +41,7 @@ type AssetDto = {
   ticker: string;
   exchange_code: string;
   quantity: number;
-  value: number;
+  price: number;
   currency: string;
   result: number;
 };
@@ -53,7 +53,7 @@ const fromAssetDto = (stock: AssetDto): Asset => {
     stock.ticker,
     stock.exchange_code,
     stock.quantity,
-    stock.value,
+    stock.price,
     stock.currency,
     stock.result,
   );

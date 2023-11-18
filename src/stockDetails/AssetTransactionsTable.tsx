@@ -46,6 +46,7 @@ export const AssetTransactionsTable = ({
               <TableCell>Type</TableCell>
               <TableCell>Price</TableCell>
               <TableCell>Quantity</TableCell>
+              <TableCell>Total</TableCell>
               <TableCell>Date</TableCell>
             </TableRow>
           </TableHead>
@@ -59,13 +60,16 @@ export const AssetTransactionsTable = ({
             ).map((transaction) => (
               <TableRow key={transaction.id} hover>
                 <TableCell>{transaction.getName()}</TableCell>
+                <TableCell>
+                  {displayCurrency(transaction.price, asset.currency)}
+                </TableCell>
+                <TableCell>{transaction.quantity}</TableCell>
                 <TableCell
                   sx={{ color: transaction.getColor() }}
                 >{`${transaction.getSign()} ${displayCurrency(
-                  transaction.price,
+                  transaction.price * transaction.quantity,
                   asset.currency,
                 )}`}</TableCell>
-                <TableCell>{transaction.quantity}</TableCell>
                 <TableCell>{transaction.date.toLocaleDateString()}</TableCell>
               </TableRow>
             ))}

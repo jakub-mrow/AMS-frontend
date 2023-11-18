@@ -14,6 +14,7 @@ const AuthContext = React.createContext<AuthContextType>({
   onLogin: async (username: string, password: string) => {
     throw new Error("onLogin not implemented");
   },
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onLogout: () => {},
 });
 
