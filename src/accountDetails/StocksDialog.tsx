@@ -88,7 +88,14 @@ export const StocksDialog = ({
   });
 
   return (
-    <Dialog open={isOpen} onClose={cancelHandler}>
+    <Dialog
+      open={isOpen}
+      onClose={cancelHandler}
+      disableRestoreFocus
+      onKeyUp={(event) => {
+        if (event.key === "Enter") confirmHandler().then();
+      }}
+    >
       <DialogTitle>Buy stocks</DialogTitle>
       <DialogContent>
         <form>
@@ -113,6 +120,7 @@ export const StocksDialog = ({
                 renderInput={(params) => (
                   <TextField
                     {...params}
+                    autoFocus
                     margin="normal"
                     label="Ticker"
                     variant="standard"

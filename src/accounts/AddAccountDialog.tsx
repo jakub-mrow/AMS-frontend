@@ -39,13 +39,21 @@ export const AddAccountDialog = ({
   };
 
   return (
-    <Dialog open={isOpen} onClose={cancelHandler}>
+    <Dialog
+      open={isOpen}
+      onClose={cancelHandler}
+      disableRestoreFocus
+      onKeyUp={(event) => {
+        if (event.key === "Enter") addHandler();
+      }}
+    >
       <DialogTitle>Create account</DialogTitle>
       <DialogContent>
         <DialogContentText>
           To create a new account, please enter a name.
         </DialogContentText>
         <TextField
+          autoFocus
           margin="normal"
           id="name"
           label="Name"

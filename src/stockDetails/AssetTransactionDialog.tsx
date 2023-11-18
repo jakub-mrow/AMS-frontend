@@ -71,7 +71,14 @@ export const AssetTransactionDialog = ({
   });
 
   return (
-    <Dialog open={isOpen} onClose={cancelHandler}>
+    <Dialog
+      open={isOpen}
+      onClose={cancelHandler}
+      disableRestoreFocus
+      onKeyUp={(event) => {
+        if (event.key === "Enter") confirmHandler().then();
+      }}
+    >
       <DialogTitle>Buy stocks</DialogTitle>
       <DialogContent>
         <form>
@@ -127,6 +134,7 @@ export const AssetTransactionDialog = ({
             render={({ field, fieldState: { error } }) => (
               <TextField
                 {...field}
+                autoFocus
                 margin="normal"
                 label="Quantity"
                 type="number"

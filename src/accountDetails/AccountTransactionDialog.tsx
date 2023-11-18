@@ -80,7 +80,14 @@ export const AccountTransactionDialog = ({
   });
 
   return (
-    <Dialog open={isOpen} onClose={cancelHandler}>
+    <Dialog
+      open={isOpen}
+      onClose={cancelHandler}
+      disableRestoreFocus
+      onKeyUp={(event) => {
+        if (event.key === "Enter") confirmHandler().then();
+      }}
+    >
       <DialogTitle>Add transaction</DialogTitle>
       <DialogContent>
         <form>
@@ -132,6 +139,7 @@ export const AccountTransactionDialog = ({
             render={({ field, fieldState: { error } }) => (
               <TextField
                 {...field}
+                autoFocus
                 margin="normal"
                 label="Amount"
                 fullWidth

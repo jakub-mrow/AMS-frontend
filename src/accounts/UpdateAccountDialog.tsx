@@ -49,7 +49,14 @@ export const UpdateAccountDialog = ({
   };
 
   return (
-    <Dialog open={isOpen} onClose={cancelHandler}>
+    <Dialog
+      open={isOpen}
+      onClose={cancelHandler}
+      disableRestoreFocus
+      onKeyUp={(event) => {
+        if (event.key === "Enter") updateHandler();
+      }}
+    >
       <DialogTitle>Update account</DialogTitle>
       <DialogContent>
         <DialogContentText>Enter new name for account.</DialogContentText>
@@ -58,6 +65,7 @@ export const UpdateAccountDialog = ({
           id="name"
           label="Name"
           fullWidth
+          autoFocus
           variant="standard"
           value={nameInput.value}
           onChange={nameInput.valueChangeHandler}

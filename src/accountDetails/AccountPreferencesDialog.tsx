@@ -55,7 +55,14 @@ export const AccountPreferencesDialog = ({
   });
 
   return (
-    <Dialog open={isOpen} onClose={cancelHandler}>
+    <Dialog
+      open={isOpen}
+      onClose={cancelHandler}
+      disableRestoreFocus
+      onKeyUp={(event) => {
+        if (event.key === "Enter") confirmHandler().then();
+      }}
+    >
       <DialogTitle>Edit account preferences</DialogTitle>
       <DialogContent>
         <form>
@@ -79,6 +86,7 @@ export const AccountPreferencesDialog = ({
                 renderInput={(params) => (
                   <TextField
                     {...params}
+                    autoFocus
                     margin="normal"
                     label="Base currency"
                     variant="standard"
