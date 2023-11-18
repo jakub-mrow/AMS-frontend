@@ -11,3 +11,5 @@ export function isValidCurrency(input: string): boolean {
 }
 
 export const moneyPattern = /^(?!0*[.,]0*$|[.,]0*$|0*$)\d+[,.]?\d{0,2}$/;
+
+export const quantityPattern = /^[0-9]*$/;

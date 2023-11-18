@@ -15,12 +15,17 @@ import dayjs, { Dayjs } from "dayjs";
 import { useMemo, useState } from "react";
 import { Asset } from "../types.ts";
 import { LoadingButton } from "@mui/lab";
+import {
+  isValidNumber,
+  moneyPattern,
+  quantityPattern,
+} from "../util/validations.ts";
 
 interface StockTransactionFormData {
   ticker: string | null;
   exchange: string | null;
-  quantity: number;
-  price: number;
+  quantity: number | null;
+  price: number | null;
   date: Dayjs | null;
 }
 
@@ -45,8 +50,8 @@ export const StocksDialog = ({
     defaultValues: {
       ticker: null,
       exchange: null,
-      quantity: 0,
-      price: 0,
+      quantity: null,
+      price: null,
       date: dayjs() as Dayjs | null,
     },
   });
@@ -68,7 +73,13 @@ export const StocksDialog = ({
   };
 
   const confirmHandler = handleSubmit((data) => {
-    if (data.ticker === null || data.exchange === null || data.date === null) {
+    if (
+      data.ticker === null ||
+      data.exchange === null ||
+      data.quantity === null ||
+      data.price === null ||
+      data.date === null
+    ) {
       return;
     }
     setIsLoading(true);
@@ -185,8 +196,8 @@ export const StocksDialog = ({
             control={control}
             rules={{
               required: true,
-              validate: (quantity) => quantity > 0,
-              pattern: /^[0-9]*$/,
+              validate: isValidNumber,
+              pattern: quantityPattern,
             }}
             render={({ field, fieldState: { error } }) => (
               <TextField
@@ -205,8 +216,8 @@ export const StocksDialog = ({
             control={control}
             rules={{
               required: true,
-              validate: (price) => price > 0,
-              pattern: /^(?!0*[.,]0*$|[.,]0*$|0*$)\d+[,.]?\d{0,2}$/,
+              validate: isValidNumber,
+              pattern: moneyPattern,
             }}
             render={({ field, fieldState: { error } }) => (
               <TextField
