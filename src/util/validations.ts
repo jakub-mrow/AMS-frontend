@@ -1,14 +1,13 @@
-export function isValidAmount(input: string): boolean {
-  const numValue = parseFloat(input);
-
-  if (isNaN(numValue) || !isFinite(numValue) || numValue < 0) {
+export function isValidNumber(input: number | null): boolean {
+  if (input === null) {
     return false;
   }
 
-  const decimalPart = input.split(".")[1];
-  return !decimalPart || decimalPart.length <= 2;
+  return !(isNaN(input) || !isFinite(input) || input < 0);
 }
 
 export function isValidCurrency(input: string): boolean {
   return input.trim().length > 0;
 }
+
+export const moneyPattern = /^(?!0*[.,]0*$|[.,]0*$|0*$)\d+[,.]?\d{0,2}$/;
