@@ -11,6 +11,8 @@ import { Controller, useForm } from "react-hook-form";
 import { isValidCurrency } from "../util/validations.ts";
 import { CURRENCIES } from "../util/currencies.ts";
 import { AccountPreferences } from "../types.ts";
+import { LoadingButton } from "@mui/lab";
+import { useState } from "react";
 
 interface AccountPreferencesFormData {
   baseCurrency: string;
@@ -33,6 +35,7 @@ export const AccountPreferencesDialog = ({
       ...currentPreferences,
     },
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const cancelHandler = () => {
     onClose();
@@ -40,17 +43,26 @@ export const AccountPreferencesDialog = ({
   };
 
   const confirmHandler = handleSubmit((accountPreferencesFormData) => {
+    setIsLoading(true);
     const newAccountPreferences = {
       baseCurrency: accountPreferencesFormData.baseCurrency.trim(),
       taxCurrency: accountPreferencesFormData.taxCurrency.trim(),
     };
     onConfirm(newAccountPreferences);
     onClose();
+    setIsLoading(false);
     reset(newAccountPreferences);
   });
 
   return (
-    <Dialog open={isOpen} onClose={cancelHandler}>
+    <Dialog
+      open={isOpen}
+      onClose={cancelHandler}
+      disableRestoreFocus
+      onKeyUp={(event) => {
+        if (event.key === "Enter") confirmHandler().then();
+      }}
+    >
       <DialogTitle>Edit account preferences</DialogTitle>
       <DialogContent>
         <form>
@@ -74,6 +86,7 @@ export const AccountPreferencesDialog = ({
                 renderInput={(params) => (
                   <TextField
                     {...params}
+                    autoFocus
                     margin="normal"
                     label="Base currency"
                     variant="standard"
@@ -118,7 +131,13 @@ export const AccountPreferencesDialog = ({
         <Button onClick={cancelHandler} color="secondary">
           Cancel
         </Button>
-        <Button onClick={confirmHandler}>Confirm</Button>
+        <LoadingButton
+          loading={isLoading}
+          onClick={confirmHandler}
+          variant="outlined"
+        >
+          <span>Confirm</span>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );

@@ -124,6 +124,7 @@ export const AccountDetailsMobile = () => {
         isOpen={isDialogOpen(DialogType.TRANSACTION)}
         onClose={closeDialog}
         onConfirm={onConfirmAccountTransactionDialog}
+        baseCurrency={accountPreferences.baseCurrency}
       />
       <StocksDialog
         stocks={stocks}
