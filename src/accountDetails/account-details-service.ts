@@ -276,4 +276,17 @@ export class AccountsDetailsService {
       throw new Error(data.error ?? "Failed to rename account");
     }
   }
+
+  async deleteAccount(id: number): Promise<void> {
+    const response = await fetch(`${this.apiUrl}/api/accounts/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to delete account");
+    }
+  }
 }

@@ -260,6 +260,22 @@ export const useAccountDetails = () => {
     navigate(`./assets/${isin}`, {});
   };
 
+  const deleteAccount = () => {
+    if (!account) {
+      return;
+    }
+    accountDetailsService
+      .deleteAccount(account.id)
+      .then(() => {
+        navigate("/", { replace: true });
+      })
+      .catch((error) => {
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+        }
+      });
+  };
+
   return {
     account,
     accountTransactions,
@@ -279,6 +295,7 @@ export const useAccountDetails = () => {
     openAccountEditDialog: () => setIsAccountEditDialogOpen(true),
     closeAccountEditDialog: () => setIsAccountEditDialogOpen(false),
     onConfirmEdit,
+    deleteAccount,
     goToAsset,
   };
 };

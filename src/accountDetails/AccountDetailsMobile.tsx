@@ -54,6 +54,7 @@ export const AccountDetailsMobile = () => {
     openAccountEditDialog,
     closeAccountEditDialog,
     onConfirmEdit,
+    deleteAccount,
     goToAsset,
   } = useAccountDetails();
 
@@ -136,6 +137,7 @@ export const AccountDetailsMobile = () => {
         isOpen={isAccountEditDialogOpen}
         onClose={closeAccountEditDialog}
         onConfirm={onConfirmEdit}
+        onDelete={deleteAccount}
         currentName={account.name}
         currentPreferences={accountPreferences}
       />

@@ -40,6 +40,7 @@ export const AccountDetailsDesktop = () => {
     openAccountEditDialog,
     closeAccountEditDialog,
     onConfirmEdit,
+    deleteAccount,
     goToAsset,
   } = useAccountDetails();
   const [detailsTab, setDetailsTab] = useState(DetailsTabs.STOCKS);
@@ -138,6 +139,7 @@ export const AccountDetailsDesktop = () => {
         isOpen={isAccountEditDialogOpen}
         onClose={closeAccountEditDialog}
         onConfirm={onConfirmEdit}
+        onDelete={deleteAccount}
         currentName={account.name}
         currentPreferences={accountPreferences}
       />
