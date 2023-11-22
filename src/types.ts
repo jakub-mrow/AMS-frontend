@@ -176,3 +176,8 @@ export type AssetBalanceHistory = {
   price: number;
   result: number;
 };
+
+export type AccountHistory = {
+  date: Dayjs;
+  amount: number;
+};

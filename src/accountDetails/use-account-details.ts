@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   Account,
+  AccountHistory,
   AccountPreferences,
   AccountTransaction,
   AccountTransactionType,
@@ -74,6 +75,8 @@ export const useAccountDetails = () => {
   const [cryptocurrencies, setCryptocurrencies] = useState<Asset[]>([]);
   const [accountPreferences, setAccountPreferences] =
     useState<AccountPreferences>(DEFAULT_ACCOUNT_PREFERENCES);
+  const [isAccountHistoryLoading, setIsAccountHistoryLoading] = useState(false);
+  const [accountHistory, setAccountHistory] = useState<AccountHistory[]>([]);
   const [dialogType, setDialogType] = useState<DialogType>(
     DialogType.TRANSACTION,
   );
@@ -98,6 +101,7 @@ export const useAccountDetails = () => {
     setIsDepositsLoading(true);
     setIsCryptocurrenciesLoading(true);
     setIsAccountPreferencesLoading(true);
+    setIsAccountHistoryLoading(true);
     if (!id) {
       return;
     }
@@ -167,6 +171,13 @@ export const useAccountDetails = () => {
           navigate("/accounts", { replace: true });
         }
       });
+    accountDetailsService
+      .fetchAccountHistory(Number(id))
+      .then((data) => {
+        setAccountHistory(data);
+        setIsAccountHistoryLoading(false);
+      })
+      .catch(handleError);
   }, [id, alert, accountDetailsService, navigate]);
 
   useEffect(() => {
@@ -263,7 +274,9 @@ export const useAccountDetails = () => {
     deposits,
     cryptocurrencies,
     accountPreferences,
+    accountHistory,
     isLoading,
+    isAccountHistoryLoading,
     openDialog,
     closeDialog,
     isDialogOpen,
