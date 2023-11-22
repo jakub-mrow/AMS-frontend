@@ -45,16 +45,17 @@ export const AccountDetailsDesktop = () => {
   const [detailsTab, setDetailsTab] = useState(DetailsTabs.STOCKS);
 
   const getAssetsOfType = (type: DetailsTabs): Asset[] => {
+    let assets: Asset[] = [];
     if (type === DetailsTabs.STOCKS) {
-      return stocks;
+      assets = stocks;
     } else if (type === DetailsTabs.BONDS) {
-      return bonds;
+      assets = bonds;
     } else if (type === DetailsTabs.DEPOSITS) {
-      return deposits;
+      assets = deposits;
     } else if (type === DetailsTabs.CRYPTO) {
-      return cryptocurrencies;
+      assets = cryptocurrencies;
     }
-    return [];
+    return assets.filter((asset) => asset.quantity > 0);
   };
 
   if (!account) {
@@ -125,6 +126,7 @@ export const AccountDetailsDesktop = () => {
         isOpen={isDialogOpen(DialogType.TRANSACTION)}
         onClose={closeDialog}
         onConfirm={onConfirmAccountTransactionDialog}
+        baseCurrency={accountPreferences.baseCurrency}
       />
       <StocksDialog
         stocks={stocks}

@@ -33,13 +33,13 @@ export const AssetsListWithTabs = ({
   const getAssetsOfType = (type: AssetsType): Asset[] => {
     switch (type) {
       case AssetsType.STOCKS:
-        return stocks;
+        return stocks.filter((asset) => asset.quantity > 0);
       case AssetsType.BONDS:
-        return bonds;
+        return bonds.filter((asset) => asset.quantity > 0);
       case AssetsType.DEPOSITS:
-        return deposits;
+        return deposits.filter((asset) => asset.quantity > 0);
       case AssetsType.CRYPTO:
-        return cryptocurrencies;
+        return cryptocurrencies.filter((asset) => asset.quantity > 0);
       default:
         exhaustiveGuard(type);
     }

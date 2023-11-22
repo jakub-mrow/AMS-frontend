@@ -15,10 +15,17 @@ import { Controller, useForm } from "react-hook-form";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { AssetTransactionType } from "../types.ts";
+import { useState } from "react";
+import { LoadingButton } from "@mui/lab";
+import {
+  isValidNumber,
+  moneyPattern,
+  quantityPattern,
+} from "../util/validations.ts";
 
 interface StockTransactionFormData {
-  quantity: number;
-  price: number;
+  quantity: number | null;
+  price: number | null;
   type: AssetTransactionType;
   date: Dayjs | null;
 }
@@ -40,25 +47,29 @@ export const AssetTransactionDialog = ({
   const { control, handleSubmit, reset, watch } =
     useForm<StockTransactionFormData>({
       defaultValues: {
-        quantity: 0,
-        price: 0,
+        quantity: null,
+        price: null,
         type: AssetTransactionType.BUY,
         date: dayjs() as Dayjs | null,
       },
-    });
+  });
+  const [isLoading, setIsLoading] = useState(false);
+
   const cancelHandler = () => {
     onClose();
     reset();
   };
 
   const confirmHandler = handleSubmit((data) => {
-    if (data.date === null) {
+    if (data.price === null || data.quantity === null || data.date === null) {
       return;
     }
+    setIsLoading(true);
     onConfirm(data.quantity, data.price, data.type, data.date).then(
       (success) => {
         if (success) {
           onClose();
+          setIsLoading(false);
           reset();
         }
       },
@@ -66,7 +77,14 @@ export const AssetTransactionDialog = ({
   });
 
   return (
-    <Dialog open={isOpen} onClose={cancelHandler}>
+    <Dialog
+      open={isOpen}
+      onClose={cancelHandler}
+      disableRestoreFocus
+      onKeyUp={(event) => {
+        if (event.key === "Enter") confirmHandler().then();
+      }}
+    >
       <DialogTitle>Buy stocks</DialogTitle>
       <DialogContent>
         <form>
@@ -121,12 +139,13 @@ export const AssetTransactionDialog = ({
             control={control}
             rules={{
               required: true,
-              validate: (quantity) => quantity > 0,
-              pattern: /^[0-9]*$/,
+              validate: isValidNumber,
+              pattern: quantityPattern,
             }}
             render={({ field, fieldState: { error } }) => (
               <TextField
                 {...field}
+                autoFocus
                 margin="normal"
                 label="Quantity"
                 type="number"
@@ -141,8 +160,8 @@ export const AssetTransactionDialog = ({
             control={control}
             rules={{
               required: true,
-              validate: (price) => price > 0,
-              pattern: /^(?!0*[.,]0*$|[.,]0*$|0*$)\d+[,.]?\d{0,2}$/,
+              validate: isValidNumber,
+              pattern: moneyPattern,
             }}
             render={({ field, fieldState: { error } }) => (
               <TextField
@@ -167,7 +186,13 @@ export const AssetTransactionDialog = ({
         <Button onClick={cancelHandler} color="secondary">
           Cancel
         </Button>
-        <Button onClick={confirmHandler}>Confirm</Button>
+        <LoadingButton
+          loading={isLoading}
+          onClick={confirmHandler}
+          variant="outlined"
+        >
+          <span>Confirm</span>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );

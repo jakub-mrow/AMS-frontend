@@ -12,14 +12,20 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Asset } from "../types.ts";
+import { LoadingButton } from "@mui/lab";
+import {
+  isValidNumber,
+  moneyPattern,
+  quantityPattern,
+} from "../util/validations.ts";
 
 interface StockTransactionFormData {
   ticker: string | null;
   exchange: string | null;
-  quantity: number;
-  price: number;
+  quantity: number | null;
+  price: number | null;
   date: Dayjs | null;
 }
 
@@ -44,8 +50,8 @@ export const StocksDialog = ({
     defaultValues: {
       ticker: null,
       exchange: null,
-      quantity: 0,
-      price: 0,
+      quantity: null,
+      price: null,
       date: dayjs() as Dayjs | null,
     },
   });
@@ -59,15 +65,24 @@ export const StocksDialog = ({
     return [...new Set(allExchanges)];
   }, [stocks]);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const cancelHandler = () => {
     onClose();
     reset();
   };
 
   const confirmHandler = handleSubmit((data) => {
-    if (data.ticker === null || data.exchange === null || data.date === null) {
+    if (
+      data.ticker === null ||
+      data.exchange === null ||
+      data.quantity === null ||
+      data.price === null ||
+      data.date === null
+    ) {
       return;
     }
+    setIsLoading(true);
     onConfirm(
       data.ticker.trim(),
       data.exchange.trim(),
@@ -77,13 +92,21 @@ export const StocksDialog = ({
     ).then((success) => {
       if (success) {
         onClose();
+        setIsLoading(false);
         reset();
       }
     });
   });
 
   return (
-    <Dialog open={isOpen} onClose={cancelHandler}>
+    <Dialog
+      open={isOpen}
+      onClose={cancelHandler}
+      disableRestoreFocus
+      onKeyUp={(event) => {
+        if (event.key === "Enter") confirmHandler().then();
+      }}
+    >
       <DialogTitle>Buy stocks</DialogTitle>
       <DialogContent>
         <form>
@@ -108,6 +131,7 @@ export const StocksDialog = ({
                 renderInput={(params) => (
                   <TextField
                     {...params}
+                    autoFocus
                     margin="normal"
                     label="Ticker"
                     variant="standard"
@@ -172,8 +196,8 @@ export const StocksDialog = ({
             control={control}
             rules={{
               required: true,
-              validate: (quantity) => quantity > 0,
-              pattern: /^[0-9]*$/,
+              validate: isValidNumber,
+              pattern: quantityPattern,
             }}
             render={({ field, fieldState: { error } }) => (
               <TextField
@@ -192,8 +216,8 @@ export const StocksDialog = ({
             control={control}
             rules={{
               required: true,
-              validate: (price) => price > 0,
-              pattern: /^(?!0*[.,]0*$|[.,]0*$|0*$)\d+[,.]?\d{0,2}$/,
+              validate: isValidNumber,
+              pattern: moneyPattern,
             }}
             render={({ field, fieldState: { error } }) => (
               <TextField
@@ -216,7 +240,13 @@ export const StocksDialog = ({
         <Button onClick={cancelHandler} color="secondary">
           Cancel
         </Button>
-        <Button onClick={confirmHandler}>Confirm</Button>
+        <LoadingButton
+          loading={isLoading}
+          onClick={confirmHandler}
+          variant="outlined"
+        >
+          <span>Confirm</span>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );

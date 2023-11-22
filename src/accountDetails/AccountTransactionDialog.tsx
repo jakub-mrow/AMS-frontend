@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Button,
   Dialog,
   DialogActions,
@@ -13,13 +14,20 @@ import {
 } from "@mui/material";
 import { AccountTransactionType } from "../types.ts";
 import { Controller, useForm } from "react-hook-form";
-import { isValidAmount, isValidCurrency } from "../util/validations.ts";
+import {
+  isValidCurrency,
+  isValidNumber,
+  moneyPattern,
+} from "../util/validations.ts";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
+import { CURRENCIES } from "../util/currencies.ts";
+import { useState } from "react";
+import { LoadingButton } from "@mui/lab";
 
 interface TransactionFormData {
   date: Dayjs | null;
-  amount: string;
+  amount: number | null;
   currency: string;
   type: string;
 }
@@ -28,6 +36,7 @@ export const AccountTransactionDialog = ({
   isOpen,
   onClose,
   onConfirm,
+  baseCurrency,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -37,15 +46,17 @@ export const AccountTransactionDialog = ({
     type: AccountTransactionType,
     date: Dayjs,
   ) => void;
+  baseCurrency: string;
 }) => {
   const { control, handleSubmit, reset } = useForm<TransactionFormData>({
     defaultValues: {
       date: dayjs() as Dayjs | null,
-      amount: "",
-      currency: "",
+      amount: null as number | null,
+      currency: baseCurrency,
       type: AccountTransactionType.DEPOSIT,
     },
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const cancelHandler = () => {
     onClose();
@@ -59,21 +70,33 @@ export const AccountTransactionDialog = ({
     } else {
       transactionType = AccountTransactionType.WITHDRAWAL;
     }
-    if (transactionFormData.date === null) {
+    if (
+      transactionFormData.amount === null ||
+      transactionFormData.date === null
+    ) {
       return;
     }
+    setIsLoading(true);
     onConfirm(
-      Number(transactionFormData.amount),
+      transactionFormData.amount,
       transactionFormData.currency.trim(),
       transactionType,
       transactionFormData.date,
     );
     onClose();
+    setIsLoading(false);
     reset();
   });
 
   return (
-    <Dialog open={isOpen} onClose={cancelHandler}>
+    <Dialog
+      open={isOpen}
+      onClose={cancelHandler}
+      disableRestoreFocus
+      onKeyUp={(event) => {
+        if (event.key === "Enter") confirmHandler().then();
+      }}
+    >
       <DialogTitle>Add transaction</DialogTitle>
       <DialogContent>
         <form>
@@ -121,10 +144,15 @@ export const AccountTransactionDialog = ({
           <Controller
             name="amount"
             control={control}
-            rules={{ required: true, validate: isValidAmount }}
+            rules={{
+              required: true,
+              validate: isValidNumber,
+              pattern: moneyPattern,
+            }}
             render={({ field, fieldState: { error } }) => (
               <TextField
                 {...field}
+                autoFocus
                 margin="normal"
                 label="Amount"
                 fullWidth
@@ -136,15 +164,29 @@ export const AccountTransactionDialog = ({
           <Controller
             name="currency"
             control={control}
-            rules={{ required: true, validate: isValidCurrency }}
+            rules={{
+              required: true,
+              validate: isValidCurrency,
+            }}
             render={({ field, fieldState: { error } }) => (
-              <TextField
+              <Autocomplete
                 {...field}
-                margin="normal"
-                label="Currency"
+                onChange={(_event, newValue) => {
+                  field.onChange(newValue);
+                }}
+                options={CURRENCIES}
                 fullWidth
-                variant="standard"
-                error={!!error}
+                autoHighlight
+                autoSelect
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    margin="normal"
+                    label="Currency"
+                    variant="standard"
+                    error={!!error}
+                  />
+                )}
               />
             )}
           />
@@ -154,7 +196,13 @@ export const AccountTransactionDialog = ({
         <Button onClick={cancelHandler} color="secondary">
           Cancel
         </Button>
-        <Button onClick={confirmHandler}>Confirm</Button>
+        <LoadingButton
+          loading={isLoading}
+          onClick={confirmHandler}
+          variant="outlined"
+        >
+          <span>Confirm</span>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );
