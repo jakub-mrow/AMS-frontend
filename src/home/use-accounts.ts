@@ -19,10 +19,6 @@ export const useAccounts = () => {
   }, [token]);
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [updateDialogData, setUpdateDialogData] = useState<UpdateDialogData>({
-    isOpen: false,
-    account: { id: 0, userId: 1, name: "", balances: [] },
-  });
   const alert = useSnackbar();
   const navigate = useNavigate();
 
@@ -47,51 +43,10 @@ export const useAccounts = () => {
     setIsAddDialogOpen(false);
   }, []);
 
-  const openUpdateDialog = useCallback((account: Account) => {
-    setUpdateDialogData({ isOpen: true, account: account });
-  }, []);
-
-  const closeUpdateDialog = useCallback(() => {
-    setUpdateDialogData({
-      isOpen: false,
-      account: { id: 0, userId: 1, name: "", balances: [] },
-    });
-  }, []);
-
   const addAccount = useCallback(
     async (account: AccountInput) => {
       try {
         await accountsService.postAccount(account);
-        const newAccounts = await accountsService.fetchAccounts();
-        setAccounts(newAccounts);
-      } catch (error) {
-        if (error instanceof Error) {
-          alert(error.message, Severity.ERROR);
-        }
-      }
-    },
-    [accountsService, alert],
-  );
-
-  const removeAccount = useCallback(
-    async (accountId: number) => {
-      try {
-        await accountsService.deleteAccount(accountId);
-        const newAccounts = await accountsService.fetchAccounts();
-        setAccounts(newAccounts);
-      } catch (error) {
-        if (error instanceof Error) {
-          alert(error.message, Severity.ERROR);
-        }
-      }
-    },
-    [accountsService, alert],
-  );
-
-  const updateAccount = useCallback(
-    async (account: Account, newName: string) => {
-      try {
-        await accountsService.renameAccount(account, newName);
         const newAccounts = await accountsService.fetchAccounts();
         setAccounts(newAccounts);
       } catch (error) {
@@ -115,12 +70,7 @@ export const useAccounts = () => {
     openAddDialog,
     closeAddDialog,
     isAddDialogOpen,
-    openUpdateDialog,
-    closeUpdateDialog,
-    updateDialogData,
     addAccount,
-    removeAccount,
-    updateAccount,
     goToAccount,
   };
 };

@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "./home/Home.tsx";
-import { Accounts } from "./accounts/Accounts.tsx";
 import Login from "./login/Login.tsx";
 import Register from "./login/Register.tsx";
 import ProtectedRoute from "./ProtectedRoute.tsx";
@@ -18,14 +17,6 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <Home />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/accounts"
-        element={
-          <ProtectedRoute>
-            <Accounts />
           </ProtectedRoute>
         }
       />
@@ -49,7 +40,7 @@ const AppRoutes = () => {
         path="/assets/:assetCode"
         element={
           <ProtectedRoute>
-            <AssetDetails/>
+            <AssetDetails />
           </ProtectedRoute>
         }
       />

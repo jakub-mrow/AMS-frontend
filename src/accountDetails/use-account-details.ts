@@ -104,7 +104,7 @@ export const useAccountDetails = () => {
     const handleError = (error: unknown) => {
       if (error instanceof Error) {
         alert(error.message, Severity.ERROR);
-        navigate("/accounts", { replace: true });
+        navigate("/", { replace: true });
       }
     };
     accountDetailsService
@@ -116,7 +116,7 @@ export const useAccountDetails = () => {
       .catch((error) => {
         if (error instanceof Error) {
           alert(error.message, Severity.ERROR);
-          navigate("/accounts", { replace: true });
+          navigate("/", { replace: true });
         }
       });
     accountDetailsService
@@ -163,7 +163,7 @@ export const useAccountDetails = () => {
       .catch((error) => {
         if (error instanceof Error) {
           alert(error.message, Severity.ERROR);
-          navigate("/accounts", { replace: true });
+          navigate("/", { replace: true });
         }
       });
   }, [id, alert, accountDetailsService, navigate]);
