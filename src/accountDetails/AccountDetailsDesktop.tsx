@@ -138,6 +138,7 @@ export const AccountDetailsDesktop = () => {
         isOpen={isAccountEditDialogOpen}
         onClose={closeAccountEditDialog}
         onConfirm={onConfirmEdit}
+        currentName={account.name}
         currentPreferences={accountPreferences}
       />
     </>

@@ -8,13 +8,14 @@ import {
   TextField,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-import { isValidCurrency } from "../util/validations.ts";
+import { isValidCurrency, isValidName } from "../util/validations.ts";
 import { CURRENCIES } from "../util/currencies.ts";
 import { AccountPreferences } from "../types.ts";
 import { LoadingButton } from "@mui/lab";
 import { useState } from "react";
 
 interface AccountEditFormData {
+  name: string;
   baseCurrency: string;
   taxCurrency: string;
 }
@@ -23,15 +24,18 @@ export const AccountEditDialog = ({
   isOpen,
   onClose,
   onConfirm,
+  currentName,
   currentPreferences,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (accountPreferences: AccountPreferences) => void;
+  onConfirm: (name: string, accountPreferences: AccountPreferences) => void;
+  currentName: string;
   currentPreferences: AccountPreferences;
 }) => {
   const { control, handleSubmit, reset } = useForm<AccountEditFormData>({
     defaultValues: {
+      name: currentName,
       ...currentPreferences,
     },
   });
@@ -44,14 +48,18 @@ export const AccountEditDialog = ({
 
   const confirmHandler = handleSubmit((accountEditFormData) => {
     setIsLoading(true);
+    const newName = accountEditFormData.name.trim();
     const newAccountPreferences = {
       baseCurrency: accountEditFormData.baseCurrency.trim(),
       taxCurrency: accountEditFormData.taxCurrency.trim(),
     };
-    onConfirm(newAccountPreferences);
+    onConfirm(newName, newAccountPreferences);
     onClose();
     setIsLoading(false);
-    reset(newAccountPreferences);
+    reset({
+      name: newName,
+      ...newAccountPreferences,
+    });
   });
 
   return (
@@ -63,9 +71,28 @@ export const AccountEditDialog = ({
         if (event.key === "Enter") confirmHandler().then();
       }}
     >
-      <DialogTitle>Edit account preferences</DialogTitle>
+      <DialogTitle>Edit account</DialogTitle>
       <DialogContent>
         <form>
+          <Controller
+            name="name"
+            control={control}
+            rules={{
+              required: true,
+              validate: isValidName,
+            }}
+            render={({ field, fieldState: { error } }) => (
+              <TextField
+                {...field}
+                margin="normal"
+                label="Name"
+                type="text"
+                fullWidth
+                variant="standard"
+                error={!!error}
+              />
+            )}
+          />
           <Controller
             name="baseCurrency"
             control={control}

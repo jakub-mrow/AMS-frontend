@@ -136,6 +136,7 @@ export const AccountDetailsMobile = () => {
         isOpen={isAccountEditDialogOpen}
         onClose={closeAccountEditDialog}
         onConfirm={onConfirmEdit}
+        currentName={account.name}
         currentPreferences={accountPreferences}
       />
       {fabs.map((fab) => (

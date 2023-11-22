@@ -236,12 +236,18 @@ export const useAccountDetails = () => {
     }
   };
 
-  const onConfirmPreferences = (accountPreferences: AccountPreferences) => {
+  const onConfirmEdit = (
+    name: string,
+    accountPreferences: AccountPreferences,
+  ) => {
     if (!account) {
       return;
     }
     accountDetailsService
       .updateAccountPreferences(account.id, accountPreferences)
+      .then(() => {
+        return accountDetailsService.renameAccount(account.id, name);
+      })
       .then(() => refreshAccountData())
       .catch((error) => {
         if (error instanceof Error) {
@@ -272,7 +278,7 @@ export const useAccountDetails = () => {
     isAccountEditDialogOpen: isAccountEditDialogOpen,
     openAccountEditDialog: () => setIsAccountEditDialogOpen(true),
     closeAccountEditDialog: () => setIsAccountEditDialogOpen(false),
-    onConfirmEdit: onConfirmPreferences,
+    onConfirmEdit,
     goToAsset,
   };
 };
