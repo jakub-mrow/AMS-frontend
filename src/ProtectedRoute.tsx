@@ -1,14 +1,16 @@
 import { useContext } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import AuthContext from "./auth/auth-context"; // Assuming AuthContext is exported as AuthContext
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-    const { isLoggedIn } = useContext(AuthContext);
-    if (!isLoggedIn) {
-        return <Navigate to="/login" replace />;
-    }
+  const { isLoggedIn } = useContext(AuthContext);
+  const location = useLocation();
+  const path = location.pathname;
+  if (!isLoggedIn) {
+    return <Navigate to={"/login?redirect=" + path} />;
+  }
 
-    return children;
+  return children;
 };
 
 export default ProtectedRoute;
