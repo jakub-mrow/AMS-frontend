@@ -14,12 +14,12 @@ import { AccountPreferences } from "../types.ts";
 import { LoadingButton } from "@mui/lab";
 import { useState } from "react";
 
-interface AccountPreferencesFormData {
+interface AccountEditFormData {
   baseCurrency: string;
   taxCurrency: string;
 }
 
-export const AccountPreferencesDialog = ({
+export const AccountEditDialog = ({
   isOpen,
   onClose,
   onConfirm,
@@ -30,7 +30,7 @@ export const AccountPreferencesDialog = ({
   onConfirm: (accountPreferences: AccountPreferences) => void;
   currentPreferences: AccountPreferences;
 }) => {
-  const { control, handleSubmit, reset } = useForm<AccountPreferencesFormData>({
+  const { control, handleSubmit, reset } = useForm<AccountEditFormData>({
     defaultValues: {
       ...currentPreferences,
     },
@@ -42,11 +42,11 @@ export const AccountPreferencesDialog = ({
     reset();
   };
 
-  const confirmHandler = handleSubmit((accountPreferencesFormData) => {
+  const confirmHandler = handleSubmit((accountEditFormData) => {
     setIsLoading(true);
     const newAccountPreferences = {
-      baseCurrency: accountPreferencesFormData.baseCurrency.trim(),
-      taxCurrency: accountPreferencesFormData.taxCurrency.trim(),
+      baseCurrency: accountEditFormData.baseCurrency.trim(),
+      taxCurrency: accountEditFormData.taxCurrency.trim(),
     };
     onConfirm(newAccountPreferences);
     onClose();

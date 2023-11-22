@@ -19,7 +19,7 @@ import { AccountTransactionDialog } from "./AccountTransactionDialog.tsx";
 import { Summary } from "./Summary.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { Loading } from "../util/Loading.tsx";
-import { AccountPreferencesDialog } from "./AccountPreferencesDialog.tsx";
+import { AccountEditDialog } from "./AccountEditDialog.tsx";
 import { StocksDialog } from "./StocksDialog.tsx";
 
 enum MobilePage {
@@ -50,10 +50,10 @@ export const AccountDetailsMobile = () => {
     onConfirmAccountTransactionDialog,
     onConfirmStockDialog,
     onDeleteTransaction,
-    isAccountPreferencesDialogOpen,
-    openAccountPreferencesDialog,
-    closeAccountPreferencesDialog,
-    onConfirmPreferences,
+    isAccountEditDialogOpen,
+    openAccountEditDialog,
+    closeAccountEditDialog,
+    onConfirmEdit,
     goToAsset,
   } = useAccountDetails();
 
@@ -73,7 +73,7 @@ export const AccountDetailsMobile = () => {
     {
       value: MobilePage.SUMMARY,
       icon: <Settings />,
-      onClick: openAccountPreferencesDialog,
+      onClick: openAccountEditDialog,
     },
   ];
 
@@ -104,8 +104,8 @@ export const AccountDetailsMobile = () => {
         <Summary
           isLoading={isLoading}
           account={account}
-          showOpenAccountPreferencesDialog={false}
-          openAccountPreferencesDialog={openAccountPreferencesDialog}
+          showOpenAccountEditDialog={false}
+          openAccountEditDialog={openAccountEditDialog}
         />
       )}
       <BottomNavigation
@@ -132,10 +132,10 @@ export const AccountDetailsMobile = () => {
         onClose={closeDialog}
         onConfirm={onConfirmStockDialog}
       />
-      <AccountPreferencesDialog
-        isOpen={isAccountPreferencesDialogOpen}
-        onClose={closeAccountPreferencesDialog}
-        onConfirm={onConfirmPreferences}
+      <AccountEditDialog
+        isOpen={isAccountEditDialogOpen}
+        onClose={closeAccountEditDialog}
+        onConfirm={onConfirmEdit}
         currentPreferences={accountPreferences}
       />
       {fabs.map((fab) => (

@@ -7,7 +7,7 @@ import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { useState } from "react";
 import { TransactionsDesktop } from "./TransactionsDesktop.tsx";
 import { AssetsDesktop } from "./AssetsDesktop.tsx";
-import { AccountPreferencesDialog } from "./AccountPreferencesDialog.tsx";
+import { AccountEditDialog } from "./AccountEditDialog.tsx";
 import { Asset } from "../types.ts";
 import { StocksDialog } from "./StocksDialog.tsx";
 
@@ -36,10 +36,10 @@ export const AccountDetailsDesktop = () => {
     onConfirmAccountTransactionDialog,
     onConfirmStockDialog,
     onDeleteTransaction,
-    isAccountPreferencesDialogOpen,
-    openAccountPreferencesDialog,
-    closeAccountPreferencesDialog,
-    onConfirmPreferences,
+    isAccountEditDialogOpen,
+    openAccountEditDialog,
+    closeAccountEditDialog,
+    onConfirmEdit,
     goToAsset,
   } = useAccountDetails();
   const [detailsTab, setDetailsTab] = useState(DetailsTabs.STOCKS);
@@ -117,8 +117,8 @@ export const AccountDetailsDesktop = () => {
           <Summary
             isLoading={isLoading}
             account={account}
-            showOpenAccountPreferencesDialog={true}
-            openAccountPreferencesDialog={openAccountPreferencesDialog}
+            showOpenAccountEditDialog={true}
+            openAccountEditDialog={openAccountEditDialog}
           />
         </Paper>
       </Container>
@@ -134,10 +134,10 @@ export const AccountDetailsDesktop = () => {
         onClose={closeDialog}
         onConfirm={onConfirmStockDialog}
       />
-      <AccountPreferencesDialog
-        isOpen={isAccountPreferencesDialogOpen}
-        onClose={closeAccountPreferencesDialog}
-        onConfirm={onConfirmPreferences}
+      <AccountEditDialog
+        isOpen={isAccountEditDialogOpen}
+        onClose={closeAccountEditDialog}
+        onConfirm={onConfirmEdit}
         currentPreferences={accountPreferences}
       />
     </>
