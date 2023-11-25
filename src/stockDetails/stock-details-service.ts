@@ -142,6 +142,9 @@ export class StockDetailsService {
     price: number,
     transactionType: AssetTransactionType,
     date: Dayjs,
+    payCurrency: string | null,
+    exchangeRate: number | null,
+    commission: number | null,
   ) {
     const response = await fetch(
       `${this.apiUrl}/api/stock/${accountId}/transaction`,
@@ -157,6 +160,9 @@ export class StockDetailsService {
           price,
           transaction_type: transactionType,
           date,
+          pay_currency: payCurrency,
+          exchange_rate: exchangeRate,
+          commission,
         }),
       },
     );
