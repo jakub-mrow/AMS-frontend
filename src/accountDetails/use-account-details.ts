@@ -197,6 +197,9 @@ export const useAccountDetails = () => {
     quantity: number,
     price: number,
     date: Dayjs,
+    payCurrency: string | null,
+    exchangeRate: number | null,
+    commission: number | null,
   ) => {
     if (!account) {
       return false;
@@ -209,6 +212,9 @@ export const useAccountDetails = () => {
         quantity,
         price,
         date,
+        payCurrency,
+        exchangeRate,
+        commission,
       );
       refreshAccountData();
     } catch (error) {

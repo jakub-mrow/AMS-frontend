@@ -1,5 +1,6 @@
 import {
   Autocomplete,
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -16,10 +17,12 @@ import { useMemo, useState } from "react";
 import { Asset } from "../types.ts";
 import { LoadingButton } from "@mui/lab";
 import {
+  isValidCurrency,
   isValidNumber,
   moneyPattern,
   quantityPattern,
 } from "../util/validations.ts";
+import { CURRENCIES } from "../util/currencies.ts";
 
 interface StockTransactionFormData {
   ticker: string | null;
@@ -27,6 +30,9 @@ interface StockTransactionFormData {
   quantity: number | null;
   price: number | null;
   date: Dayjs | null;
+  payCurrency: string | null;
+  exchangeRate: number | null;
+  commission: number | null;
 }
 
 export const StocksDialog = ({
@@ -44,17 +50,24 @@ export const StocksDialog = ({
     quantity: number,
     price: number,
     date: Dayjs,
+    payCurrency: string | null,
+    exchangeRate: number | null,
+    commission: number | null,
   ) => Promise<boolean>;
 }) => {
-  const { control, handleSubmit, reset } = useForm<StockTransactionFormData>({
-    defaultValues: {
-      ticker: null,
-      exchange: null,
-      quantity: null,
-      price: null,
-      date: dayjs() as Dayjs | null,
-    },
-  });
+  const { control, handleSubmit, reset, watch } =
+    useForm<StockTransactionFormData>({
+      defaultValues: {
+        ticker: null,
+        exchange: null,
+        quantity: null,
+        price: null,
+        date: dayjs() as Dayjs | null,
+        payCurrency: null,
+        exchangeRate: null,
+        commission: null,
+      },
+    });
   const tickers: string[] = useMemo(() => {
     const allTickers = stocks.map((stock) => stock.ticker);
     return [...new Set(allTickers)];
@@ -82,6 +95,12 @@ export const StocksDialog = ({
     ) {
       return;
     }
+    let payCurrency = null;
+    let exchangeRate = null;
+    if (data.payCurrency !== null && data.exchangeRate !== null) {
+      payCurrency = data.payCurrency;
+      exchangeRate = data.exchangeRate;
+    }
     setIsLoading(true);
     onConfirm(
       data.ticker.trim(),
@@ -89,6 +108,9 @@ export const StocksDialog = ({
       data.quantity,
       data.price,
       data.date,
+      payCurrency,
+      exchangeRate,
+      data.commission,
     ).then((success) => {
       if (success) {
         onClose();
@@ -224,6 +246,87 @@ export const StocksDialog = ({
                 {...field}
                 margin="normal"
                 label="Price"
+                type="number"
+                inputProps={{
+                  step: 0.01,
+                }}
+                fullWidth
+                variant="standard"
+                error={!!error}
+              />
+            )}
+          />
+          <Box sx={{ display: "flex" }}>
+            <Controller
+              name="payCurrency"
+              control={control}
+              rules={{
+                required: false,
+                validate: (currency) =>
+                  currency === null || isValidCurrency(currency),
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <Autocomplete
+                  {...field}
+                  onChange={(_event, newValue) => {
+                    field.onChange(newValue);
+                  }}
+                  options={CURRENCIES}
+                  fullWidth
+                  autoHighlight
+                  autoSelect
+                  sx={{ mr: 2 }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      margin="normal"
+                      label="Pay currency"
+                      variant="standard"
+                      error={!!error}
+                    />
+                  )}
+                />
+              )}
+            />
+            <Controller
+              name="exchangeRate"
+              disabled={watch("payCurrency") === null}
+              control={control}
+              rules={{
+                required: watch("payCurrency") !== null,
+                validate: (exchangeRate) =>
+                  watch("payCurrency") === null || isValidNumber(exchangeRate),
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  {...field}
+                  margin="normal"
+                  label="Exchange rate"
+                  type="number"
+                  inputProps={{
+                    step: 0.001,
+                  }}
+                  fullWidth
+                  variant="standard"
+                  error={!!error}
+                />
+              )}
+            />
+          </Box>
+          <Controller
+            name="commission"
+            control={control}
+            rules={{
+              required: false,
+              validate: (commission) =>
+                commission === null || isValidNumber(commission),
+              pattern: moneyPattern,
+            }}
+            render={({ field, fieldState: { error } }) => (
+              <TextField
+                {...field}
+                margin="normal"
+                label="Commission"
                 type="number"
                 inputProps={{
                   step: 0.01,
