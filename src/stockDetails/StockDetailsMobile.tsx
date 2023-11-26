@@ -23,10 +23,13 @@ export const StockDetailsMobile = () => {
     stock,
     assetTransactions,
     assetBalanceHistories,
+    assetTransactionToEdit,
     isLoading,
     dialogOpen,
     openDialog,
     closeDialog,
+    openEditDialog,
+    onDeleteTransaction,
     onConfirmStockDialog,
   } = useStockDetails();
 
@@ -43,6 +46,7 @@ export const StockDetailsMobile = () => {
           asset={stock}
           transactions={assetTransactions}
           isLoading={isLoading}
+          onClickTransaction={openEditDialog}
         />
       )}
       {mobilePage === MobilePage.SUMMARY && (
@@ -68,6 +72,8 @@ export const StockDetailsMobile = () => {
         isOpen={dialogOpen}
         onClose={closeDialog}
         onConfirm={onConfirmStockDialog}
+        onDelete={onDeleteTransaction}
+        transactionToEdit={assetTransactionToEdit}
       />
       <Zoom in={mobilePage === MobilePage.TRANSACTIONS} unmountOnExit>
         <Fab

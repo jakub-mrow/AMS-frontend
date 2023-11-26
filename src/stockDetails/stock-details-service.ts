@@ -120,21 +120,6 @@ export class StockDetailsService {
     return data.map(fromAssetTransactionDto);
   }
 
-  async deleteAccountTransaction(id: number, transactionId: number) {
-    const response = await fetch(
-      `${this.apiUrl}/api/accounts/${id}/transactions/${transactionId}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-        },
-      },
-    );
-    if (!response.ok) {
-      throw new Error("Failed to delete transaction");
-    }
-  }
-
   async addAssetTransaction(
     accountId: number,
     isin: string,
@@ -163,6 +148,53 @@ export class StockDetailsService {
     if (!response.ok) {
       const data: ErrorResponse = await response.json();
       throw new Error(data.error ?? "Failed to add transaction");
+    }
+  }
+
+  async updateAssetTransaction(
+    accountId: number,
+    transactionId: number,
+    isin: string,
+    quantity: number,
+    price: number,
+    transactionType: AssetTransactionType,
+    date: Dayjs,
+  ) {
+    const response = await fetch(
+      `${this.apiUrl}/api/stock/${accountId}/transaction/${transactionId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.token}`,
+        },
+        body: JSON.stringify({
+          isin,
+          quantity,
+          price,
+          transaction_type: transactionType,
+          date,
+        }),
+      },
+    );
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to update transaction");
+    }
+  }
+
+  async deleteAssetTransaction(accountId: number, transactionId: number) {
+    const response = await fetch(
+      `${this.apiUrl}/api/stock/${accountId}/transaction/${transactionId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      },
+    );
+    if (!response.ok) {
+      throw new Error("Failed to delete transaction");
     }
   }
 

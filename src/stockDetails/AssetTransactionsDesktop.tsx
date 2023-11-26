@@ -9,11 +9,13 @@ export const AssetTransactionsDesktop = ({
   transactions,
   isLoading,
   onAddTransactionClick,
+  onTransactionClick,
 }: {
   asset: Asset;
   transactions: AssetTransaction[];
   isLoading: boolean;
   onAddTransactionClick: () => void;
+  onTransactionClick: (assetTransaction: AssetTransaction) => void;
 }) => {
   if (isLoading) {
     return <Loading />;
@@ -51,6 +53,7 @@ export const AssetTransactionsDesktop = ({
         asset={asset}
         transactions={transactions}
         isLoading={isLoading}
+        onClickTransaction={onTransactionClick}
       />
     </>
   );
