@@ -23,6 +23,7 @@ export const StockDetailsMobile = () => {
     stock,
     assetTransactions,
     assetBalanceHistories,
+    baseStockValue,
     isLoading,
     dialogOpen,
     openDialog,
@@ -32,7 +33,7 @@ export const StockDetailsMobile = () => {
 
   const [mobilePage, setMobilePage] = useState(MobilePage.TRANSACTIONS);
 
-  if (!stock) {
+  if (!stock || !baseStockValue) {
     return <Loading />;
   }
 
@@ -50,6 +51,7 @@ export const StockDetailsMobile = () => {
           isLoading={isLoading}
           stock={stock}
           histories={assetBalanceHistories}
+          baseStockValue={baseStockValue}
           isMobile={true}
         />
       )}

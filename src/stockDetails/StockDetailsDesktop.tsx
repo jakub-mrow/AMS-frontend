@@ -12,13 +12,14 @@ export const StockDetailsDesktop = () => {
     assetTransactions,
     assetBalanceHistories,
     isLoading,
+    baseStockValue,
     dialogOpen,
     openDialog,
     closeDialog,
     onConfirmStockDialog,
   } = useStockDetails();
 
-  if (!stock) {
+  if (!stock || !baseStockValue) {
     return <Loading />;
   }
 
@@ -59,6 +60,7 @@ export const StockDetailsDesktop = () => {
             isLoading={isLoading}
             stock={stock}
             histories={assetBalanceHistories}
+            baseStockValue={baseStockValue}
             isMobile={false}
           />
         </Paper>
