@@ -27,7 +27,10 @@ export const AssetsListItem = ({
       >
         <ListItemText primary={asset.name} secondary={asset.exchange} />
         <ListItemText
-          primary={displayCurrency(asset.value, asset.currency)}
+          primary={displayCurrency(
+            asset.price * asset.quantity,
+            asset.currency,
+          )}
           primaryTypographyProps={{ align: "right" }}
           secondary={`${asset.result}%`}
           secondaryTypographyProps={{

@@ -43,7 +43,9 @@ export const AssetsTable = ({
     <TableRow key={asset.isin} hover onClick={() => goToAsset(asset.isin)}>
       <TableCell>{asset.name}</TableCell>
       <TableCell>{asset.exchange}</TableCell>
-      <TableCell>{displayCurrency(asset.value, asset.currency)}</TableCell>
+      <TableCell>
+        {displayCurrency(asset.price * asset.quantity, asset.currency)}
+      </TableCell>
       <TableCell
         sx={{
           color: asset.getResultColor(),

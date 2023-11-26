@@ -19,17 +19,28 @@ export const AssetTransactionsListItem = ({
             alignItems: "center",
           }}
         >
-          <ListItemText primary={transaction.getName()} />
+          <ListItemText
+            primary={transaction.getName()}
+            primaryTypographyProps={{
+              align: "left",
+            }}
+            secondary={transaction.date.toLocaleDateString()}
+            secondaryTypographyProps={{ align: "left" }}
+            sx={{ mr: 2 }}
+          />
           <ListItemText
             primary={`${transaction.getSign()} ${displayCurrency(
-              transaction.price,
+              transaction.price * transaction.quantity,
               asset.currency,
             )}`}
             primaryTypographyProps={{
               align: "right",
               color: transaction.getColor(),
             }}
-            secondary={transaction.date.toLocaleDateString()}
+            secondary={`${transaction.quantity} x ${displayCurrency(
+              transaction.price,
+              asset.currency,
+            )}`}
             secondaryTypographyProps={{ align: "right" }}
             sx={{ mr: 2 }}
           />

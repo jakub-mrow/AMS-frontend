@@ -18,6 +18,7 @@ export enum AccountTransactionType {
   WITHDRAWAL = "withdrawal",
   BUY = "buy",
   SELL = "sell",
+  DIVIDEND = "dividend",
 }
 
 export class AccountTransaction {
@@ -39,6 +40,8 @@ export class AccountTransaction {
         return "Buy assets";
       case AccountTransactionType.SELL:
         return "Sell assets";
+      case AccountTransactionType.DIVIDEND:
+        return "Dividend";
       default:
         return exhaustiveGuard(this.type);
     }
@@ -54,6 +57,8 @@ export class AccountTransaction {
         return "-";
       case AccountTransactionType.SELL:
         return "+";
+      case AccountTransactionType.DIVIDEND:
+        return "+";
       default:
         return exhaustiveGuard(this.type);
     }
@@ -68,6 +73,8 @@ export class AccountTransaction {
       case AccountTransactionType.BUY:
         return "red";
       case AccountTransactionType.SELL:
+        return "green";
+      case AccountTransactionType.DIVIDEND:
         return "green";
       default:
         return exhaustiveGuard(this.type);
@@ -92,7 +99,7 @@ export class Asset {
     public ticker: string,
     public exchange: string,
     public quantity: number,
-    public value: number,
+    public price: number,
     public currency: string,
     public result: number,
   ) {}
@@ -110,6 +117,7 @@ export class Asset {
 export enum AssetTransactionType {
   BUY = "buy",
   SELL = "sell",
+  DIVIDEND = "dividend",
 }
 
 export class AssetTransaction {
@@ -128,6 +136,8 @@ export class AssetTransaction {
         return "Buy";
       case AssetTransactionType.SELL:
         return "Sell";
+      case AssetTransactionType.DIVIDEND:
+        return "Dividend";
       default:
         return exhaustiveGuard(this.type);
     }
@@ -136,9 +146,11 @@ export class AssetTransaction {
   getSign(): string {
     switch (this.type) {
       case AssetTransactionType.BUY:
-        return "+";
-      case AssetTransactionType.SELL:
         return "-";
+      case AssetTransactionType.DIVIDEND:
+        return "";
+      case AssetTransactionType.SELL:
+        return "+";
       default:
         return exhaustiveGuard(this.type);
     }
@@ -147,9 +159,11 @@ export class AssetTransaction {
   getColor(): string {
     switch (this.type) {
       case AssetTransactionType.BUY:
-        return "green";
-      case AssetTransactionType.SELL:
         return "red";
+      case AssetTransactionType.DIVIDEND:
+        return "black";
+      case AssetTransactionType.SELL:
+        return "green";
       default:
         return exhaustiveGuard(this.type);
     }
@@ -159,6 +173,6 @@ export class AssetTransaction {
 export type AssetBalanceHistory = {
   date: Dayjs;
   quantity: number;
-  value: number;
+  price: number;
   result: number;
 };

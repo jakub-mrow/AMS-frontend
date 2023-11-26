@@ -34,7 +34,7 @@ export const AssetSummary = ({
           <Box display="flex" justifyContent="space-between">
             <Typography variant="h5">Value:</Typography>
             <Typography variant="h5">
-              {displayCurrency(stock.value, stock.currency)}
+              {displayCurrency(stock.price * stock.quantity, stock.currency)}
             </Typography>
           </Box>
           <Box display="flex" justifyContent="space-between">
@@ -44,7 +44,7 @@ export const AssetSummary = ({
           <Box display="flex" justifyContent="space-between">
             <Typography variant="h5">Price:</Typography>
             <Typography variant="h5">
-              {displayCurrency(stock.value / stock.quantity, stock.currency)}
+              {displayCurrency(stock.price, stock.currency)}
             </Typography>
           </Box>
           <Divider />

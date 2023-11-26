@@ -8,9 +8,10 @@ import {
   TextField,
 } from "@mui/material";
 import useInput from "../util/use-input.ts";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { Account } from "../types.ts";
+import { LoadingButton } from "@mui/lab";
 
 export const UpdateAccountDialog = ({
   isOpen,
@@ -27,6 +28,7 @@ export const UpdateAccountDialog = ({
     (value) => value.trim().length > 0,
     accountToUpdate.name,
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     nameInput.reset();
@@ -39,13 +41,22 @@ export const UpdateAccountDialog = ({
 
   const updateHandler = () => {
     if (!nameInput.isValid) return;
+    setIsLoading(true);
     onUpdate(accountToUpdate, nameInput.value);
     onClose();
+    setIsLoading(false);
     nameInput.reset();
   };
 
   return (
-    <Dialog open={isOpen} onClose={cancelHandler}>
+    <Dialog
+      open={isOpen}
+      onClose={cancelHandler}
+      disableRestoreFocus
+      onKeyUp={(event) => {
+        if (event.key === "Enter") updateHandler();
+      }}
+    >
       <DialogTitle>Update account</DialogTitle>
       <DialogContent>
         <DialogContentText>Enter new name for account.</DialogContentText>
@@ -54,6 +65,7 @@ export const UpdateAccountDialog = ({
           id="name"
           label="Name"
           fullWidth
+          autoFocus
           variant="standard"
           value={nameInput.value}
           onChange={nameInput.valueChangeHandler}
@@ -65,7 +77,13 @@ export const UpdateAccountDialog = ({
         <Button onClick={cancelHandler} color="secondary">
           Cancel
         </Button>
-        <Button onClick={updateHandler}>Update</Button>
+        <LoadingButton
+          loading={isLoading}
+          onClick={updateHandler}
+          variant="outlined"
+        >
+          <span>Update</span>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );
