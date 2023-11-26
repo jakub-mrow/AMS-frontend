@@ -1,7 +1,7 @@
 import { DialogType, useAccountDetails } from "./use-account-details.ts";
 import { Loading } from "../util/Loading.tsx";
 import { AccountTransactionDialog } from "./AccountTransactionDialog.tsx";
-import { Container, Paper, Tab, Tabs } from "@mui/material";
+import { Box, Container, Paper, Tab, Tabs } from "@mui/material";
 import { Summary } from "./Summary.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { useState } from "react";
@@ -10,6 +10,7 @@ import { AssetsDesktop } from "./AssetsDesktop.tsx";
 import { AccountEditDialog } from "./AccountEditDialog.tsx";
 import { Asset } from "../types.ts";
 import { StocksDialog } from "./StocksDialog.tsx";
+import { AccountChart } from "./AccountChart.tsx";
 
 export enum DetailsTabs {
   STOCKS,
@@ -29,7 +30,9 @@ export const AccountDetailsDesktop = () => {
     deposits,
     cryptocurrencies,
     accountPreferences,
+    accountHistory,
     isLoading,
+    isAccountHistoryLoading,
     isDialogOpen,
     openDialog,
     closeDialog,
@@ -67,61 +70,85 @@ export const AccountDetailsDesktop = () => {
     <>
       <Container
         maxWidth="lg"
-        sx={{ flex: 1, display: "flex", my: 4, gap: 2, minHeight: 0 }}
+        sx={{
+          flex: 1,
+          display: "flex",
+          my: 4,
+          gap: 2,
+          minHeight: 0,
+          flexDirection: "column",
+        }}
       >
-        <VerticalFlexBox flex={2}>
-          <Tabs
-            value={detailsTab}
-            onChange={(_event, newValue) => setDetailsTab(newValue)}
-            indicatorColor="secondary"
-            textColor="inherit"
-            variant="fullWidth"
-          >
-            <Tab label="Stocks" />
-            <Tab label="Bonds" />
-            <Tab label="Deposits" />
-            <Tab label="Crypto" />
-            <Tab disabled />
-            <Tab label="Transactions" />
-          </Tabs>
+        <Box sx={{ flex: 2, display: "flex", gap: 2, minHeight: 0 }}>
+          <VerticalFlexBox flex={2}>
+            <Tabs
+              value={detailsTab}
+              onChange={(_event, newValue) => setDetailsTab(newValue)}
+              indicatorColor="secondary"
+              textColor="inherit"
+              variant="fullWidth"
+            >
+              <Tab label="Stocks" />
+              <Tab label="Bonds" />
+              <Tab label="Deposits" />
+              <Tab label="Crypto" />
+              <Tab disabled />
+              <Tab label="Transactions" />
+            </Tabs>
+            <Paper
+              elevation={4}
+              sx={{
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                minHeight: 0,
+              }}
+            >
+              {detailsTab === DetailsTabs.TRANSACTIONS ? (
+                <TransactionsDesktop
+                  transactions={accountTransactions}
+                  isLoading={isLoading}
+                  onAddTransactionClick={() =>
+                    openDialog(DialogType.TRANSACTION)
+                  }
+                  onDeleteTransactionClick={onDeleteTransaction}
+                />
+              ) : (
+                <AssetsDesktop
+                  assets={getAssetsOfType(detailsTab)}
+                  type={detailsTab}
+                  isLoading={isLoading}
+                  onAddAssetClick={() => openDialog(DialogType.STOCK)}
+                  goToAsset={goToAsset}
+                />
+              )}
+            </Paper>
+          </VerticalFlexBox>
           <Paper
             elevation={4}
-            sx={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              minHeight: 0,
-            }}
+            sx={{ flex: 1, display: "flex", flexDirection: "column" }}
           >
-            {detailsTab === DetailsTabs.TRANSACTIONS ? (
-              <TransactionsDesktop
-                transactions={accountTransactions}
-                isLoading={isLoading}
-                onAddTransactionClick={() => openDialog(DialogType.TRANSACTION)}
-                onDeleteTransactionClick={onDeleteTransaction}
-              />
-            ) : (
-              <AssetsDesktop
-                assets={getAssetsOfType(detailsTab)}
-                type={detailsTab}
-                isLoading={isLoading}
-                onAddAssetClick={() => openDialog(DialogType.STOCK)}
-                goToAsset={goToAsset}
-              />
-            )}
+            <Summary
+              isLoading={isLoading}
+              account={account}
+              showOpenAccountEditDialog={true}
+              openAccountEditDialog={openAccountEditDialog}
+            />
           </Paper>
-        </VerticalFlexBox>
-        <Paper
-          elevation={4}
-          sx={{ flex: 1, display: "flex", flexDirection: "column" }}
-        >
-          <Summary
-            isLoading={isLoading}
-            account={account}
-            showOpenAccountEditDialog={true}
-            openAccountEditDialog={openAccountEditDialog}
-          />
-        </Paper>
+        </Box>
+        <Box sx={{ flex: 1, display: "flex", minHeight: 0 }}>
+          <Paper
+            elevation={4}
+            sx={{ flex: 1, display: "flex", flexDirection: "column" }}
+          >
+            <AccountChart
+              isLoading={isAccountHistoryLoading}
+              histories={accountHistory}
+              currency={accountPreferences.baseCurrency}
+              isMobile={false}
+            />
+          </Paper>
+        </Box>
       </Container>
       <AccountTransactionDialog
         isOpen={isDialogOpen(DialogType.TRANSACTION)}

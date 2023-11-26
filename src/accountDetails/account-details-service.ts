@@ -1,11 +1,12 @@
 import {
   Account,
+  AccountHistory,
   AccountPreferences,
   AccountTransaction,
   AccountTransactionType,
   Asset,
 } from "../types.ts";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 export type AccountInput = {
   name: string;
@@ -70,6 +71,20 @@ const fromAccountPreferencesDto = (
   return {
     baseCurrency: accountPreference.base_currency,
     taxCurrency: accountPreference.tax_currency,
+  };
+};
+
+type AccountHistoryDto = {
+  date: string;
+  amount: number;
+};
+
+const fromAccountHistoryDto = (
+  accountHistory: AccountHistoryDto,
+): AccountHistory => {
+  return {
+    date: dayjs(accountHistory.date),
+    amount: accountHistory.amount,
   };
 };
 
@@ -288,5 +303,19 @@ export class AccountsDetailsService {
       const data: ErrorResponse = await response.json();
       throw new Error(data.error ?? "Failed to delete account");
     }
+  }
+
+  async fetchAccountHistory(id: number): Promise<AccountHistory[]> {
+    const response = await fetch(`${this.apiUrl}/api/accounts/${id}/history`, {
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to fetch account history");
+    }
+    const accountHistoryDto: AccountHistoryDto[] = await response.json();
+    return accountHistoryDto.map(fromAccountHistoryDto);
   }
 }
