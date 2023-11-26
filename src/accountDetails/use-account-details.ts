@@ -81,8 +81,7 @@ export const useAccountDetails = () => {
     DialogType.TRANSACTION,
   );
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [isAccountPreferencesDialogOpen, setIsAccountPreferencesDialogOpen] =
-    useState(false);
+  const [isAccountEditDialogOpen, setIsAccountEditDialogOpen] = useState(false);
 
   const openDialog = useCallback((type: DialogType) => {
     setDialogType(type);
@@ -109,7 +108,7 @@ export const useAccountDetails = () => {
     const handleError = (error: unknown) => {
       if (error instanceof Error) {
         alert(error.message, Severity.ERROR);
-        navigate("/accounts", { replace: true });
+        navigate("/", { replace: true });
       }
     };
     accountDetailsService
@@ -121,7 +120,7 @@ export const useAccountDetails = () => {
       .catch((error) => {
         if (error instanceof Error) {
           alert(error.message, Severity.ERROR);
-          navigate("/accounts", { replace: true });
+          navigate("/", { replace: true });
         }
       });
     accountDetailsService
@@ -168,7 +167,7 @@ export const useAccountDetails = () => {
       .catch((error) => {
         if (error instanceof Error) {
           alert(error.message, Severity.ERROR);
-          navigate("/accounts", { replace: true });
+          navigate("/", { replace: true });
         }
       });
     accountDetailsService
@@ -248,12 +247,18 @@ export const useAccountDetails = () => {
     }
   };
 
-  const onConfirmPreferences = (accountPreferences: AccountPreferences) => {
+  const onConfirmEdit = (
+    name: string,
+    accountPreferences: AccountPreferences,
+  ) => {
     if (!account) {
       return;
     }
     accountDetailsService
       .updateAccountPreferences(account.id, accountPreferences)
+      .then(() => {
+        return accountDetailsService.renameAccount(account.id, name);
+      })
       .then(() => refreshAccountData())
       .catch((error) => {
         if (error instanceof Error) {
@@ -264,6 +269,22 @@ export const useAccountDetails = () => {
 
   const goToAsset = (isin: string) => {
     navigate(`./assets/${isin}`, {});
+  };
+
+  const deleteAccount = () => {
+    if (!account) {
+      return;
+    }
+    accountDetailsService
+      .deleteAccount(account.id)
+      .then(() => {
+        navigate("/", { replace: true });
+      })
+      .catch((error) => {
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+        }
+      });
   };
 
   return {
@@ -283,11 +304,11 @@ export const useAccountDetails = () => {
     onConfirmAccountTransactionDialog,
     onConfirmStockDialog,
     onDeleteTransaction,
-    isAccountPreferencesDialogOpen,
-    openAccountPreferencesDialog: () => setIsAccountPreferencesDialogOpen(true),
-    closeAccountPreferencesDialog: () =>
-      setIsAccountPreferencesDialogOpen(false),
-    onConfirmPreferences,
+    isAccountEditDialogOpen: isAccountEditDialogOpen,
+    openAccountEditDialog: () => setIsAccountEditDialogOpen(true),
+    closeAccountEditDialog: () => setIsAccountEditDialogOpen(false),
+    onConfirmEdit,
+    deleteAccount,
     goToAsset,
   };
 };
