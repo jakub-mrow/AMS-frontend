@@ -70,6 +70,7 @@ export const useAddAsset = () => {
                 return false;
             }
         }
+        alert(`Asset ${ticker} has been added to the account`, Severity.SUCCESS);
         return true;
     };
 
