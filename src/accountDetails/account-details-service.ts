@@ -153,6 +153,36 @@ export class AccountsDetailsService {
     }
   }
 
+  async updateAccountTransaction(
+    id: number,
+    transactionId: number,
+    type: AccountTransactionType,
+    amount: number,
+    currency: string,
+    date: Dayjs,
+  ) {
+    const response = await fetch(
+      `${this.apiUrl}/api/accounts/${id}/transactions/${transactionId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.token}`,
+        },
+        body: JSON.stringify({
+          amount,
+          currency,
+          type,
+          date,
+        }),
+      },
+    );
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to modify transaction");
+    }
+  }
+
   async deleteAccountTransaction(id: number, transactionId: number) {
     const response = await fetch(
       `${this.apiUrl}/api/accounts/${id}/transactions/${transactionId}`,

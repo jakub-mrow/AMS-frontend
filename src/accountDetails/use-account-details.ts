@@ -82,13 +82,28 @@ export const useAccountDetails = () => {
   );
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isAccountEditDialogOpen, setIsAccountEditDialogOpen] = useState(false);
+  const [accountTransactionToEdit, setAccountTransactionToEdit] =
+    useState<AccountTransaction | null>(null);
 
   const openDialog = useCallback((type: DialogType) => {
     setDialogType(type);
     setDialogOpen(true);
   }, []);
 
+  const openEditAccountTransactionDialog = useCallback(
+    (accountTransaction: AccountTransaction) => {
+      if (!accountTransaction.isEditable()) {
+        return;
+      }
+      setDialogType(DialogType.TRANSACTION);
+      setDialogOpen(true);
+      setAccountTransactionToEdit(accountTransaction);
+    },
+    [],
+  );
+
   const closeDialog = useCallback(() => {
+    setAccountTransactionToEdit(null);
     setDialogOpen(false);
   }, []);
 
@@ -190,14 +205,32 @@ export const useAccountDetails = () => {
     date: Dayjs,
   ) => {
     if (account) {
-      accountDetailsService
-        .addAccountTransaction(account.id, type, amount, currency, date)
-        .then(() => refreshAccountData())
-        .catch((error) => {
-          if (error instanceof Error) {
-            alert(error.message, Severity.ERROR);
-          }
-        });
+      if (accountTransactionToEdit) {
+        accountDetailsService
+          .updateAccountTransaction(
+            account.id,
+            accountTransactionToEdit.id,
+            type,
+            amount,
+            currency,
+            date,
+          )
+          .then(() => refreshAccountData())
+          .catch((error) => {
+            if (error instanceof Error) {
+              alert(error.message, Severity.ERROR);
+            }
+          });
+      } else {
+        accountDetailsService
+          .addAccountTransaction(account.id, type, amount, currency, date)
+          .then(() => refreshAccountData())
+          .catch((error) => {
+            if (error instanceof Error) {
+              alert(error.message, Severity.ERROR);
+            }
+          });
+      }
     }
   };
 
@@ -234,10 +267,10 @@ export const useAccountDetails = () => {
     return dialogOpen && dialogType === type;
   };
 
-  const onDeleteTransaction = (transaction: AccountTransaction) => {
-    if (account) {
+  const onDeleteTransaction = () => {
+    if (account && accountTransactionToEdit) {
       accountDetailsService
-        .deleteAccountTransaction(account.id, transaction.id)
+        .deleteAccountTransaction(account.id, accountTransactionToEdit.id)
         .then(() => refreshAccountData())
         .catch((error) => {
           if (error instanceof Error) {
@@ -299,11 +332,13 @@ export const useAccountDetails = () => {
     isLoading,
     isAccountHistoryLoading,
     openDialog,
+    openEditAccountTransactionDialog,
     closeDialog,
     isDialogOpen,
     onConfirmAccountTransactionDialog,
     onConfirmStockDialog,
     onDeleteTransaction,
+    accountTransactionToEdit,
     isAccountEditDialogOpen: isAccountEditDialogOpen,
     openAccountEditDialog: () => setIsAccountEditDialogOpen(true),
     closeAccountEditDialog: () => setIsAccountEditDialogOpen(false),

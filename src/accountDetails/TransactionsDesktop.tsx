@@ -8,12 +8,12 @@ export const TransactionsDesktop = ({
   transactions,
   isLoading,
   onAddTransactionClick,
-  onDeleteTransactionClick,
+  onTransactionClick,
 }: {
   transactions: AccountTransaction[];
   isLoading: boolean;
   onAddTransactionClick: () => void;
-  onDeleteTransactionClick: (transaction: AccountTransaction) => void;
+  onTransactionClick: (transaction: AccountTransaction) => void;
 }) => {
   if (isLoading) {
     return <Loading />;
@@ -49,7 +49,7 @@ export const TransactionsDesktop = ({
       </Box>
       <AccountsTransactionsTable
         transactions={transactions}
-        onDeleteTransaction={onDeleteTransactionClick}
+        onClickTransaction={onTransactionClick}
         isLoading={isLoading}
       />
     </>

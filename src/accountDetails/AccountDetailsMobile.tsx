@@ -46,10 +46,12 @@ export const AccountDetailsMobile = () => {
     isLoading,
     isDialogOpen,
     openDialog,
+    openEditAccountTransactionDialog,
     closeDialog,
     onConfirmAccountTransactionDialog,
     onConfirmStockDialog,
     onDeleteTransaction,
+    accountTransactionToEdit,
     isAccountEditDialogOpen,
     openAccountEditDialog,
     closeAccountEditDialog,
@@ -97,8 +99,8 @@ export const AccountDetailsMobile = () => {
       {mobilePage === MobilePage.TRANSACTIONS && (
         <Transactions
           transactions={accountTransactions}
+          onTransactionClick={openEditAccountTransactionDialog}
           isLoading={isLoading}
-          onDelete={onDeleteTransaction}
         />
       )}
       {mobilePage === MobilePage.SUMMARY && (
@@ -126,6 +128,8 @@ export const AccountDetailsMobile = () => {
         onClose={closeDialog}
         onConfirm={onConfirmAccountTransactionDialog}
         baseCurrency={accountPreferences.baseCurrency}
+        onDelete={onDeleteTransaction}
+        transactionToEdit={accountTransactionToEdit}
       />
       <StocksDialog
         stocks={stocks}
