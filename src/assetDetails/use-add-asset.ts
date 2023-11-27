@@ -6,7 +6,7 @@ import { useSnackbar } from "../snackbar/use-snackbar";
 import { Dayjs } from "dayjs";
 import { Severity } from "../snackbar/snackbar-context";
 import { Account } from "../types";
-import { AccountsService } from "../accounts/accounts-service";
+import { AccountsService } from "../home/accounts-service";
 
 
 export enum DialogType {
