@@ -7,22 +7,25 @@ import { IoMdAdd } from 'react-icons/io'
 import { SymbolOverview } from 'react-tradingview-embed'
 import React from 'react'
 import { AssetDetailsDataProps } from '../use-asset-details'
+import { AddAssetDialog } from '../AddAssetDialog'
+import { DialogType, useAddAsset } from '../use-add-asset'
 
 
 const AssetDetailsHeader: React.FC<AssetDetailsDataProps> = ({ assetDetailsData }) => {
     let symbols: string[] = [];
     switch (assetDetailsData.Type) {
         case 'Common Stock':
-            if (assetDetailsData.Exchange === "US"){
-                assetDetailsData.Exchange = "NASDAQ"
+            if (assetDetailsData.Exchange === "US") {
+                symbols = [`NASDAQ:${assetDetailsData.Code}`];
+            } else {
+                symbols = [`${assetDetailsData.Exchange}:${assetDetailsData.Code}`];
             }
-            symbols = [`${assetDetailsData.Exchange}:${assetDetailsData.Code}`];
             break;
         case 'ETF':
             symbols = [`${assetDetailsData.Exchange}:${assetDetailsData.Code}`]
             break;
         case 'Currency':
-            if (assetDetailsData.Exchange === "CC"){
+            if (assetDetailsData.Exchange === "CC") {
                 symbols = [`${assetDetailsData.Code.split("-").join("")}`];
                 break;
             } else {
@@ -33,7 +36,16 @@ const AssetDetailsHeader: React.FC<AssetDetailsDataProps> = ({ assetDetailsData 
             symbols = [`${assetDetailsData.Code}`]
             break;
     }
-    
+
+    const {
+        accounts,
+        isDialogOpen,
+        openDialog,
+        closeDialog,
+        onConfirmStockDialog 
+    } = useAddAsset();
+
+
     return (
         <div className="flex flex-col m-6 p-4 bg-gray-100 rounded-lg shadow-lg border">
             <div className="flex flex-row justify-between">
@@ -69,7 +81,7 @@ const AssetDetailsHeader: React.FC<AssetDetailsDataProps> = ({ assetDetailsData 
                             <span className="hidden md:block">Watchlist</span>
                         </div>
                     </Button>
-                    <Button className=" text-gray-900 bg-white">
+                    <Button className=" text-gray-900 bg-white" onClick={() => openDialog(DialogType.STOCK)}>
                         <div className="flex flex-row justify-center items-center space-x-2">
                             <IoMdAdd />
                             <span className="hidden md:block">Add asset</span>
@@ -82,6 +94,15 @@ const AssetDetailsHeader: React.FC<AssetDetailsDataProps> = ({ assetDetailsData 
                 <SymbolOverview widgetProps={{ colorTheme: "light", symbols: symbols }} />
             </div>
             <AssetDetailFrontCards assetDetailsData={assetDetailsData} />
+
+            <AddAssetDialog
+                accounts={accounts}
+                assetTicker={assetDetailsData.Code}
+                exchange={assetDetailsData.Exchange}
+                isOpen={isDialogOpen(DialogType.STOCK)}
+                onClose={closeDialog}
+                onConfirm={onConfirmStockDialog}
+            />
         </div>
     )
 }
