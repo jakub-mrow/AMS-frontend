@@ -240,6 +240,9 @@ export class AccountsDetailsService {
     quantity: number,
     price: number,
     date: Dayjs,
+    payCurrency: string | null,
+    exchangeRate: number | null,
+    commission: number | null,
   ) {
     const response = await fetch(
       `${this.apiUrl}/api/stock/${accountId}/transaction/buy`,
@@ -255,6 +258,9 @@ export class AccountsDetailsService {
           quantity,
           price,
           date,
+          pay_currency: payCurrency,
+          exchange_rate: exchangeRate,
+          commission,
         }),
       },
     );

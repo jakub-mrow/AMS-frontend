@@ -120,6 +120,9 @@ export const useStockDetails = () => {
     price: number,
     type: AssetTransactionType,
     date: Dayjs,
+    payCurrency: string | null,
+    exchangeRate: number | null,
+    commission: number | null,
   ) => {
     if (!accountId || !isin) {
       return false;
@@ -134,6 +137,9 @@ export const useStockDetails = () => {
           price,
           type,
           date,
+          payCurrency,
+          exchangeRate,
+          commission,
         );
         refreshStockData();
       } catch (error) {
@@ -151,6 +157,9 @@ export const useStockDetails = () => {
           price,
           type,
           date,
+          payCurrency,
+          exchangeRate,
+          commission,
         );
         refreshStockData();
       } catch (error) {

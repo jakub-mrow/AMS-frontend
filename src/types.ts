@@ -145,6 +145,9 @@ export class AssetTransaction {
     public price: number,
     public type: AssetTransactionType,
     public date: Date,
+    public payCurrency: string | null,
+    public exchangeRate: number | null,
+    public commission: number | null,
   ) {}
 
   getName(): string {

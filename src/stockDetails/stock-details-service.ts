@@ -18,6 +18,9 @@ type AssetTransactionDto = {
   price: number;
   transaction_type: AssetTransactionType;
   date: string;
+  pay_currency: string | null;
+  exchange_rate: number | null;
+  commission: number | null;
 };
 
 const fromAssetTransactionDto = (
@@ -30,6 +33,9 @@ const fromAssetTransactionDto = (
     transaction.price,
     transaction.transaction_type,
     new Date(transaction.date),
+    transaction.pay_currency,
+    transaction.exchange_rate,
+    transaction.commission,
   );
 
 type AssetDto = {
@@ -142,6 +148,9 @@ export class StockDetailsService {
     price: number,
     transactionType: AssetTransactionType,
     date: Dayjs,
+    payCurrency: string | null,
+    exchangeRate: number | null,
+    commission: number | null,
   ) {
     const response = await fetch(
       `${this.apiUrl}/api/stock/${accountId}/transaction`,
@@ -157,6 +166,9 @@ export class StockDetailsService {
           price,
           transaction_type: transactionType,
           date,
+          pay_currency: payCurrency,
+          exchange_rate: exchangeRate,
+          commission,
         }),
       },
     );
@@ -174,6 +186,9 @@ export class StockDetailsService {
     price: number,
     transactionType: AssetTransactionType,
     date: Dayjs,
+    payCurrency: string | null,
+    exchangeRate: number | null,
+    commission: number | null,
   ) {
     const response = await fetch(
       `${this.apiUrl}/api/stock/${accountId}/transaction/${transactionId}`,
@@ -189,6 +204,9 @@ export class StockDetailsService {
           price,
           transaction_type: transactionType,
           date,
+          pay_currency: payCurrency,
+          exchange_rate: exchangeRate,
+          commission,
         }),
       },
     );

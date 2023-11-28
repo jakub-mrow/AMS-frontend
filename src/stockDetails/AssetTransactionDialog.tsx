@@ -1,4 +1,6 @@
 import {
+  Autocomplete,
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -18,17 +20,22 @@ import { AssetTransaction, AssetTransactionType } from "../types.ts";
 import { useEffect, useState } from "react";
 import { LoadingButton } from "@mui/lab";
 import {
+  isValidCurrency,
   isValidNumber,
   moneyPattern,
   quantityPattern,
 } from "../util/validations.ts";
 import { ConfirmationDialog } from "../dialog/ConfirmationDialog.tsx";
+import { CURRENCIES } from "../util/currencies.ts";
 
 interface StockTransactionFormData {
   quantity: number | null;
   price: number | null;
   type: AssetTransactionType;
   date: Dayjs | null;
+  payCurrency: string | null;
+  exchangeRate: number | null;
+  commission: number | null;
 }
 
 export const AssetTransactionDialog = ({
@@ -45,6 +52,9 @@ export const AssetTransactionDialog = ({
     price: number,
     type: AssetTransactionType,
     date: Dayjs,
+    payCurrency: string | null,
+    exchangeRate: number | null,
+    commission: number | null,
   ) => Promise<boolean>;
   onDelete: () => void;
   transactionToEdit: AssetTransaction | null;
@@ -58,6 +68,9 @@ export const AssetTransactionDialog = ({
           ? transactionToEdit.type
           : AssetTransactionType.BUY,
         date: transactionToEdit ? dayjs(transactionToEdit.date) : dayjs(),
+        payCurrency: transactionToEdit ? transactionToEdit.payCurrency : null,
+        exchangeRate: transactionToEdit ? transactionToEdit.exchangeRate : null,
+        commission: transactionToEdit ? transactionToEdit.commission : null,
       },
     });
   const [isLoading, setIsLoading] = useState(false);
@@ -71,6 +84,9 @@ export const AssetTransactionDialog = ({
         ? transactionToEdit.type
         : AssetTransactionType.BUY,
       date: transactionToEdit ? dayjs(transactionToEdit.date) : dayjs(),
+      payCurrency: transactionToEdit ? transactionToEdit.payCurrency : null,
+      exchangeRate: transactionToEdit ? transactionToEdit.exchangeRate : null,
+      commission: transactionToEdit ? transactionToEdit.commission : null,
     });
   }, [reset, transactionToEdit]);
 
@@ -94,16 +110,28 @@ export const AssetTransactionDialog = ({
     if (data.price === null || data.quantity === null || data.date === null) {
       return;
     }
+    let payCurrency = null;
+    let exchangeRate = null;
+    if (data.payCurrency !== null && data.exchangeRate !== null) {
+      payCurrency = data.payCurrency;
+      exchangeRate = data.exchangeRate;
+    }
     setIsLoading(true);
-    onConfirm(data.quantity, data.price, data.type, data.date).then(
-      (success) => {
-        if (success) {
-          onClose();
-          setIsLoading(false);
-          reset();
-        }
-      },
-    );
+    onConfirm(
+      data.quantity,
+      data.price,
+      data.type,
+      data.date,
+      payCurrency,
+      exchangeRate,
+      data.commission,
+    ).then((success) => {
+      if (success) {
+        onClose();
+        setIsLoading(false);
+        reset();
+      }
+    });
   });
 
   return (
@@ -203,6 +231,88 @@ export const AssetTransactionDialog = ({
                       ? "Dividend per stock"
                       : "Price"
                   }
+                  type="number"
+                  inputProps={{
+                    step: 0.01,
+                  }}
+                  fullWidth
+                  variant="standard"
+                  error={!!error}
+                />
+              )}
+            />
+            <Box sx={{ display: "flex" }}>
+              <Controller
+                name="payCurrency"
+                control={control}
+                rules={{
+                  required: false,
+                  validate: (currency) =>
+                    currency === null || isValidCurrency(currency),
+                }}
+                render={({ field, fieldState: { error } }) => (
+                  <Autocomplete
+                    {...field}
+                    onChange={(_event, newValue) => {
+                      field.onChange(newValue);
+                    }}
+                    options={CURRENCIES}
+                    fullWidth
+                    autoHighlight
+                    autoSelect
+                    sx={{ mr: 2 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        margin="normal"
+                        label="Pay currency"
+                        variant="standard"
+                        error={!!error}
+                      />
+                    )}
+                  />
+                )}
+              />
+              <Controller
+                name="exchangeRate"
+                disabled={watch("payCurrency") === null}
+                control={control}
+                rules={{
+                  required: watch("payCurrency") !== null,
+                  validate: (exchangeRate) =>
+                    watch("payCurrency") === null ||
+                    isValidNumber(exchangeRate),
+                }}
+                render={({ field, fieldState: { error } }) => (
+                  <TextField
+                    {...field}
+                    margin="normal"
+                    label="Exchange rate"
+                    type="number"
+                    inputProps={{
+                      step: 0.001,
+                    }}
+                    fullWidth
+                    variant="standard"
+                    error={!!error}
+                  />
+                )}
+              />
+            </Box>
+            <Controller
+              name="commission"
+              control={control}
+              rules={{
+                required: false,
+                validate: (commission) =>
+                  commission === null || isValidNumber(commission),
+                pattern: moneyPattern,
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  {...field}
+                  margin="normal"
+                  label="Commission"
                   type="number"
                   inputProps={{
                     step: 0.01,
