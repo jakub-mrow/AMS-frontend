@@ -1,4 +1,4 @@
-import { Asset, AssetBalanceHistory } from "../types.ts";
+import { Asset, AssetBalanceHistory, BaseStockValue } from "../types.ts";
 import { Box, Divider, Typography } from "@mui/material";
 import { VerticalFlexContainer } from "../util/VerticalFlexContainer.tsx";
 import { Loading } from "../util/Loading.tsx";
@@ -9,11 +9,13 @@ export const AssetSummary = ({
   stock,
   histories,
   isLoading,
+  baseStockValue,
   isMobile,
 }: {
   isLoading: boolean;
   histories: AssetBalanceHistory[];
   stock: Asset;
+  baseStockValue: BaseStockValue;
   isMobile: boolean;
 }) => {
   return (
@@ -35,6 +37,17 @@ export const AssetSummary = ({
             <Typography variant="h5">Value:</Typography>
             <Typography variant="h5">
               {displayCurrency(stock.price * stock.quantity, stock.currency)}
+            </Typography>
+          </Box>
+          <Box display="flex" justifyContent="space-between">
+            <Typography variant="h5">
+              Value in {baseStockValue.currency}:
+            </Typography>
+            <Typography variant="h5">
+              {displayCurrency(
+                baseStockValue.price * stock.quantity,
+                baseStockValue.currency,
+              )}
             </Typography>
           </Box>
           <Box display="flex" justifyContent="space-between">

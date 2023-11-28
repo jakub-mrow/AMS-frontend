@@ -5,12 +5,14 @@ import { displayCurrency } from "../util/display-currency.ts";
 export const AssetTransactionsListItem = ({
   asset,
   transaction,
+  onTransactionClick,
 }: {
   asset: Asset;
   transaction: AssetTransaction;
+  onTransactionClick: (assetTransaction: AssetTransaction) => void;
 }) => (
   <>
-    <ListItem>
+    <ListItem onClick={() => onTransactionClick(transaction)}>
       <ListItemText>
         <Box
           sx={{

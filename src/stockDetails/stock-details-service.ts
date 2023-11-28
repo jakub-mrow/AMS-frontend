@@ -3,6 +3,7 @@ import {
   AssetBalanceHistory,
   AssetTransaction,
   AssetTransactionType,
+  BaseStockValue,
 } from "../types.ts";
 import dayjs, { Dayjs } from "dayjs";
 
@@ -17,6 +18,9 @@ type AssetTransactionDto = {
   price: number;
   transaction_type: AssetTransactionType;
   date: string;
+  pay_currency: string | null;
+  exchange_rate: number | null;
+  commission: number | null;
 };
 
 const fromAssetTransactionDto = (
@@ -29,6 +33,9 @@ const fromAssetTransactionDto = (
     transaction.price,
     transaction.transaction_type,
     new Date(transaction.date),
+    transaction.pay_currency,
+    transaction.exchange_rate,
+    transaction.commission,
   );
 
 type AssetDto = {
@@ -71,6 +78,20 @@ const fromAssetBalanceHistoryDto = (
     quantity: history.quantity,
     price: history.price,
     result: history.result,
+  };
+};
+
+type BaseStockValueDto = {
+  price: number;
+  currency: string;
+};
+
+const fromBaseStockValueDto = (
+  baseStockValue: BaseStockValueDto,
+): BaseStockValue => {
+  return {
+    price: baseStockValue.price,
+    currency: baseStockValue.currency,
   };
 };
 
@@ -120,21 +141,6 @@ export class StockDetailsService {
     return data.map(fromAssetTransactionDto);
   }
 
-  async deleteAccountTransaction(id: number, transactionId: number) {
-    const response = await fetch(
-      `${this.apiUrl}/api/accounts/${id}/transactions/${transactionId}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-        },
-      },
-    );
-    if (!response.ok) {
-      throw new Error("Failed to delete transaction");
-    }
-  }
-
   async addAssetTransaction(
     accountId: number,
     isin: string,
@@ -172,6 +178,59 @@ export class StockDetailsService {
     }
   }
 
+  async updateAssetTransaction(
+    accountId: number,
+    transactionId: number,
+    isin: string,
+    quantity: number,
+    price: number,
+    transactionType: AssetTransactionType,
+    date: Dayjs,
+    payCurrency: string | null,
+    exchangeRate: number | null,
+    commission: number | null,
+  ) {
+    const response = await fetch(
+      `${this.apiUrl}/api/stock/${accountId}/transaction/${transactionId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.token}`,
+        },
+        body: JSON.stringify({
+          isin,
+          quantity,
+          price,
+          transaction_type: transactionType,
+          date,
+          pay_currency: payCurrency,
+          exchange_rate: exchangeRate,
+          commission,
+        }),
+      },
+    );
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to update transaction");
+    }
+  }
+
+  async deleteAssetTransaction(accountId: number, transactionId: number) {
+    const response = await fetch(
+      `${this.apiUrl}/api/stock/${accountId}/transaction/${transactionId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      },
+    );
+    if (!response.ok) {
+      throw new Error("Failed to delete transaction");
+    }
+  }
+
   async fetchStockBalanceHistory(
     accountId: number,
     isin: string,
@@ -190,5 +249,27 @@ export class StockDetailsService {
     }
     const data: AssetBalanceHistoryDto[] = await response.json();
     return data.map(fromAssetBalanceHistoryDto);
+  }
+
+  async fetchBaseStockValue(
+    accountId: number,
+    isin: string,
+  ): Promise<BaseStockValue> {
+    const response = await fetch(
+      `${this.apiUrl}/api/stock_balances/${accountId}/${isin}/price`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      },
+    );
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(
+        data.error ?? "Failed to fetch stock value in base currency",
+      );
+    }
+    const data: BaseStockValueDto = await response.json();
+    return fromBaseStockValueDto(data);
   }
 }

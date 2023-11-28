@@ -8,13 +8,13 @@ import { displayCurrency } from "../util/display-currency.ts";
 export const Summary = ({
   account,
   isLoading,
-  showOpenAccountPreferencesDialog,
-  openAccountPreferencesDialog,
+  showOpenAccountEditDialog,
+  openAccountEditDialog,
 }: {
   isLoading: boolean;
   account: Account;
-  showOpenAccountPreferencesDialog: boolean;
-  openAccountPreferencesDialog: () => void;
+  showOpenAccountEditDialog: boolean;
+  openAccountEditDialog: () => void;
 }) => {
   return (
     <>
@@ -29,10 +29,10 @@ export const Summary = ({
             mt: 2,
           }}
         >
-          {showOpenAccountPreferencesDialog && (
+          {showOpenAccountEditDialog && (
             <IconButton
               sx={{ alignSelf: "flex-end" }}
-              onClick={openAccountPreferencesDialog}
+              onClick={openAccountEditDialog}
             >
               <Settings />
             </IconButton>

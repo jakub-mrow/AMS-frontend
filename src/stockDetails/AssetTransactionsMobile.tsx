@@ -6,10 +6,12 @@ import { Loading } from "../util/Loading.tsx";
 export const AssetTransactionsMobile = ({
   asset,
   transactions,
+  onClickTransaction,
   isLoading,
 }: {
   asset: Asset;
   transactions: AssetTransaction[];
+  onClickTransaction: (assetTransaction: AssetTransaction) => void;
   isLoading: boolean;
 }) => {
   return (
@@ -24,7 +26,11 @@ export const AssetTransactionsMobile = ({
             minHeight: 0,
           }}
         >
-          <AssetTransactionsList asset={asset} transactions={transactions} />
+          <AssetTransactionsList
+            asset={asset}
+            transactions={transactions}
+            onClickTransaction={onClickTransaction}
+          />
         </VerticalFlexContainer>
       )}
     </>

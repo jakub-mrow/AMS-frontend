@@ -11,14 +11,18 @@ export const StockDetailsDesktop = () => {
     stock,
     assetTransactions,
     assetBalanceHistories,
+    assetTransactionToEdit,
     isLoading,
+    baseStockValue,
     dialogOpen,
     openDialog,
+    openEditDialog,
     closeDialog,
     onConfirmStockDialog,
+    onDeleteTransaction,
   } = useStockDetails();
 
-  if (!stock) {
+  if (!stock || !baseStockValue) {
     return <Loading />;
   }
 
@@ -49,6 +53,7 @@ export const StockDetailsDesktop = () => {
             transactions={assetTransactions}
             isLoading={isLoading}
             onAddTransactionClick={openDialog}
+            onTransactionClick={openEditDialog}
           />
         </Paper>
         <Paper
@@ -59,6 +64,7 @@ export const StockDetailsDesktop = () => {
             isLoading={isLoading}
             stock={stock}
             histories={assetBalanceHistories}
+            baseStockValue={baseStockValue}
             isMobile={false}
           />
         </Paper>
@@ -80,6 +86,8 @@ export const StockDetailsDesktop = () => {
         isOpen={dialogOpen}
         onClose={closeDialog}
         onConfirm={onConfirmStockDialog}
+        onDelete={onDeleteTransaction}
+        transactionToEdit={assetTransactionToEdit}
       />
     </Container>
   );

@@ -80,6 +80,23 @@ export class AccountTransaction {
         return exhaustiveGuard(this.type);
     }
   }
+
+  isEditable() {
+    switch (this.type) {
+      case AccountTransactionType.DEPOSIT:
+        return true;
+      case AccountTransactionType.WITHDRAWAL:
+        return true;
+      case AccountTransactionType.BUY:
+        return false;
+      case AccountTransactionType.SELL:
+        return false;
+      case AccountTransactionType.DIVIDEND:
+        return false;
+      default:
+        return exhaustiveGuard(this.type);
+    }
+  }
 }
 
 export type AccountPreferences = {
@@ -128,6 +145,9 @@ export class AssetTransaction {
     public price: number,
     public type: AssetTransactionType,
     public date: Date,
+    public payCurrency: string | null,
+    public exchangeRate: number | null,
+    public commission: number | null,
   ) {}
 
   getName(): string {
@@ -175,4 +195,14 @@ export type AssetBalanceHistory = {
   quantity: number;
   price: number;
   result: number;
+};
+
+export type AccountHistory = {
+  date: Dayjs;
+  amount: number;
+};
+
+export type BaseStockValue = {
+  price: number;
+  currency: string;
 };

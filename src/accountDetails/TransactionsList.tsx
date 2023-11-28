@@ -5,10 +5,10 @@ import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 
 export const TransactionsList = ({
   transactions,
-  onDeleteClick,
+  onTransactionClick,
 }: {
   transactions: AccountTransaction[];
-  onDeleteClick: (transaction: AccountTransaction) => void;
+  onTransactionClick: (accountTransaction: AccountTransaction) => void;
 }) => {
   if (transactions.length === 0) {
     return (
@@ -31,7 +31,7 @@ export const TransactionsList = ({
         <TransactionsListItem
           key={transaction.id}
           transaction={transaction}
-          onDeleteClick={onDeleteClick}
+          onTransactionClick={onTransactionClick}
         />
       ))}
     </List>
