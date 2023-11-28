@@ -198,3 +198,8 @@ export type AccountHistory = {
   date: Dayjs;
   amount: number;
 };
+
+export type BaseStockValue = {
+  price: number;
+  currency: string;
+};

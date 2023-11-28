@@ -5,6 +5,7 @@ import {
   AssetBalanceHistory,
   AssetTransaction,
   AssetTransactionType,
+  BaseStockValue,
 } from "../types.ts";
 import { apiUrl } from "../config.ts";
 import { StockDetailsService } from "./stock-details-service.ts";
@@ -33,9 +34,20 @@ export const useStockDetails = () => {
   const [isStockLoading, setIsStockLoading] = useState(false);
   const [isTransactionsLoading, setIsTransactionsLoading] = useState(false);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
+  const [isBaseStockValueLoading, setIsBaseStockValueLoading] = useState(false);
   const isLoading = useMemo(() => {
-    return isStockLoading || isTransactionsLoading || isHistoryLoading;
-  }, [isStockLoading, isTransactionsLoading, isHistoryLoading]);
+    return (
+      isStockLoading ||
+      isTransactionsLoading ||
+      isHistoryLoading ||
+      isBaseStockValueLoading
+    );
+  }, [
+    isStockLoading,
+    isTransactionsLoading,
+    isHistoryLoading,
+    isBaseStockValueLoading,
+  ]);
   const [stock, setStock] = useState<Asset | null>(null);
   const [assetTransactions, setAssetTransactions] = useState<
     AssetTransaction[]
@@ -43,6 +55,9 @@ export const useStockDetails = () => {
   const [assetBalanceHistories, setAssetBalanceHistories] = useState<
     AssetBalanceHistory[]
   >([]);
+  const [baseStockValue, setBaseStockValue] = useState<BaseStockValue | null>(
+    null,
+  );
   const [dialogOpen, setDialogOpen] = useState(false);
   const [assetTransactionToEdit, setAssetTransactionToEdit] =
     useState<AssetTransaction | null>(null);
@@ -51,6 +66,7 @@ export const useStockDetails = () => {
     setIsStockLoading(true);
     setIsTransactionsLoading(true);
     setIsHistoryLoading(true);
+    setIsBaseStockValueLoading(true);
     if (!accountId || !isin) {
       return;
     }
@@ -84,6 +100,13 @@ export const useStockDetails = () => {
       .then((data) => {
         setAssetBalanceHistories(data);
         setIsHistoryLoading(false);
+      })
+      .catch(handleError);
+    stockDetailsService
+      .fetchBaseStockValue(accountId, isin)
+      .then((data) => {
+        setBaseStockValue(data);
+        setIsBaseStockValueLoading(false);
       })
       .catch(handleError);
   }, [accountId, isin, alert, stockDetailsService, navigate]);
@@ -157,6 +180,7 @@ export const useStockDetails = () => {
     stock,
     assetTransactions,
     assetBalanceHistories,
+    baseStockValue,
     assetTransactionToEdit,
     isLoading,
     openDialog: () => setDialogOpen(true),

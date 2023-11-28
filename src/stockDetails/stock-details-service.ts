@@ -3,6 +3,7 @@ import {
   AssetBalanceHistory,
   AssetTransaction,
   AssetTransactionType,
+  BaseStockValue,
 } from "../types.ts";
 import dayjs, { Dayjs } from "dayjs";
 
@@ -71,6 +72,20 @@ const fromAssetBalanceHistoryDto = (
     quantity: history.quantity,
     price: history.price,
     result: history.result,
+  };
+};
+
+type BaseStockValueDto = {
+  price: number;
+  currency: string;
+};
+
+const fromBaseStockValueDto = (
+  baseStockValue: BaseStockValueDto,
+): BaseStockValue => {
+  return {
+    price: baseStockValue.price,
+    currency: baseStockValue.currency,
   };
 };
 
@@ -216,5 +231,27 @@ export class StockDetailsService {
     }
     const data: AssetBalanceHistoryDto[] = await response.json();
     return data.map(fromAssetBalanceHistoryDto);
+  }
+
+  async fetchBaseStockValue(
+    accountId: number,
+    isin: string,
+  ): Promise<BaseStockValue> {
+    const response = await fetch(
+      `${this.apiUrl}/api/stock_balances/${accountId}/${isin}/price`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      },
+    );
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(
+        data.error ?? "Failed to fetch stock value in base currency",
+      );
+    }
+    const data: BaseStockValueDto = await response.json();
+    return fromBaseStockValueDto(data);
   }
 }
