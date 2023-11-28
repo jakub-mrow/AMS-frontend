@@ -8,6 +8,7 @@ import {
   AccountTransactionType,
   Asset,
   DEFAULT_ACCOUNT_PREFERENCES,
+  Exchange,
 } from "../types.ts";
 import { apiUrl } from "../config.ts";
 import { AccountsDetailsService } from "./account-details-service.ts";
@@ -46,6 +47,7 @@ export const useAccountDetails = () => {
     useState(false);
   const [isAccountPreferencesLoading, setIsAccountPreferencesLoading] =
     useState(false);
+  const [isExchangesLoading, setIsExchangesLoading] = useState(false);
   const isLoading = useMemo(() => {
     return (
       isAccountLoading ||
@@ -54,7 +56,8 @@ export const useAccountDetails = () => {
       isBondsLoading ||
       isDepositsLoading ||
       isCryptocurrenciesLoading ||
-      isAccountPreferencesLoading
+      isAccountPreferencesLoading ||
+      isExchangesLoading
     );
   }, [
     isAccountLoading,
@@ -64,6 +67,7 @@ export const useAccountDetails = () => {
     isDepositsLoading,
     isCryptocurrenciesLoading,
     isAccountPreferencesLoading,
+    isExchangesLoading,
   ]);
   const [account, setAccount] = useState<Account | null>(null);
   const [accountTransactions, setAccountTransactions] = useState<
@@ -77,6 +81,7 @@ export const useAccountDetails = () => {
     useState<AccountPreferences>(DEFAULT_ACCOUNT_PREFERENCES);
   const [isAccountHistoryLoading, setIsAccountHistoryLoading] = useState(false);
   const [accountHistory, setAccountHistory] = useState<AccountHistory[]>([]);
+  const [exchanges, setExchanges] = useState<Exchange[]>([]);
   const [dialogType, setDialogType] = useState<DialogType>(
     DialogType.TRANSACTION,
   );
@@ -116,6 +121,7 @@ export const useAccountDetails = () => {
     setIsCryptocurrenciesLoading(true);
     setIsAccountPreferencesLoading(true);
     setIsAccountHistoryLoading(true);
+    setIsExchangesLoading(true);
     if (!id) {
       return;
     }
@@ -190,6 +196,13 @@ export const useAccountDetails = () => {
       .then((data) => {
         setAccountHistory(data);
         setIsAccountHistoryLoading(false);
+      })
+      .catch(handleError);
+    accountDetailsService
+      .fetchExchanges()
+      .then((data) => {
+        setExchanges(data);
+        setIsExchangesLoading(false);
       })
       .catch(handleError);
   }, [id, alert, accountDetailsService, navigate]);
@@ -335,6 +348,7 @@ export const useAccountDetails = () => {
     cryptocurrencies,
     accountPreferences,
     accountHistory,
+    exchanges,
     isLoading,
     isAccountHistoryLoading,
     openDialog,

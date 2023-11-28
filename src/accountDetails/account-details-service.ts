@@ -5,6 +5,7 @@ import {
   AccountTransaction,
   AccountTransactionType,
   Asset,
+  Exchange,
 } from "../types.ts";
 import dayjs, { Dayjs } from "dayjs";
 
@@ -85,6 +86,20 @@ const fromAccountHistoryDto = (
   return {
     date: dayjs(accountHistory.date),
     amount: accountHistory.amount,
+  };
+};
+
+type ExchangeDto = {
+  id: number;
+  name: string;
+  code: string;
+};
+
+const fromExchangeDto = (exchange: ExchangeDto): Exchange => {
+  return {
+    id: exchange.id,
+    name: exchange.name,
+    code: exchange.code,
   };
 };
 
@@ -353,5 +368,19 @@ export class AccountsDetailsService {
     }
     const accountHistoryDto: AccountHistoryDto[] = await response.json();
     return accountHistoryDto.map(fromAccountHistoryDto);
+  }
+
+  async fetchExchanges(): Promise<Exchange[]> {
+    const response = await fetch(`${this.apiUrl}/api/exchanges`, {
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to fetch exchanges");
+    }
+    const exchangesDto: ExchangeDto[] = await response.json();
+    return exchangesDto.map(fromExchangeDto);
   }
 }

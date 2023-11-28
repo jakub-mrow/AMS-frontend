@@ -31,6 +31,7 @@ export const AccountDetailsDesktop = () => {
     cryptocurrencies,
     accountPreferences,
     accountHistory,
+    exchanges,
     isLoading,
     isAccountHistoryLoading,
     isDialogOpen,
@@ -162,6 +163,7 @@ export const AccountDetailsDesktop = () => {
       />
       <StocksDialog
         stocks={stocks}
+        exchanges={exchanges}
         isOpen={isDialogOpen(DialogType.STOCK)}
         onClose={closeDialog}
         onConfirm={onConfirmStockDialog}

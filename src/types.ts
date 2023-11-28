@@ -224,3 +224,9 @@ export type BaseStockValue = {
   price: number;
   currency: string;
 };
+
+export type Exchange = {
+  id: number;
+  name: string;
+  code: string;
+};

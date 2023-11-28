@@ -43,6 +43,7 @@ export const AccountDetailsMobile = () => {
     deposits,
     cryptocurrencies,
     accountPreferences,
+    exchanges,
     isLoading,
     isDialogOpen,
     openDialog,
@@ -133,6 +134,7 @@ export const AccountDetailsMobile = () => {
       />
       <StocksDialog
         stocks={stocks}
+        exchanges={exchanges}
         isOpen={isDialogOpen(DialogType.STOCK)}
         onClose={closeDialog}
         onConfirm={onConfirmStockDialog}
