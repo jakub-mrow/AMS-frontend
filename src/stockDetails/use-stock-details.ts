@@ -59,6 +59,8 @@ export const useStockDetails = () => {
     null,
   );
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [assetTransactionToEdit, setAssetTransactionToEdit] =
+    useState<AssetTransaction | null>(null);
 
   const refreshStockData = useCallback(() => {
     setIsStockLoading(true);
@@ -122,23 +124,56 @@ export const useStockDetails = () => {
     if (!accountId || !isin) {
       return false;
     }
-    try {
-      await stockDetailsService.addAssetTransaction(
-        accountId,
-        isin,
-        quantity,
-        price,
-        type,
-        date,
-      );
-      refreshStockData();
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(error.message, Severity.ERROR);
-        return false;
+    if (assetTransactionToEdit) {
+      try {
+        await stockDetailsService.updateAssetTransaction(
+          accountId,
+          assetTransactionToEdit.id,
+          isin,
+          quantity,
+          price,
+          type,
+          date,
+        );
+        refreshStockData();
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+          return false;
+        }
+      }
+    } else {
+      try {
+        await stockDetailsService.addAssetTransaction(
+          accountId,
+          isin,
+          quantity,
+          price,
+          type,
+          date,
+        );
+        refreshStockData();
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+          return false;
+        }
       }
     }
     return true;
+  };
+
+  const onDeleteTransaction = () => {
+    if (accountId && assetTransactionToEdit) {
+      stockDetailsService
+        .deleteAssetTransaction(accountId, assetTransactionToEdit.id)
+        .then(() => refreshStockData())
+        .catch((error) => {
+          if (error instanceof Error) {
+            alert(error.message, Severity.ERROR);
+          }
+        });
+    }
   };
 
   return {
@@ -146,10 +181,19 @@ export const useStockDetails = () => {
     assetTransactions,
     assetBalanceHistories,
     baseStockValue,
+    assetTransactionToEdit,
     isLoading,
     openDialog: () => setDialogOpen(true),
-    closeDialog: () => setDialogOpen(false),
+    closeDialog: () => {
+      setAssetTransactionToEdit(null);
+      setDialogOpen(false);
+    },
+    openEditDialog: (transaction: AssetTransaction) => {
+      setAssetTransactionToEdit(transaction);
+      setDialogOpen(true);
+    },
     dialogOpen,
     onConfirmStockDialog,
+    onDeleteTransaction,
   };
 };

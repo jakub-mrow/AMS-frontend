@@ -16,10 +16,12 @@ import { displayCurrency } from "../util/display-currency.ts";
 export const AssetTransactionsTable = ({
   asset,
   transactions,
+  onClickTransaction,
   isLoading,
 }: {
   asset: Asset;
   transactions: AssetTransaction[];
+  onClickTransaction: (assetTransaction: AssetTransaction) => void;
   isLoading: boolean;
 }) => {
   useState<AccountTransaction | null>(null);
@@ -58,7 +60,11 @@ export const AssetTransactionsTable = ({
                 )
               : transactions
             ).map((transaction) => (
-              <TableRow key={transaction.id} hover>
+              <TableRow
+                key={transaction.id}
+                hover
+                onClick={() => onClickTransaction(transaction)}
+              >
                 <TableCell>{transaction.getName()}</TableCell>
                 <TableCell>
                   {displayCurrency(transaction.price, asset.currency)}

@@ -1,10 +1,10 @@
 import { useContext } from "react";
 import AuthContext from "../auth/auth-context";
-import { FaPlus, FaWallet } from 'react-icons/fa';
+import { FaPlus, FaWallet } from "react-icons/fa";
 import Exchanges from "./Exchanges.tsx";
-import { useAccounts } from "../accounts/use-accounts.ts";
-import { AddAccountDialog } from "../accounts/AddAccountDialog.tsx";
-import { TickerTape } from "react-tradingview-embed"
+import { useAccounts } from "./use-accounts.ts";
+import { AddAccountDialog } from "./AddAccountDialog.tsx";
+import { TickerTape } from "react-tradingview-embed";
 import AccountCard from "./AccountCard.tsx";
 
 const Home = () => {
@@ -28,13 +28,12 @@ const Home = () => {
             <h1 className="text-2xl font-bold">Your accounts</h1>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-14">
-            {
-              accounts.map((account) => (
-                <AccountCard account={account} goToAccount={goToAccount}/>
-              ))
-            }
+            {accounts.map((account) => (
+              <AccountCard account={account} goToAccount={goToAccount} />
+            ))}
             <div className="w-full p-4 flex items-center justify-center">
-              <button className="w-12 h-12 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-full flex items-center hover:scale-110 transition-transform justify-center" 
+              <button
+                className="w-12 h-12 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-full flex items-center hover:scale-110 transition-transform justify-center"
                 onClick={openAddDialog}
               >
                 <FaPlus className="w-6 h-6" />
@@ -47,7 +46,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-        <TickerTape widgetProps={{ colorTheme: "light" }}/>
+        <TickerTape widgetProps={{ colorTheme: "light" }} />
         <Exchanges />
       </div>
     </div>

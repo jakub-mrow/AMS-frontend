@@ -1,11 +1,12 @@
 import {
   Account,
+  AccountHistory,
   AccountPreferences,
   AccountTransaction,
   AccountTransactionType,
   Asset,
 } from "../types.ts";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 export type AccountInput = {
   name: string;
@@ -73,6 +74,20 @@ const fromAccountPreferencesDto = (
   };
 };
 
+type AccountHistoryDto = {
+  date: string;
+  amount: number;
+};
+
+const fromAccountHistoryDto = (
+  accountHistory: AccountHistoryDto,
+): AccountHistory => {
+  return {
+    date: dayjs(accountHistory.date),
+    amount: accountHistory.amount,
+  };
+};
+
 export class AccountsDetailsService {
   constructor(
     private readonly apiUrl: string,
@@ -135,6 +150,36 @@ export class AccountsDetailsService {
     if (!response.ok) {
       const data: ErrorResponse = await response.json();
       throw new Error(data.error ?? "Failed to add transaction");
+    }
+  }
+
+  async updateAccountTransaction(
+    id: number,
+    transactionId: number,
+    type: AccountTransactionType,
+    amount: number,
+    currency: string,
+    date: Dayjs,
+  ) {
+    const response = await fetch(
+      `${this.apiUrl}/api/accounts/${id}/transactions/${transactionId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.token}`,
+        },
+        body: JSON.stringify({
+          amount,
+          currency,
+          type,
+          date,
+        }),
+      },
+    );
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to modify transaction");
     }
   }
 
@@ -258,5 +303,49 @@ export class AccountsDetailsService {
       const data: ErrorResponse = await response.json();
       throw new Error(data.error ?? "Failed to update account preferences");
     }
+  }
+
+  async renameAccount(id: number, name: string): Promise<void> {
+    const response = await fetch(`${this.apiUrl}/api/accounts/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${this.token}`,
+      },
+      body: JSON.stringify({
+        name,
+      }),
+    });
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to rename account");
+    }
+  }
+
+  async deleteAccount(id: number): Promise<void> {
+    const response = await fetch(`${this.apiUrl}/api/accounts/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to delete account");
+    }
+  }
+
+  async fetchAccountHistory(id: number): Promise<AccountHistory[]> {
+    const response = await fetch(`${this.apiUrl}/api/accounts/${id}/history`, {
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to fetch account history");
+    }
+    const accountHistoryDto: AccountHistoryDto[] = await response.json();
+    return accountHistoryDto.map(fromAccountHistoryDto);
   }
 }

@@ -6,9 +6,11 @@ import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 export const AssetTransactionsList = ({
   asset,
   transactions,
+  onClickTransaction,
 }: {
   asset: Asset;
   transactions: AssetTransaction[];
+  onClickTransaction: (assetTransaction: AssetTransaction) => void;
 }) => {
   if (transactions.length === 0) {
     return (
@@ -32,6 +34,7 @@ export const AssetTransactionsList = ({
           key={transaction.id}
           asset={asset}
           transaction={transaction}
+          onTransactionClick={onClickTransaction}
         />
       ))}
     </List>

@@ -12,10 +12,11 @@ import Drawer from "./Drawer";
 import { useAppBar } from "./use-app-bar.ts";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "./SearchBar.tsx";
+import { LogoutModal } from "./LogoutModal.tsx";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 const AppBar = () => {
-  const { drawerOpen, drawerToggle, isDrawerButtonVisible, buttons } =
+  const { drawerOpen, drawerToggle, isDrawerButtonVisible, buttons, handleLogoutAction, setLogoutModalOpen, isLogoutModalOpen } =
     useAppBar();
   const navigate = useNavigate();
 
@@ -61,6 +62,7 @@ const AppBar = () => {
           )}
         </Toolbar>
       </MUIAppBar>
+      <LogoutModal isOpen={isLogoutModalOpen} onClose={() => setLogoutModalOpen(false)} onLogout={handleLogoutAction} />
       <Box component="nav">
         <Drawer open={drawerOpen} toggle={drawerToggle} items={buttons} />
       </Box>
