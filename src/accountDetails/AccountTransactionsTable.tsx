@@ -1,5 +1,4 @@
 import {
-  IconButton,
   Paper,
   Table,
   TableBody,
@@ -10,32 +9,21 @@ import {
   TableRow,
 } from "@mui/material";
 import { AccountTransaction } from "../types.ts";
-import { Delete } from "@mui/icons-material";
 import { ChangeEvent, useState } from "react";
-import { ConfirmationDialog } from "../dialog/ConfirmationDialog.tsx";
 import { Loading } from "../util/Loading.tsx";
 import { displayCurrency } from "../util/display-currency.ts";
 
 export const AccountsTransactionsTable = ({
   transactions,
-  onDeleteTransaction,
+  onClickTransaction,
   isLoading,
 }: {
   transactions: AccountTransaction[];
-  onDeleteTransaction: (accountTransaction: AccountTransaction) => void;
+  onClickTransaction: (accountTransaction: AccountTransaction) => void;
   isLoading: boolean;
 }) => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [transactionToDelete, setTransactionToDelete] =
-    useState<AccountTransaction | null>(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const onDeleteConfirm = () => {
-    if (transactionToDelete) {
-      onDeleteTransaction(transactionToDelete);
-    }
-    setIsDialogOpen(false);
-  };
 
   const handleChangeRowsPerPage = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -57,7 +45,6 @@ export const AccountsTransactionsTable = ({
               <TableCell>Type</TableCell>
               <TableCell>Amount</TableCell>
               <TableCell>Date</TableCell>
-              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -68,7 +55,11 @@ export const AccountsTransactionsTable = ({
                 )
               : transactions
             ).map((transaction) => (
-              <TableRow key={transaction.id} hover>
+              <TableRow
+                key={transaction.id}
+                hover
+                onClick={() => onClickTransaction(transaction)}
+              >
                 <TableCell>{transaction.getName()}</TableCell>
                 <TableCell
                   sx={{ color: transaction.getColor() }}
@@ -77,16 +68,6 @@ export const AccountsTransactionsTable = ({
                   transaction.currency,
                 )}`}</TableCell>
                 <TableCell>{transaction.date.toLocaleDateString()}</TableCell>
-                <TableCell>
-                  <IconButton
-                    onClick={() => {
-                      setIsDialogOpen(true);
-                      setTransactionToDelete(transaction);
-                    }}
-                  >
-                    <Delete />
-                  </IconButton>
-                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -99,12 +80,6 @@ export const AccountsTransactionsTable = ({
         page={page}
         onPageChange={(_event, newPage) => setPage(newPage)}
         onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-      <ConfirmationDialog
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        onConfirm={onDeleteConfirm}
-        content={`Are you sure you want to delete ${transactionToDelete?.type} transaction from ${transactionToDelete?.date.toLocaleDateString()}?`}
       />
     </>
   );

@@ -35,10 +35,12 @@ export const AccountDetailsDesktop = () => {
     isAccountHistoryLoading,
     isDialogOpen,
     openDialog,
+    openEditAccountTransactionDialog,
     closeDialog,
     onConfirmAccountTransactionDialog,
     onConfirmStockDialog,
     onDeleteTransaction,
+    accountTransactionToEdit,
     isAccountEditDialogOpen,
     openAccountEditDialog,
     closeAccountEditDialog,
@@ -111,7 +113,7 @@ export const AccountDetailsDesktop = () => {
                   onAddTransactionClick={() =>
                     openDialog(DialogType.TRANSACTION)
                   }
-                  onDeleteTransactionClick={onDeleteTransaction}
+                  onTransactionClick={openEditAccountTransactionDialog}
                 />
               ) : (
                 <AssetsDesktop
@@ -154,7 +156,9 @@ export const AccountDetailsDesktop = () => {
         isOpen={isDialogOpen(DialogType.TRANSACTION)}
         onClose={closeDialog}
         onConfirm={onConfirmAccountTransactionDialog}
+        onDelete={onDeleteTransaction}
         baseCurrency={accountPreferences.baseCurrency}
+        transactionToEdit={accountTransactionToEdit}
       />
       <StocksDialog
         stocks={stocks}
