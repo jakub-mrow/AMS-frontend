@@ -188,6 +188,24 @@ export class AssetTransaction {
         return exhaustiveGuard(this.type);
     }
   }
+
+  getQuantity() {
+    if (this.type === AssetTransactionType.DIVIDEND) {
+      return "-";
+    }
+    return this.quantity;
+  }
+
+  getValue() {
+    if (this.type === AssetTransactionType.DIVIDEND) {
+      return this.price;
+    }
+    return this.quantity * this.price;
+  }
+
+  isDividend() {
+    return this.type === AssetTransactionType.DIVIDEND;
+  }
 }
 
 export type AssetBalanceHistory = {

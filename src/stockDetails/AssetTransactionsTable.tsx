@@ -69,11 +69,11 @@ export const AssetTransactionsTable = ({
                 <TableCell>
                   {displayCurrency(transaction.price, asset.currency)}
                 </TableCell>
-                <TableCell>{transaction.quantity}</TableCell>
+                <TableCell>{transaction.getQuantity()}</TableCell>
                 <TableCell
                   sx={{ color: transaction.getColor() }}
                 >{`${transaction.getSign()} ${displayCurrency(
-                  transaction.price * transaction.quantity,
+                  transaction.getValue(),
                   asset.currency,
                 )}`}</TableCell>
                 <TableCell>{transaction.date.toLocaleDateString()}</TableCell>

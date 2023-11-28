@@ -32,17 +32,21 @@ export const AssetTransactionsListItem = ({
           />
           <ListItemText
             primary={`${transaction.getSign()} ${displayCurrency(
-              transaction.price * transaction.quantity,
+              transaction.getValue(),
               asset.currency,
             )}`}
             primaryTypographyProps={{
               align: "right",
               color: transaction.getColor(),
             }}
-            secondary={`${transaction.quantity} x ${displayCurrency(
-              transaction.price,
-              asset.currency,
-            )}`}
+            secondary={
+              transaction.isDividend()
+                ? undefined
+                : `${transaction.quantity} x ${displayCurrency(
+                    transaction.price,
+                    asset.currency,
+                  )}`
+            }
             secondaryTypographyProps={{ align: "right" }}
             sx={{ mr: 2 }}
           />
