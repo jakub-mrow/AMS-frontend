@@ -33,7 +33,7 @@ export const AssetTransactionsListItem = ({
           <ListItemText
             primary={`${transaction.getSign()} ${displayCurrency(
               transaction.getValue(),
-              asset.currency,
+              transaction.payCurrency || asset.currency,
             )}`}
             primaryTypographyProps={{
               align: "right",
@@ -44,7 +44,7 @@ export const AssetTransactionsListItem = ({
                 ? undefined
                 : `${transaction.quantity} x ${displayCurrency(
                     transaction.price,
-                    asset.currency,
+                    transaction.payCurrency || asset.currency,
                   )}`
             }
             secondaryTypographyProps={{ align: "right" }}
