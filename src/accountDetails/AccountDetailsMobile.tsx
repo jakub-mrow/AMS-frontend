@@ -110,6 +110,7 @@ export const AccountDetailsMobile = () => {
           account={account}
           showOpenAccountEditDialog={false}
           openAccountEditDialog={openAccountEditDialog}
+          baseCurrency={accountPreferences.baseCurrency}
         />
       )}
       <BottomNavigation

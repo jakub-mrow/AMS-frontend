@@ -136,6 +136,7 @@ export const AccountDetailsDesktop = () => {
               account={account}
               showOpenAccountEditDialog={true}
               openAccountEditDialog={openAccountEditDialog}
+              baseCurrency={accountPreferences.baseCurrency}
             />
           </Paper>
         </Box>

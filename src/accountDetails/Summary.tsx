@@ -7,12 +7,14 @@ import { displayCurrency } from "../util/display-currency.ts";
 
 export const Summary = ({
   account,
+  baseCurrency,
   isLoading,
   showOpenAccountEditDialog,
   openAccountEditDialog,
 }: {
   isLoading: boolean;
   account: Account;
+  baseCurrency: string;
   showOpenAccountEditDialog: boolean;
   openAccountEditDialog: () => void;
 }) => {
@@ -38,6 +40,11 @@ export const Summary = ({
             </IconButton>
           )}
           <Typography variant="h3">{account.name}</Typography>
+          <Divider />
+          <Typography variant="h4">Value</Typography>
+          <Typography variant="h5">
+            {displayCurrency(account.value, baseCurrency)}
+          </Typography>
           <Divider />
           <Typography variant="h4">Balances</Typography>
           {account.balances.map((balance) => (

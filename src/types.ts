@@ -6,6 +6,7 @@ export type Account = {
   userId: number;
   name: string;
   balances: AccountBalance[];
+  value: number;
 };
 
 export type AccountBalance = {
