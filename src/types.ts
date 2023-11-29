@@ -3,10 +3,10 @@ import { Dayjs } from "dayjs";
 
 export type Account = {
   id: number;
-  userId: number;
   name: string;
   balances: AccountBalance[];
   value: number;
+  preferences: AccountPreferences;
 };
 
 export type AccountBalance = {
@@ -103,11 +103,6 @@ export class AccountTransaction {
 export type AccountPreferences = {
   baseCurrency: string;
   taxCurrency: string;
-};
-
-export const DEFAULT_ACCOUNT_PREFERENCES: AccountPreferences = {
-  baseCurrency: "PLN",
-  taxCurrency: "PLN",
 };
 
 export class Asset {

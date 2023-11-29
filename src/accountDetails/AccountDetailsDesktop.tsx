@@ -29,7 +29,6 @@ export const AccountDetailsDesktop = () => {
     bonds,
     deposits,
     cryptocurrencies,
-    accountPreferences,
     accountHistory,
     exchanges,
     isLoading,
@@ -136,7 +135,6 @@ export const AccountDetailsDesktop = () => {
               account={account}
               showOpenAccountEditDialog={true}
               openAccountEditDialog={openAccountEditDialog}
-              baseCurrency={accountPreferences.baseCurrency}
             />
           </Paper>
         </Box>
@@ -148,7 +146,7 @@ export const AccountDetailsDesktop = () => {
             <AccountChart
               isLoading={isAccountHistoryLoading}
               histories={accountHistory}
-              currency={accountPreferences.baseCurrency}
+              currency={account.preferences.baseCurrency}
               isMobile={false}
             />
           </Paper>
@@ -159,7 +157,7 @@ export const AccountDetailsDesktop = () => {
         onClose={closeDialog}
         onConfirm={onConfirmAccountTransactionDialog}
         onDelete={onDeleteTransaction}
-        baseCurrency={accountPreferences.baseCurrency}
+        baseCurrency={account.preferences.baseCurrency}
         transactionToEdit={accountTransactionToEdit}
       />
       <StocksDialog
@@ -170,12 +168,11 @@ export const AccountDetailsDesktop = () => {
         onConfirm={onConfirmStockDialog}
       />
       <AccountEditDialog
+        account={account}
         isOpen={isAccountEditDialogOpen}
         onClose={closeAccountEditDialog}
         onConfirm={onConfirmEdit}
         onDelete={deleteAccount}
-        currentName={account.name}
-        currentPreferences={accountPreferences}
       />
     </>
   );

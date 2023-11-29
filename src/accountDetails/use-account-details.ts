@@ -7,7 +7,6 @@ import {
   AccountTransaction,
   AccountTransactionType,
   Asset,
-  DEFAULT_ACCOUNT_PREFERENCES,
   Exchange,
 } from "../types.ts";
 import { apiUrl } from "../config.ts";
@@ -45,8 +44,6 @@ export const useAccountDetails = () => {
   const [isDepositsLoading, setIsDepositsLoading] = useState(false);
   const [isCryptocurrenciesLoading, setIsCryptocurrenciesLoading] =
     useState(false);
-  const [isAccountPreferencesLoading, setIsAccountPreferencesLoading] =
-    useState(false);
   const [isExchangesLoading, setIsExchangesLoading] = useState(false);
   const isLoading = useMemo(() => {
     return (
@@ -56,7 +53,6 @@ export const useAccountDetails = () => {
       isBondsLoading ||
       isDepositsLoading ||
       isCryptocurrenciesLoading ||
-      isAccountPreferencesLoading ||
       isExchangesLoading
     );
   }, [
@@ -66,7 +62,6 @@ export const useAccountDetails = () => {
     isBondsLoading,
     isDepositsLoading,
     isCryptocurrenciesLoading,
-    isAccountPreferencesLoading,
     isExchangesLoading,
   ]);
   const [account, setAccount] = useState<Account | null>(null);
@@ -77,8 +72,6 @@ export const useAccountDetails = () => {
   const [bonds, setBonds] = useState<Asset[]>([]);
   const [deposits, setDeposits] = useState<Asset[]>([]);
   const [cryptocurrencies, setCryptocurrencies] = useState<Asset[]>([]);
-  const [accountPreferences, setAccountPreferences] =
-    useState<AccountPreferences>(DEFAULT_ACCOUNT_PREFERENCES);
   const [isAccountHistoryLoading, setIsAccountHistoryLoading] = useState(false);
   const [accountHistory, setAccountHistory] = useState<AccountHistory[]>([]);
   const [exchanges, setExchanges] = useState<Exchange[]>([]);
@@ -119,7 +112,6 @@ export const useAccountDetails = () => {
     setIsBondsLoading(true);
     setIsDepositsLoading(true);
     setIsCryptocurrenciesLoading(true);
-    setIsAccountPreferencesLoading(true);
     setIsAccountHistoryLoading(true);
     setIsExchangesLoading(true);
     if (!id) {
@@ -179,18 +171,6 @@ export const useAccountDetails = () => {
         setIsCryptocurrenciesLoading(false);
       })
       .catch(handleError);
-    accountDetailsService
-      .fetchAccountPreferences(Number(id))
-      .then((data) => {
-        setAccountPreferences(data);
-        setIsAccountPreferencesLoading(false);
-      })
-      .catch((error) => {
-        if (error instanceof Error) {
-          alert(error.message, Severity.ERROR);
-          navigate("/", { replace: true });
-        }
-      });
     accountDetailsService
       .fetchAccountHistory(Number(id))
       .then((data) => {
@@ -346,7 +326,6 @@ export const useAccountDetails = () => {
     bonds,
     deposits,
     cryptocurrencies,
-    accountPreferences,
     accountHistory,
     exchanges,
     isLoading,

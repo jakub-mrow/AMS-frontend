@@ -42,7 +42,6 @@ export const AccountDetailsMobile = () => {
     bonds,
     deposits,
     cryptocurrencies,
-    accountPreferences,
     exchanges,
     isLoading,
     isDialogOpen,
@@ -110,7 +109,6 @@ export const AccountDetailsMobile = () => {
           account={account}
           showOpenAccountEditDialog={false}
           openAccountEditDialog={openAccountEditDialog}
-          baseCurrency={accountPreferences.baseCurrency}
         />
       )}
       <BottomNavigation
@@ -129,7 +127,7 @@ export const AccountDetailsMobile = () => {
         isOpen={isDialogOpen(DialogType.TRANSACTION)}
         onClose={closeDialog}
         onConfirm={onConfirmAccountTransactionDialog}
-        baseCurrency={accountPreferences.baseCurrency}
+        baseCurrency={account.preferences.baseCurrency}
         onDelete={onDeleteTransaction}
         transactionToEdit={accountTransactionToEdit}
       />
@@ -141,12 +139,11 @@ export const AccountDetailsMobile = () => {
         onConfirm={onConfirmStockDialog}
       />
       <AccountEditDialog
+        account={account}
         isOpen={isAccountEditDialogOpen}
         onClose={closeAccountEditDialog}
         onConfirm={onConfirmEdit}
         onDelete={deleteAccount}
-        currentName={account.name}
-        currentPreferences={accountPreferences}
       />
       {fabs.map((fab) => (
         <Zoom

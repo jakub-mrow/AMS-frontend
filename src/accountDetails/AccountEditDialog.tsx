@@ -10,7 +10,7 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { isValidCurrency, isValidName } from "../util/validations.ts";
 import { CURRENCIES } from "../util/currencies.ts";
-import { AccountPreferences } from "../types.ts";
+import { Account, AccountPreferences } from "../types.ts";
 import { LoadingButton } from "@mui/lab";
 import { useState } from "react";
 import { ConfirmationDialog } from "../dialog/ConfirmationDialog.tsx";
@@ -22,24 +22,23 @@ interface AccountEditFormData {
 }
 
 export const AccountEditDialog = ({
+  account,
   isOpen,
   onClose,
   onConfirm,
   onDelete,
-  currentName,
-  currentPreferences,
 }: {
+  account: Account;
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (name: string, accountPreferences: AccountPreferences) => void;
   onDelete: () => void;
-  currentName: string;
-  currentPreferences: AccountPreferences;
 }) => {
   const { control, handleSubmit, reset } = useForm<AccountEditFormData>({
     defaultValues: {
-      name: currentName,
-      ...currentPreferences,
+      name: account.name,
+      baseCurrency: account.preferences.baseCurrency,
+      taxCurrency: account.preferences.taxCurrency,
     },
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -192,7 +191,7 @@ export const AccountEditDialog = ({
         isOpen={isConfirmationOpen}
         onClose={() => setIsConfirmationOpen(false)}
         onConfirm={onDeleteConfirm}
-        content={`Are you sure you want to delete account ${currentName}?`}
+        content={`Are you sure you want to delete account ${account.name}?`}
       />
     </>
   );

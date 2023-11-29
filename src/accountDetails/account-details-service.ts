@@ -9,12 +9,52 @@ import {
 } from "../types.ts";
 import dayjs, { Dayjs } from "dayjs";
 
-export type AccountInput = {
-  name: string;
-};
-
 type ErrorResponse = {
   error?: string;
+};
+
+type AccountPreferencesDto = {
+  base_currency: string;
+  tax_currency: string;
+};
+
+const fromAccountPreferencesDto = (
+  accountPreference: AccountPreferencesDto,
+): AccountPreferences => {
+  return {
+    baseCurrency: accountPreference.base_currency,
+    taxCurrency: accountPreference.tax_currency,
+  };
+};
+
+type AccountBalanceDto = {
+  amount: number;
+  currency: string;
+};
+
+const fromAccountBalanceDto = (accountBalance: AccountBalanceDto) => {
+  return {
+    amount: accountBalance.amount,
+    currency: accountBalance.currency,
+  };
+};
+
+type AccountDto = {
+  id: number;
+  name: string;
+  balances: AccountBalanceDto[];
+  value: number;
+  preferences: AccountPreferencesDto;
+};
+
+const fromAccountDto = (account: AccountDto): Account => {
+  return {
+    id: account.id,
+    name: account.name,
+    balances: account.balances.map(fromAccountBalanceDto),
+    value: account.value,
+    preferences: fromAccountPreferencesDto(account.preferences),
+  };
 };
 
 type AccountTransactionDto = {
@@ -61,20 +101,6 @@ const fromAssetDto = (stock: AssetDto): Asset => {
   );
 };
 
-type AccountPreferencesDto = {
-  base_currency: string;
-  tax_currency: string;
-};
-
-const fromAccountPreferencesDto = (
-  accountPreference: AccountPreferencesDto,
-): AccountPreferences => {
-  return {
-    baseCurrency: accountPreference.base_currency,
-    taxCurrency: accountPreference.tax_currency,
-  };
-};
-
 type AccountHistoryDto = {
   date: string;
   amount: number;
@@ -119,7 +145,8 @@ export class AccountsDetailsService {
       const data: ErrorResponse = await response.json();
       throw new Error(data.error ?? "Failed to fetch account");
     }
-    return await response.json();
+    const accountDto: AccountDto = await response.json();
+    return fromAccountDto(accountDto);
   }
 
   async fetchAccountTransactions(id: number): Promise<AccountTransaction[]> {
@@ -283,23 +310,6 @@ export class AccountsDetailsService {
       const data: ErrorResponse = await response.json();
       throw new Error(data.error ?? "Failed to add stock");
     }
-  }
-
-  async fetchAccountPreferences(id: number): Promise<AccountPreferences> {
-    const response = await fetch(
-      `${this.apiUrl}/api/accounts/${id}/get_preferences`,
-      {
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-        },
-      },
-    );
-    if (!response.ok) {
-      const data: ErrorResponse = await response.json();
-      throw new Error(data.error ?? "Failed to fetch account preferences");
-    }
-    const accountPreferencesDto: AccountPreferencesDto = await response.json();
-    return fromAccountPreferencesDto(accountPreferencesDto);
   }
 
   async updateAccountPreferences(
