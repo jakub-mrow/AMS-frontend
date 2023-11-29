@@ -1,5 +1,6 @@
 import { exhaustiveGuard } from "./util/exhaustive-switch.ts";
 import { Dayjs } from "dayjs";
+import { displayCurrency } from "./util/display-currency.ts";
 
 export class Account {
   constructor(
@@ -35,6 +36,10 @@ export class Account {
       return "+" + this.xirr.toFixed(1) + "%";
     }
     return this.xirr.toFixed(1) + "%";
+  }
+
+  displayValue(): string {
+    return displayCurrency(this.value, this.preferences.baseCurrency);
   }
 }
 

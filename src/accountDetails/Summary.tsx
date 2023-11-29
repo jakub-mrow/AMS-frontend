@@ -42,9 +42,7 @@ export const Summary = ({
           <Typography variant="h4">Value</Typography>
           {account.hasXirr() ? (
             <Box display="flex" justifyContent="center">
-              <Typography variant="h5">
-                {displayCurrency(account.value, account.preferences.baseCurrency)}
-              </Typography>
+              <Typography variant="h5">{account.displayValue()}</Typography>
               <Typography
                 variant="subtitle1"
                 alignSelf="flex-end"
@@ -55,9 +53,7 @@ export const Summary = ({
               </Typography>
             </Box>
           ) : (
-            <Typography variant="h5">
-              {displayCurrency(account.value, account.preferences.baseCurrency)}
-            </Typography>
+            <Typography variant="h5">{account.displayValue()}</Typography>
           )}
           <Divider />
           <Typography variant="h4">Balances</Typography>
