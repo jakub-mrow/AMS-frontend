@@ -32,7 +32,7 @@ export const AccountEditDialog = ({
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (name: string, accountPreferences: AccountPreferences) => void;
-  onDelete: () => void;
+  onDelete: () => Promise<void>;
 }) => {
   const { control, handleSubmit, reset } = useForm<AccountEditFormData>({
     defaultValues: {
@@ -42,6 +42,7 @@ export const AccountEditDialog = ({
     },
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
   const cancelHandler = () => {
@@ -54,10 +55,13 @@ export const AccountEditDialog = ({
   };
 
   const onDeleteConfirm = () => {
-    onDelete();
+    setIsDeleteLoading(true);
     setIsConfirmationOpen(false);
-    onClose();
-    reset();
+    onDelete().then(() => {
+      setIsDeleteLoading(false);
+      onClose();
+      reset();
+    });
   };
 
   const confirmHandler = handleSubmit((accountEditFormData) => {
@@ -178,9 +182,13 @@ export const AccountEditDialog = ({
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={deleteHandler} color="error">
+          <LoadingButton
+            loading={isDeleteLoading}
+            onClick={deleteHandler}
+            color="error"
+          >
             Delete
-          </Button>
+          </LoadingButton>
           <Button onClick={cancelHandler} color="secondary">
             Cancel
           </Button>

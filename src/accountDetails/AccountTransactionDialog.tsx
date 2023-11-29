@@ -49,7 +49,7 @@ export const AccountTransactionDialog = ({
     type: AccountTransactionType,
     date: Dayjs,
   ) => Promise<boolean>;
-  onDelete: () => void;
+  onDelete: () => Promise<void>;
   baseCurrency: string;
   transactionToEdit: AccountTransaction | null;
 }) => {
@@ -64,6 +64,7 @@ export const AccountTransactionDialog = ({
     },
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
   useEffect(() => {
@@ -87,10 +88,13 @@ export const AccountTransactionDialog = ({
   };
 
   const onDeleteConfirm = () => {
-    onDelete();
+    setIsDeleteLoading(true);
     setIsConfirmationOpen(false);
-    onClose();
-    reset();
+    onDelete().then(() => {
+      setIsDeleteLoading(false);
+      onClose();
+      reset();
+    });
   };
 
   const confirmHandler = handleSubmit((transactionFormData) => {
@@ -231,9 +235,13 @@ export const AccountTransactionDialog = ({
         </DialogContent>
         <DialogActions>
           {transactionToEdit && (
-            <Button onClick={deleteHandler} color="error">
+            <LoadingButton
+              loading={isDeleteLoading}
+              onClick={deleteHandler}
+              color="error"
+            >
               Delete
-            </Button>
+            </LoadingButton>
           )}
           <Button onClick={cancelHandler} color="secondary">
             Cancel

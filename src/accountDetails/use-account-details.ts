@@ -277,16 +277,19 @@ export const useAccountDetails = () => {
     return dialogOpen && dialogType === type;
   };
 
-  const onDeleteTransaction = () => {
+  const onDeleteTransaction = async () => {
     if (account && accountTransactionToEdit) {
-      accountDetailsService
-        .deleteAccountTransaction(account.id, accountTransactionToEdit.id)
-        .then(() => refreshAccountData())
-        .catch((error) => {
-          if (error instanceof Error) {
-            alert(error.message, Severity.ERROR);
-          }
-        });
+      try {
+        await accountDetailsService.deleteAccountTransaction(
+          account.id,
+          accountTransactionToEdit.id,
+        );
+        refreshAccountData();
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+        }
+      }
     }
   };
 
@@ -314,20 +317,18 @@ export const useAccountDetails = () => {
     navigate(`./assets/${isin}`, {});
   };
 
-  const deleteAccount = () => {
+  const deleteAccount = async () => {
     if (!account) {
       return;
     }
-    accountDetailsService
-      .deleteAccount(account.id)
-      .then(() => {
-        navigate("/", { replace: true });
-      })
-      .catch((error) => {
-        if (error instanceof Error) {
-          alert(error.message, Severity.ERROR);
-        }
-      });
+    try {
+      await accountDetailsService.deleteAccount(account.id);
+      navigate("/", { replace: true });
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message, Severity.ERROR);
+      }
+    }
   };
 
   return {
