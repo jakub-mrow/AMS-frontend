@@ -191,39 +191,50 @@ export const useAccountDetails = () => {
     refreshAccountData();
   }, [refreshAccountData]);
 
-  const onConfirmAccountTransactionDialog = (
+  const onConfirmAccountTransactionDialog = async (
     amount: number,
     currency: string,
     type: AccountTransactionType,
     date: Dayjs,
   ) => {
-    if (account) {
-      if (accountTransactionToEdit) {
-        accountDetailsService
-          .updateAccountTransaction(
-            account.id,
-            accountTransactionToEdit.id,
-            type,
-            amount,
-            currency,
-            date,
-          )
-          .then(() => refreshAccountData())
-          .catch((error) => {
-            if (error instanceof Error) {
-              alert(error.message, Severity.ERROR);
-            }
-          });
-      } else {
-        accountDetailsService
-          .addAccountTransaction(account.id, type, amount, currency, date)
-          .then(() => refreshAccountData())
-          .catch((error) => {
-            if (error instanceof Error) {
-              alert(error.message, Severity.ERROR);
-            }
-          });
+    if (!account) {
+      return false;
+    }
+    if (accountTransactionToEdit) {
+      try {
+        await accountDetailsService.updateAccountTransaction(
+          account.id,
+          accountTransactionToEdit.id,
+          type,
+          amount,
+          currency,
+          date,
+        );
+        refreshAccountData();
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+        }
+        return false;
       }
+      return true;
+    } else {
+      try {
+        await accountDetailsService.addAccountTransaction(
+          account.id,
+          type,
+          amount,
+          currency,
+          date,
+        );
+        refreshAccountData();
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+        }
+        return false;
+      }
+      return true;
     }
   };
 
@@ -256,8 +267,8 @@ export const useAccountDetails = () => {
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message, Severity.ERROR);
-        return false;
       }
+      return false;
     }
     return true;
   };

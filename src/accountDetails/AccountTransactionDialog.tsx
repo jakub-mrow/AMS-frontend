@@ -48,7 +48,7 @@ export const AccountTransactionDialog = ({
     currency: string,
     type: AccountTransactionType,
     date: Dayjs,
-  ) => void;
+  ) => Promise<boolean>;
   onDelete: () => void;
   baseCurrency: string;
   transactionToEdit: AccountTransaction | null;
@@ -112,10 +112,13 @@ export const AccountTransactionDialog = ({
       transactionFormData.currency.trim(),
       transactionType,
       transactionFormData.date,
-    );
-    onClose();
-    setIsLoading(false);
-    reset();
+    ).then((success) => {
+      setIsLoading(false);
+      if (success) {
+        onClose();
+        reset();
+      }
+    });
   });
 
   return (
