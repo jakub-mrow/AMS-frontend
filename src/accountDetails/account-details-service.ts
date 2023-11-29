@@ -45,16 +45,18 @@ type AccountDto = {
   balances: AccountBalanceDto[];
   value: number;
   preferences: AccountPreferencesDto;
+  xirr: number;
 };
 
 const fromAccountDto = (account: AccountDto): Account => {
-  return {
-    id: account.id,
-    name: account.name,
-    balances: account.balances.map(fromAccountBalanceDto),
-    value: account.value,
-    preferences: fromAccountPreferencesDto(account.preferences),
-  };
+  return new Account(
+    account.id,
+    account.name,
+    account.balances.map(fromAccountBalanceDto),
+    account.value,
+    fromAccountPreferencesDto(account.preferences),
+    account.xirr,
+  );
 };
 
 type AccountTransactionDto = {

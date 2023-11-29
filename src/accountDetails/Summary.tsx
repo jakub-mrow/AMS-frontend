@@ -1,5 +1,5 @@
 import { Account } from "../types.ts";
-import { Divider, IconButton, Typography } from "@mui/material";
+import { Box, Divider, IconButton, Typography } from "@mui/material";
 import { VerticalFlexContainer } from "../util/VerticalFlexContainer.tsx";
 import { Loading } from "../util/Loading.tsx";
 import { Settings } from "@mui/icons-material";
@@ -40,9 +40,25 @@ export const Summary = ({
           <Typography variant="h3">{account.name}</Typography>
           <Divider />
           <Typography variant="h4">Value</Typography>
-          <Typography variant="h5">
-            {displayCurrency(account.value, account.preferences.baseCurrency)}
-          </Typography>
+          {account.hasXirr() ? (
+            <Box display="flex" justifyContent="center">
+              <Typography variant="h5">
+                {displayCurrency(account.value, account.preferences.baseCurrency)}
+              </Typography>
+              <Typography
+                variant="subtitle1"
+                alignSelf="flex-end"
+                sx={{ ml: 1 }}
+                color={account.getXirrColor()}
+              >
+                {account.displayXirr()}
+              </Typography>
+            </Box>
+          ) : (
+            <Typography variant="h5">
+              {displayCurrency(account.value, account.preferences.baseCurrency)}
+            </Typography>
+          )}
           <Divider />
           <Typography variant="h4">Balances</Typography>
           {account.balances.map((balance) => (

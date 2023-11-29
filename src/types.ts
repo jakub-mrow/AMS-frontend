@@ -1,13 +1,42 @@
 import { exhaustiveGuard } from "./util/exhaustive-switch.ts";
 import { Dayjs } from "dayjs";
 
-export type Account = {
-  id: number;
-  name: string;
-  balances: AccountBalance[];
-  value: number;
-  preferences: AccountPreferences;
-};
+export class Account {
+  constructor(
+    public id: number,
+    public name: string,
+    public balances: AccountBalance[],
+    public value: number,
+    public preferences: AccountPreferences,
+    public xirr: number,
+  ) {}
+
+  hasXirr(): boolean {
+    return this.xirr !== null;
+  }
+
+  getXirrColor(): string {
+    if (!this.hasXirr()) {
+      return "black";
+    }
+    if (this.xirr > 0) {
+      return "green";
+    } else if (this.xirr < 0) {
+      return "red";
+    }
+    return "black";
+  }
+
+  displayXirr(): string {
+    if (!this.hasXirr()) {
+      return "";
+    }
+    if (this.xirr > 0) {
+      return "+" + this.xirr.toFixed(1) + "%";
+    }
+    return this.xirr.toFixed(1) + "%";
+  }
+}
 
 export type AccountBalance = {
   currency: string;
