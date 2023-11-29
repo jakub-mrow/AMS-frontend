@@ -33,9 +33,9 @@ export class Account {
       return "";
     }
     if (this.xirr > 0) {
-      return "+" + this.xirr.toFixed(1) + "%";
+      return "+" + (this.xirr * 100).toFixed(1) + "%";
     }
-    return this.xirr.toFixed(1) + "%";
+    return (this.xirr * 100).toFixed(1) + "%";
   }
 
   displayValue(): string {
