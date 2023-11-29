@@ -82,7 +82,7 @@ export const AccountEditDialog = ({
         open={isOpen}
         onClose={cancelHandler}
         disableRestoreFocus
-        onKeyUp={(event) => {
+        onKeyDown={(event) => {
           if (event.key === "Enter") confirmHandler().then();
         }}
         fullWidth
@@ -127,6 +127,9 @@ export const AccountEditDialog = ({
                   fullWidth
                   autoHighlight
                   autoSelect
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") event.stopPropagation();
+                  }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -157,6 +160,9 @@ export const AccountEditDialog = ({
                   fullWidth
                   autoHighlight
                   autoSelect
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") event.stopPropagation();
+                  }}
                   renderInput={(params) => (
                     <TextField
                       {...params}

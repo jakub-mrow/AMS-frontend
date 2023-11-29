@@ -153,7 +153,7 @@ export const AssetTransactionDialog = ({
         open={isOpen}
         onClose={cancelHandler}
         disableRestoreFocus
-        onKeyUp={(event) => {
+        onKeyDown={(event) => {
           if (event.key === "Enter") confirmHandler().then();
         }}
       >
@@ -270,6 +270,9 @@ export const AssetTransactionDialog = ({
                     fullWidth
                     autoHighlight
                     autoSelect
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") event.stopPropagation();
+                    }}
                     sx={{ mr: 2 }}
                     renderInput={(params) => (
                       <TextField

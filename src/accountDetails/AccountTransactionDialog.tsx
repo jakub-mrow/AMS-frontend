@@ -127,7 +127,7 @@ export const AccountTransactionDialog = ({
         open={isOpen}
         onClose={cancelHandler}
         disableRestoreFocus
-        onKeyUp={(event) => {
+        onKeyDown={(event) => {
           if (event.key === "Enter") confirmHandler().then();
         }}
       >
@@ -212,6 +212,9 @@ export const AccountTransactionDialog = ({
                   fullWidth
                   autoHighlight
                   autoSelect
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") event.stopPropagation();
+                  }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
