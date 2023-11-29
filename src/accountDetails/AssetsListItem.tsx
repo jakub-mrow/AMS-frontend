@@ -32,7 +32,7 @@ export const AssetsListItem = ({
             asset.currency,
           )}
           primaryTypographyProps={{ align: "right" }}
-          secondary={`${asset.result}%`}
+          secondary={asset.displayResult()}
           secondaryTypographyProps={{
             align: "right",
             color: asset.getResultColor(),

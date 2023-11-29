@@ -129,6 +129,13 @@ export class Asset {
     }
     return "black";
   }
+
+  displayResult(): string {
+    if (this.result > 0) {
+      return "+" + this.result.toFixed(1) + "%";
+    }
+    return this.result.toFixed(1) + "%";
+  }
 }
 
 export enum AssetTransactionType {
