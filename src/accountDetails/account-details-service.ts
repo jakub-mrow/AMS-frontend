@@ -354,4 +354,24 @@ export class AccountsDetailsService {
     const accountHistoryDto: AccountHistoryDto[] = await response.json();
     return accountHistoryDto.map(fromAccountHistoryDto);
   }
+
+  async sendBrokerFile(file: File, broker: string) {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await fetch(
+      `${this.apiUrl}/api/import_stock_transactions?broker=${broker}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+        body: formData,
+      },
+    );
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to send broker file");
+    }
+    return await response.blob();
+  }
 }

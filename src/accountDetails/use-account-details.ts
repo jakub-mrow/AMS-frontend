@@ -14,7 +14,7 @@ import { AccountsDetailsService } from "./account-details-service.ts";
 import { useSnackbar } from "../snackbar/use-snackbar.ts";
 import { Severity } from "../snackbar/snackbar-context.ts";
 import AuthContext from "../auth/auth-context.ts";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 export enum DialogType {
   TRANSACTION,
@@ -326,6 +326,24 @@ export const useAccountDetails = () => {
       });
   };
 
+  const onSendBrokerFile = async (file: File, broker: string) => {
+    try {
+      const blob = await accountDetailsService.sendBrokerFile(file, broker);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${broker}-${dayjs().format("YYYY-MM-DD")}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message, Severity.ERROR);
+      }
+    }
+  };
+
   return {
     account,
     accountTransactions,
@@ -351,5 +369,6 @@ export const useAccountDetails = () => {
     onConfirmEdit,
     deleteAccount,
     goToAsset,
+    onSendBrokerFile,
   };
 };
