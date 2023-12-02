@@ -6,6 +6,7 @@ import { useAccounts } from "./use-accounts.ts";
 import { AddAccountDialog } from "./AddAccountDialog.tsx";
 import { TickerTape } from "react-tradingview-embed";
 import AccountCard from "./AccountCard.tsx";
+import News from "../news/News.tsx";
 
 const Home = () => {
   useContext(AuthContext);
@@ -48,6 +49,7 @@ const Home = () => {
         </div>
         <TickerTape widgetProps={{ colorTheme: "light" }} />
         <Exchanges />
+        <News></News>
       </div>
     </div>
   );
