@@ -11,6 +11,7 @@ import { AccountEditDialog } from "./AccountEditDialog.tsx";
 import { Asset } from "../types.ts";
 import { StocksDialog } from "./StocksDialog.tsx";
 import { AccountChart } from "./AccountChart.tsx";
+import { ImportDialog } from "./ImportDialog.tsx";
 
 export enum DetailsTabs {
   STOCKS,
@@ -47,6 +48,7 @@ export const AccountDetailsDesktop = () => {
     onConfirmEdit,
     deleteAccount,
     goToAsset,
+    onSendBrokerFile,
   } = useAccountDetails();
   const [detailsTab, setDetailsTab] = useState(DetailsTabs.STOCKS);
 
@@ -133,8 +135,8 @@ export const AccountDetailsDesktop = () => {
             <Summary
               isLoading={isLoading}
               account={account}
-              showOpenAccountEditDialog={true}
               openAccountEditDialog={openAccountEditDialog}
+              openImportDialog={() => openDialog(DialogType.IMPORT)}
             />
           </Paper>
         </Box>
@@ -173,6 +175,12 @@ export const AccountDetailsDesktop = () => {
         onDelete={deleteAccount}
         currentName={account.name}
         currentPreferences={accountPreferences}
+      />
+      <ImportDialog
+        isOpen={isDialogOpen(DialogType.IMPORT)}
+        onClose={closeDialog}
+        onSendImport={async (file) => {}}
+        onSendBrokerFile={onSendBrokerFile}
       />
     </>
   );

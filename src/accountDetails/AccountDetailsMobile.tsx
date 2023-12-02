@@ -8,6 +8,7 @@ import { DialogType, useAccountDetails } from "./use-account-details";
 import { ReactElement, useState } from "react";
 import {
   Add,
+  CloudUpload,
   Equalizer,
   FormatListNumbered,
   Settings,
@@ -21,6 +22,7 @@ import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { Loading } from "../util/Loading.tsx";
 import { AccountEditDialog } from "./AccountEditDialog.tsx";
 import { StocksDialog } from "./StocksDialog.tsx";
+import { ImportDialog } from "./ImportDialog.tsx";
 
 enum MobilePage {
   ASSETS,
@@ -58,6 +60,7 @@ export const AccountDetailsMobile = () => {
     onConfirmEdit,
     deleteAccount,
     goToAsset,
+    onSendBrokerFile,
   } = useAccountDetails();
 
   const [mobilePage, setMobilePage] = useState(MobilePage.ASSETS);
@@ -104,12 +107,7 @@ export const AccountDetailsMobile = () => {
         />
       )}
       {mobilePage === MobilePage.SUMMARY && (
-        <Summary
-          isLoading={isLoading}
-          account={account}
-          showOpenAccountEditDialog={false}
-          openAccountEditDialog={openAccountEditDialog}
-        />
+        <Summary isLoading={isLoading} account={account} />
       )}
       <BottomNavigation
         showLabels
@@ -145,6 +143,29 @@ export const AccountDetailsMobile = () => {
         currentName={account.name}
         currentPreferences={accountPreferences}
       />
+      <ImportDialog
+        isOpen={isDialogOpen(DialogType.IMPORT)}
+        onClose={closeDialog}
+        onSendImport={async (file) => {}}
+        onSendBrokerFile={onSendBrokerFile}
+      />
+      <Zoom
+        in={mobilePage === MobilePage.SUMMARY}
+        unmountOnExit
+        timeout={200}
+        style={{
+          transitionDelay: `${mobilePage === MobilePage.SUMMARY ? 200 : 0}ms`,
+        }}
+      >
+        <Fab
+          color="primary"
+          sx={{ position: "fixed", bottom: 140, right: 28 }}
+          onClick={() => openDialog(DialogType.IMPORT)}
+          size="medium"
+        >
+          <CloudUpload />
+        </Fab>
+      </Zoom>
       {fabs.map((fab) => (
         <Zoom
           key={fab.value}

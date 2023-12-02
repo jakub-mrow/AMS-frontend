@@ -19,6 +19,7 @@ import dayjs, { Dayjs } from "dayjs";
 export enum DialogType {
   TRANSACTION,
   STOCK,
+  IMPORT,
 }
 
 export const useAccountDetails = () => {
