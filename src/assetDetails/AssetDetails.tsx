@@ -5,13 +5,12 @@ import { useAssetDetails } from './use-asset-details';
 
 
 const AssetDetails = () => {
-    const { assetDetailsData } = useAssetDetails();
-
+    const { assetDetailsData, assetDetailsInfo } = useAssetDetails();
     return (
         <>
-            { assetDetailsData && (
+            { assetDetailsData && assetDetailsInfo && (
                 <div className="flex flex-col m-6 space-y-4">
-                    <AssetDetailsHeader assetDetailsData={assetDetailsData} />
+                    <AssetDetailsHeader assetDetailsData={assetDetailsData} assetDetailsInfo={assetDetailsInfo} />
                     <div className="flex flex-col m-6 p-4 bg-gray-100 rounded-lg shadow-lg border">
                         <div className="flex flex-col md:flex-row justify-between md:space-x-4 space-y-2 md:space-y-0">
                             <div className="flex-1 space-y-4">
