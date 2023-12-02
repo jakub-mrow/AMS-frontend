@@ -355,6 +355,12 @@ export class AccountsDetailsService {
     return accountHistoryDto.map(fromAccountHistoryDto);
   }
 
+  async sendCsvFile(file: File): Promise<Blob> {
+    return new Promise((resolve) => {
+      resolve(file);
+    });
+  }
+
   async sendBrokerFile(file: File, broker: string) {
     const formData = new FormData();
     formData.append("file", file);

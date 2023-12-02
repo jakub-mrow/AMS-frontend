@@ -48,6 +48,7 @@ export const AccountDetailsDesktop = () => {
     onConfirmEdit,
     deleteAccount,
     goToAsset,
+    onSendCsvFile,
     onSendBrokerFile,
   } = useAccountDetails();
   const [detailsTab, setDetailsTab] = useState(DetailsTabs.STOCKS);
@@ -179,7 +180,7 @@ export const AccountDetailsDesktop = () => {
       <ImportDialog
         isOpen={isDialogOpen(DialogType.IMPORT)}
         onClose={closeDialog}
-        onSendImport={async (file) => {}}
+        onSendImport={onSendCsvFile}
         onSendBrokerFile={onSendBrokerFile}
       />
     </>

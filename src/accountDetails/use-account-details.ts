@@ -327,6 +327,24 @@ export const useAccountDetails = () => {
       });
   };
 
+  const onSendCsvFile = async (file: File) => {
+    try {
+      const blob = await accountDetailsService.sendCsvFile(file);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `ams-csv-${dayjs().format("YYYY-MM-DD")}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message, Severity.ERROR);
+      }
+    }
+  };
+
   const onSendBrokerFile = async (file: File, broker: string) => {
     try {
       const blob = await accountDetailsService.sendBrokerFile(file, broker);
@@ -370,6 +388,7 @@ export const useAccountDetails = () => {
     onConfirmEdit,
     deleteAccount,
     goToAsset,
+    onSendCsvFile,
     onSendBrokerFile,
   };
 };

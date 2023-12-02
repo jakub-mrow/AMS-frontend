@@ -60,6 +60,7 @@ export const AccountDetailsMobile = () => {
     onConfirmEdit,
     deleteAccount,
     goToAsset,
+    onSendCsvFile,
     onSendBrokerFile,
   } = useAccountDetails();
 
@@ -146,7 +147,7 @@ export const AccountDetailsMobile = () => {
       <ImportDialog
         isOpen={isDialogOpen(DialogType.IMPORT)}
         onClose={closeDialog}
-        onSendImport={async (file) => {}}
+        onSendImport={onSendCsvFile}
         onSendBrokerFile={onSendBrokerFile}
       />
       <Zoom
