@@ -24,7 +24,7 @@ export const OriginalChart: React.FC<OrignalChartProps> = ({ assetDetailsInfo, a
     }
 
     return (
-        <div className="container bg-white rounded-xl p-10 pt-6">
+        <div className=" bg-white rounded-xl p-10 pt-6 w-full">
             <div className="flex flex-col space-y-2 mb-2">
                 <span className="text-xl font-semibold">{assetDetailsData.Name}</span>
                 <div className="space-x-2">
@@ -35,15 +35,29 @@ export const OriginalChart: React.FC<OrignalChartProps> = ({ assetDetailsInfo, a
                     </span>
                 </div>
             </div>
-
             <Chart type='line' data={{
                 labels: data.dates,
                 datasets: [
                     {
                         data: data.closeValues,
-                        fill: false,
+                        fill: true,
+                        // for backgroundColor attribute it shows an error but it works XD
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-ignore
+                        backgroundColor: (context) => {
+                            if (!context.chart.chartArea) {
+                                return null;
+                            }
+
+                            const { ctx, chartArea: { top, bottom } } = context.chart;
+                            const gradientBg = ctx.createLinearGradient(0, top, 0, bottom);
+                            gradientBg.addColorStop(0, 'rgba(67, 104, 185, 0.5)');
+                            gradientBg.addColorStop(1, 'rgba(255, 255, 255, 1)')
+
+                            return gradientBg;
+                        } ,
                         borderColor: 'rgba(39,92,196,1)',
-                        borderWidth: 3,
+                        borderWidth: 2,
                         pointRadius: 0,
                     },
                 ],
@@ -68,8 +82,8 @@ export const OriginalChart: React.FC<OrignalChartProps> = ({ assetDetailsInfo, a
                         }
                     },
                     y: {
-                        min: Math.min(...data.closeValues) - 5,
-                        max: Math.max(...data.closeValues) + 5,
+                        min: (Math.min(...data.closeValues) - 5).toFixed(3),
+                        max: (Math.max(...data.closeValues) + 10).toFixed(3),
                         ticks: {
                             callback: (value) => value + ` ${assetDetailsData.Currency}`
                         }
