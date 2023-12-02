@@ -49,7 +49,7 @@ const Home = () => {
         </div>
         <TickerTape widgetProps={{ colorTheme: "light" }} />
         <Exchanges />
-        <News></News>
+        <News ticker=""></News>
       </div>
     </div>
   );

@@ -3,9 +3,12 @@ import { useNews } from './use-news';
 import { Loading } from '../util/Loading';
 import { IoNewspaperOutline } from "react-icons/io5";
 
+interface NewsProps {
+    ticker: string;
+}
 
-const News = () => {
-    const { news, isLoading, displayedNewsCount, handleLoadMore } = useNews("");
+const News: React.FC<NewsProps> = ({ ticker }) => {
+    const { news, isLoading, displayedNewsCount, handleLoadMore } = useNews(ticker);
 
     const displayedNews = news.slice(0, displayedNewsCount);
 

@@ -34,7 +34,7 @@ export const useNews = (ticker: string) => {
                 let endpoint = `${apiUrl}/api/get_stock_news`;
 
                 if (ticker.trim() !== '') {
-                    endpoint += `?ticker=${ticker}`;
+                    endpoint += `?stock=${ticker}`;
                 }
                 const response = await fetch(endpoint, {
                     method: "GET",
