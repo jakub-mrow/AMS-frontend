@@ -7,7 +7,8 @@ import { AssetDetailsInfoRequest, AssetDetailsInfoResponse, AssetDetailsInfoResp
 import dayjs from 'dayjs';
 
 export interface AssetDetailsDataProps {
-    assetDetailsData: Result
+    assetDetailsData: Result,
+    assetDetailsInfo: AssetDetailsInfoResponse,
 }
 
 export const useAssetDetails = () => {
@@ -15,6 +16,7 @@ export const useAssetDetails = () => {
     const [assetDetailsData, setAssetDetailsData] = useState<Result | null>(null);
     const [assetDetailsInfo, setAssetDetailsInfo] = useState<AssetDetailsInfoResponse | null>(null);
     const { assetCode } = useParams();
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const [stock, exchange] = (assetCode || '').split('.')!;
@@ -58,6 +60,7 @@ export const useAssetDetails = () => {
 
     useEffect(() => {
         const f = async () => {
+            setIsLoading(true);
             const today = dayjs();
             const oneMonthAgo = today.subtract(1, 'month');
 
@@ -73,6 +76,7 @@ export const useAssetDetails = () => {
             }
             setAssetDetailsData(await getSearchResult());
             setAssetDetailsInfo(await getAssetDetailsInfo(assetDetailsInfoRequestData));
+            setIsLoading(false);
         }
 
         f();
@@ -82,6 +86,7 @@ export const useAssetDetails = () => {
     return {
         assetDetailsData,
         assetDetailsInfo,
-        getSearchResult
+        getSearchResult,
+        isLoading
     }
 }

@@ -91,8 +91,8 @@ const AssetDetailsHeader: React.FC<AssetDetailsHeaderProps> = ({ assetDetailsDat
             </div>
             <div className="border-t border-gray-300 my-4"></div>
 
-            <ChartTabs tradingviewSymbols={symbols} assetDetailsInfo={assetDetailsInfo}/>
-            <AssetDetailFrontCards assetDetailsData={assetDetailsData} />
+            <ChartTabs tradingviewSymbols={symbols} assetDetailsInfo={assetDetailsInfo} assetDetailsData={assetDetailsData}/>
+            <AssetDetailFrontCards assetDetailsData={assetDetailsData} assetDetailsInfo={assetDetailsInfo}/>
 
             <AddAssetDialog
                 accounts={accounts}
