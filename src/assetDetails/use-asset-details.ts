@@ -62,7 +62,7 @@ export const useAssetDetails = () => {
         const f = async () => {
             setIsLoading(true);
             const today = dayjs();
-            const oneMonthAgo = today.subtract(1, 'month');
+            const oneMonthAgo = today.subtract(6, 'month');
 
             const todayFormatted = today.format('YYYY-MM-DD');
             const oneMonthAgoFormatted = oneMonthAgo.format('YYYY-MM-DD');

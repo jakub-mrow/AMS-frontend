@@ -8,7 +8,6 @@ import { Loading } from '../util/Loading';
 
 const AssetDetails = () => {
     const { assetDetailsData, assetDetailsInfo, isLoading } = useAssetDetails();
-    console.log(assetDetailsInfo);
     return (
         <>
             {isLoading ? (

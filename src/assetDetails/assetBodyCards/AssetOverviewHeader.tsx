@@ -6,10 +6,10 @@ const AssetOverviewHeader: React.FC<AssetDetailsDataProps> = ({ assetDetailsData
             <div className="flex flex-row space-x-4 items-center justify-between">
                 <div className="flex flex-row space-x-4">
                     <div className="space-x-2">
-                        <span className="text-4xl font-bold ">{assetDetailsInfo.current_price}</span>
+                        <span className="text-4xl font-bold ">{assetDetailsInfo.currentPrice}</span>
                         <span className="">{assetDetailsData.Currency}</span>
-                        <span className={`font-bold text-xl ${assetDetailsInfo.percentage_change_previous_close > 0 ? 'text-green-700' : 'text-red-700'}`}>
-                        {assetDetailsInfo.percentage_change_previous_close > 0 ? '+' : ''}{assetDetailsInfo.percentage_change_previous_close}%
+                        <span className={`font-bold text-xl ${assetDetailsInfo.percentageChangePreviousClose > 0 ? 'text-green-700' : 'text-red-700'}`}>
+                        {assetDetailsInfo.percentageChangePreviousClose > 0 ? '+' : ''}{assetDetailsInfo.percentageChangePreviousClose}%
                     </span>
                     </div>
                 </div>
