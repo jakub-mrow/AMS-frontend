@@ -54,6 +54,7 @@ export enum AccountTransactionType {
   BUY = "buy",
   SELL = "sell",
   DIVIDEND = "dividend",
+  COST = "cost",
 }
 
 export class AccountTransaction {
@@ -77,6 +78,8 @@ export class AccountTransaction {
         return "Sell assets";
       case AccountTransactionType.DIVIDEND:
         return "Dividend";
+      case AccountTransactionType.COST:
+        return "Cost";
       default:
         return exhaustiveGuard(this.type);
     }
@@ -94,6 +97,8 @@ export class AccountTransaction {
         return "+";
       case AccountTransactionType.DIVIDEND:
         return "+";
+      case AccountTransactionType.COST:
+        return "-";
       default:
         return exhaustiveGuard(this.type);
     }
@@ -111,6 +116,8 @@ export class AccountTransaction {
         return "green";
       case AccountTransactionType.DIVIDEND:
         return "green";
+      case AccountTransactionType.COST:
+        return "red";
       default:
         return exhaustiveGuard(this.type);
     }
@@ -128,6 +135,8 @@ export class AccountTransaction {
         return false;
       case AccountTransactionType.DIVIDEND:
         return false;
+      case AccountTransactionType.COST:
+        return true;
       default:
         return exhaustiveGuard(this.type);
     }

@@ -2,19 +2,19 @@ import { Account } from "../types.ts";
 import { Box, Divider, IconButton, Typography } from "@mui/material";
 import { VerticalFlexContainer } from "../util/VerticalFlexContainer.tsx";
 import { Loading } from "../util/Loading.tsx";
-import { Settings } from "@mui/icons-material";
+import { CloudUpload, Settings } from "@mui/icons-material";
 import { displayCurrency } from "../util/display-currency.ts";
 
 export const Summary = ({
   account,
   isLoading,
-  showOpenAccountEditDialog,
   openAccountEditDialog,
+  openImportDialog,
 }: {
   isLoading: boolean;
   account: Account;
-  showOpenAccountEditDialog: boolean;
-  openAccountEditDialog: () => void;
+  openAccountEditDialog?: () => void;
+  openImportDialog?: () => void;
 }) => {
   return (
     <>
@@ -29,14 +29,18 @@ export const Summary = ({
             mt: 2,
           }}
         >
-          {showOpenAccountEditDialog && (
-            <IconButton
-              sx={{ alignSelf: "flex-end" }}
-              onClick={openAccountEditDialog}
-            >
-              <Settings />
-            </IconButton>
-          )}
+          <Box display="flex" justifyContent="flex-end">
+            {openAccountEditDialog && (
+              <IconButton onClick={openAccountEditDialog}>
+                <Settings />
+              </IconButton>
+            )}
+            {openImportDialog && (
+              <IconButton onClick={openImportDialog}>
+                <CloudUpload />
+              </IconButton>
+            )}
+          </Box>
           <Typography variant="h3">{account.name}</Typography>
           <Divider />
           <Typography variant="h4">Value</Typography>

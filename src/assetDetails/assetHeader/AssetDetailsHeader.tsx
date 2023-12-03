@@ -4,14 +4,14 @@ import { BsStar } from 'react-icons/bs'
 import { Button } from '@mui/material'
 import AssetDetailFrontCards from './AssetDetailFrontCards'
 import { IoMdAdd } from 'react-icons/io'
-import { SymbolOverview } from 'react-tradingview-embed'
 import React from 'react'
-import { AssetDetailsDataProps } from '../use-asset-details'
 import { AddAssetDialog } from '../AddAssetDialog'
 import { DialogType, useAddAsset } from '../use-add-asset'
+import { ChartTabs } from './ChartTabs'
+import { AssetDetailsHeaderProps } from '../types'
 
 
-const AssetDetailsHeader: React.FC<AssetDetailsDataProps> = ({ assetDetailsData }) => {
+const AssetDetailsHeader: React.FC<AssetDetailsHeaderProps> = ({ assetDetailsData, assetDetailsInfo }) => {
     let symbols: string[] = [];
     switch (assetDetailsData.Type) {
         case 'Common Stock':
@@ -90,10 +90,9 @@ const AssetDetailsHeader: React.FC<AssetDetailsDataProps> = ({ assetDetailsData 
                 </div>
             </div>
             <div className="border-t border-gray-300 my-4"></div>
-            <div className="pb-4">
-                <SymbolOverview widgetProps={{ colorTheme: "light", symbols: symbols }} />
-            </div>
-            <AssetDetailFrontCards assetDetailsData={assetDetailsData} />
+
+            <ChartTabs tradingviewSymbols={symbols} assetDetailsInfo={assetDetailsInfo} assetDetailsData={assetDetailsData}/>
+            <AssetDetailFrontCards assetDetailsData={assetDetailsData} assetDetailsInfo={assetDetailsInfo}/>
 
             <AddAssetDialog
                 accounts={accounts}

@@ -101,8 +101,10 @@ export const AccountTransactionDialog = ({
     let transactionType;
     if (transactionFormData.type === AccountTransactionType.DEPOSIT) {
       transactionType = AccountTransactionType.DEPOSIT;
-    } else {
+    } else if (transactionFormData.type === AccountTransactionType.WITHDRAWAL) {
       transactionType = AccountTransactionType.WITHDRAWAL;
+    } else {
+      transactionType = AccountTransactionType.COST;
     }
     if (
       transactionFormData.amount === null ||
@@ -155,6 +157,11 @@ export const AccountTransactionDialog = ({
                       value={"withdrawal"}
                       control={<Radio />}
                       label="Withdrawal"
+                    />
+                    <FormControlLabel
+                      value={"cost"}
+                      control={<Radio />}
+                      label="Cost"
                     />
                   </RadioGroup>
                 )}
