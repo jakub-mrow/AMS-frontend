@@ -14,11 +14,12 @@ import { AccountsDetailsService } from "./account-details-service.ts";
 import { useSnackbar } from "../snackbar/use-snackbar.ts";
 import { Severity } from "../snackbar/snackbar-context.ts";
 import AuthContext from "../auth/auth-context.ts";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 export enum DialogType {
   TRANSACTION,
   STOCK,
+  IMPORT,
 }
 
 export const useAccountDetails = () => {
@@ -326,6 +327,42 @@ export const useAccountDetails = () => {
       });
   };
 
+  const onSendCsvFile = async (file: File) => {
+    try {
+      const blob = await accountDetailsService.sendCsvFile(file);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `ams-csv-${dayjs().format("YYYY-MM-DD")}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message, Severity.ERROR);
+      }
+    }
+  };
+
+  const onSendBrokerFile = async (file: File, broker: string) => {
+    try {
+      const blob = await accountDetailsService.sendBrokerFile(file, broker);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${broker}-${dayjs().format("YYYY-MM-DD")}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message, Severity.ERROR);
+      }
+    }
+  };
+
   return {
     account,
     accountTransactions,
@@ -351,5 +388,7 @@ export const useAccountDetails = () => {
     onConfirmEdit,
     deleteAccount,
     goToAsset,
+    onSendCsvFile,
+    onSendBrokerFile,
   };
 };
