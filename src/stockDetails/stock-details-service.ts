@@ -3,6 +3,7 @@ import {
   AssetBalanceHistory,
   AssetTransaction,
   AssetTransactionType,
+  AssetType,
   BaseStockValue,
 } from "../types.ts";
 import dayjs, { Dayjs } from "dayjs";
@@ -47,6 +48,7 @@ type AssetDto = {
   price: number;
   currency: string;
   result: number;
+  type: AssetType;
 };
 
 const fromAssetDto = (stock: AssetDto): Asset => {
@@ -59,6 +61,7 @@ const fromAssetDto = (stock: AssetDto): Asset => {
     stock.price,
     stock.currency,
     stock.result,
+    stock.type,
   );
 };
 

@@ -5,6 +5,7 @@ import {
   AccountTransaction,
   AccountTransactionType,
   Asset,
+  AssetType,
   Exchange,
 } from "../types.ts";
 import dayjs, { Dayjs } from "dayjs";
@@ -88,6 +89,7 @@ type AssetDto = {
   price: number;
   currency: string;
   result: number;
+  type: AssetType;
 };
 
 const fromAssetDto = (stock: AssetDto): Asset => {
@@ -100,6 +102,7 @@ const fromAssetDto = (stock: AssetDto): Asset => {
     stock.price,
     stock.currency,
     stock.result,
+    stock.type,
   );
 };
 
@@ -242,7 +245,7 @@ export class AccountsDetailsService {
     }
   }
 
-  async fetchStocks(accountId: number): Promise<Asset[]> {
+  async fetchAssets(accountId: number): Promise<Asset[]> {
     const response = await fetch(
       `${this.apiUrl}/api/stock_balances/${accountId}/list_dto`,
       {
@@ -257,24 +260,6 @@ export class AccountsDetailsService {
     }
     const stocks: AssetDto[] = await response.json();
     return stocks.map(fromAssetDto);
-  }
-
-  async fetchBonds(_accountId: number): Promise<Asset[]> {
-    return new Promise((resolve) => {
-      resolve([]);
-    });
-  }
-
-  async fetchDeposits(_accountId: number): Promise<Asset[]> {
-    return new Promise((resolve) => {
-      resolve([]);
-    });
-  }
-
-  async fetchCryptocurrencies(_accountId: number): Promise<Asset[]> {
-    return new Promise((resolve) => {
-      resolve([]);
-    });
   }
 
   async buyStocks(
