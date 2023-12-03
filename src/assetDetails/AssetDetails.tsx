@@ -2,6 +2,7 @@ import AssetDetailsHeader from './assetHeader/AssetDetailsHeader';
 import AssetOverviewCard from './assetBodyCards/AssetOverviewCard'
 import AssetChartCard from './assetBodyCards/AssetChartCard'
 import { useAssetDetails } from './use-asset-details';
+import News from '../news/News';
 import { Loading } from '../util/Loading';
 
 
@@ -26,6 +27,10 @@ const AssetDetails = () => {
                                 </div>
                             </div>
                         </div>
+                        <div className="bg-white rounded-xl">
+                            <News ticker={assetDetailsData.Code}/>
+                        </div>
+                        
                     </div>
                 )
             )}
