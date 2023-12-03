@@ -51,7 +51,7 @@ export const AssetsTable = ({
           color: asset.getResultColor(),
         }}
       >
-        {`${asset.result}%`}
+        {asset.displayResult()}
       </TableCell>
     </TableRow>
   );

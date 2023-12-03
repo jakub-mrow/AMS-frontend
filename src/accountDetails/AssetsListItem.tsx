@@ -1,11 +1,4 @@
-import {
-  Box,
-  Divider,
-  IconButton,
-  ListItem,
-  ListItemText,
-} from "@mui/material";
-import { Delete } from "@mui/icons-material";
+import { Box, Divider, ListItem, ListItemText } from "@mui/material";
 import { Asset } from "../types.ts";
 import { displayCurrency } from "../util/display-currency.ts";
 
@@ -32,7 +25,7 @@ export const AssetsListItem = ({
             asset.currency,
           )}
           primaryTypographyProps={{ align: "right" }}
-          secondary={`${asset.result}%`}
+          secondary={asset.displayResult()}
           secondaryTypographyProps={{
             align: "right",
             color: asset.getResultColor(),
@@ -44,16 +37,7 @@ export const AssetsListItem = ({
   );
   return (
     <>
-      <ListItem
-        secondaryAction={
-          <IconButton edge="end">
-            <Delete />
-          </IconButton>
-        }
-        onClick={goToAsset}
-      >
-        {getListItem()}
-      </ListItem>
+      <ListItem onClick={goToAsset}>{getListItem()}</ListItem>
       <Divider />
     </>
   );

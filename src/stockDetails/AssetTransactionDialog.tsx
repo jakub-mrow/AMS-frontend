@@ -56,7 +56,7 @@ export const AssetTransactionDialog = ({
     exchangeRate: number | null,
     commission: number | null,
   ) => Promise<boolean>;
-  onDelete: () => void;
+  onDelete: () => Promise<void>;
   transactionToEdit: AssetTransaction | null;
 }) => {
   const { control, handleSubmit, reset, watch } =
@@ -74,7 +74,9 @@ export const AssetTransactionDialog = ({
       },
     });
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const isDividend = watch("type") === AssetTransactionType.DIVIDEND;
 
   useEffect(() => {
     reset({
@@ -100,31 +102,46 @@ export const AssetTransactionDialog = ({
   };
 
   const onDeleteConfirm = () => {
-    onDelete();
+    setIsDeleteLoading(true);
     setIsConfirmationOpen(false);
-    onClose();
-    reset();
+    onDelete().then(() => {
+      setIsDeleteLoading(false);
+      onClose();
+      reset();
+    });
   };
 
   const confirmHandler = handleSubmit((data) => {
-    if (data.price === null || data.quantity === null || data.date === null) {
+    if (data.price === null || data.date === null) {
       return;
     }
     let payCurrency = null;
     let exchangeRate = null;
-    if (data.payCurrency !== null && data.exchangeRate !== null) {
-      payCurrency = data.payCurrency;
-      exchangeRate = data.exchangeRate;
+    if (data.payCurrency !== null) {
+      if (isDividend) {
+        payCurrency = data.payCurrency;
+        exchangeRate = null;
+      }
+      if (data.exchangeRate !== null) {
+        payCurrency = data.payCurrency;
+        exchangeRate = data.exchangeRate;
+      }
+    }
+    let quantity = data.quantity ?? 0;
+    let commission = data.commission;
+    if (isDividend) {
+      quantity = 0;
+      commission = null;
     }
     setIsLoading(true);
     onConfirm(
-      data.quantity,
+      quantity,
       data.price,
       data.type,
       data.date,
       payCurrency,
       exchangeRate,
-      data.commission,
+      commission,
     ).then((success) => {
       if (success) {
         onClose();
@@ -140,7 +157,7 @@ export const AssetTransactionDialog = ({
         open={isOpen}
         onClose={cancelHandler}
         disableRestoreFocus
-        onKeyUp={(event) => {
+        onKeyDown={(event) => {
           if (event.key === "Enter") confirmHandler().then();
         }}
       >
@@ -195,11 +212,12 @@ export const AssetTransactionDialog = ({
             </FormControl>
             <Controller
               name="quantity"
+              disabled={isDividend}
               control={control}
               rules={{
-                required: true,
-                validate: isValidNumber,
-                pattern: quantityPattern,
+                required: !isDividend,
+                validate: (quantity) => isDividend || isValidNumber(quantity),
+                pattern: isDividend ? undefined : quantityPattern,
               }}
               render={({ field, fieldState: { error } }) => (
                 <TextField
@@ -226,11 +244,7 @@ export const AssetTransactionDialog = ({
                 <TextField
                   {...field}
                   margin="normal"
-                  label={
-                    watch("type") === "dividend"
-                      ? "Dividend per stock"
-                      : "Price"
-                  }
+                  label={isDividend ? "Amount" : "Price"}
                   type="number"
                   inputProps={{
                     step: 0.01,
@@ -260,6 +274,9 @@ export const AssetTransactionDialog = ({
                     fullWidth
                     autoHighlight
                     autoSelect
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") event.stopPropagation();
+                    }}
                     sx={{ mr: 2 }}
                     renderInput={(params) => (
                       <TextField
@@ -275,11 +292,12 @@ export const AssetTransactionDialog = ({
               />
               <Controller
                 name="exchangeRate"
-                disabled={watch("payCurrency") === null}
+                disabled={isDividend || watch("payCurrency") === null}
                 control={control}
                 rules={{
-                  required: watch("payCurrency") !== null,
+                  required: !isDividend && watch("payCurrency") !== null,
                   validate: (exchangeRate) =>
+                    isDividend ||
                     watch("payCurrency") === null ||
                     isValidNumber(exchangeRate),
                 }}
@@ -301,12 +319,15 @@ export const AssetTransactionDialog = ({
             </Box>
             <Controller
               name="commission"
+              disabled={isDividend}
               control={control}
               rules={{
                 required: false,
                 validate: (commission) =>
-                  commission === null || isValidNumber(commission),
-                pattern: moneyPattern,
+                  isDividend ||
+                  commission === null ||
+                  isValidNumber(commission),
+                pattern: isDividend ? undefined : moneyPattern,
               }}
               render={({ field, fieldState: { error } }) => (
                 <TextField
@@ -327,9 +348,13 @@ export const AssetTransactionDialog = ({
         </DialogContent>
         <DialogActions>
           {transactionToEdit && (
-            <Button onClick={deleteHandler} color="error">
+            <LoadingButton
+              loading={isDeleteLoading}
+              onClick={deleteHandler}
+              color="error"
+            >
               Delete
-            </Button>
+            </LoadingButton>
           )}
           <Button onClick={cancelHandler} color="secondary">
             Cancel

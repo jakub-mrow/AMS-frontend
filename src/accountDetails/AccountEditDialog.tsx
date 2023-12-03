@@ -10,7 +10,7 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { isValidCurrency, isValidName } from "../util/validations.ts";
 import { CURRENCIES } from "../util/currencies.ts";
-import { AccountPreferences } from "../types.ts";
+import { Account, AccountPreferences } from "../types.ts";
 import { LoadingButton } from "@mui/lab";
 import { useState } from "react";
 import { ConfirmationDialog } from "../dialog/ConfirmationDialog.tsx";
@@ -22,27 +22,27 @@ interface AccountEditFormData {
 }
 
 export const AccountEditDialog = ({
+  account,
   isOpen,
   onClose,
   onConfirm,
   onDelete,
-  currentName,
-  currentPreferences,
 }: {
+  account: Account;
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (name: string, accountPreferences: AccountPreferences) => void;
-  onDelete: () => void;
-  currentName: string;
-  currentPreferences: AccountPreferences;
+  onDelete: () => Promise<void>;
 }) => {
   const { control, handleSubmit, reset } = useForm<AccountEditFormData>({
     defaultValues: {
-      name: currentName,
-      ...currentPreferences,
+      name: account.name,
+      baseCurrency: account.preferences.baseCurrency,
+      taxCurrency: account.preferences.taxCurrency,
     },
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
   const cancelHandler = () => {
@@ -55,10 +55,13 @@ export const AccountEditDialog = ({
   };
 
   const onDeleteConfirm = () => {
-    onDelete();
+    setIsDeleteLoading(true);
     setIsConfirmationOpen(false);
-    onClose();
-    reset();
+    onDelete().then(() => {
+      setIsDeleteLoading(false);
+      onClose();
+      reset();
+    });
   };
 
   const confirmHandler = handleSubmit((accountEditFormData) => {
@@ -83,7 +86,7 @@ export const AccountEditDialog = ({
         open={isOpen}
         onClose={cancelHandler}
         disableRestoreFocus
-        onKeyUp={(event) => {
+        onKeyDown={(event) => {
           if (event.key === "Enter") confirmHandler().then();
         }}
         fullWidth
@@ -128,6 +131,9 @@ export const AccountEditDialog = ({
                   fullWidth
                   autoHighlight
                   autoSelect
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") event.stopPropagation();
+                  }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -158,6 +164,9 @@ export const AccountEditDialog = ({
                   fullWidth
                   autoHighlight
                   autoSelect
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") event.stopPropagation();
+                  }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -173,9 +182,13 @@ export const AccountEditDialog = ({
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={deleteHandler} color="error">
+          <LoadingButton
+            loading={isDeleteLoading}
+            onClick={deleteHandler}
+            color="error"
+          >
             Delete
-          </Button>
+          </LoadingButton>
           <Button onClick={cancelHandler} color="secondary">
             Cancel
           </Button>
@@ -192,7 +205,7 @@ export const AccountEditDialog = ({
         isOpen={isConfirmationOpen}
         onClose={() => setIsConfirmationOpen(false)}
         onConfirm={onDeleteConfirm}
-        content={`Are you sure you want to delete account ${currentName}?`}
+        content={`Are you sure you want to delete account ${account.name}?`}
       />
     </>
   );

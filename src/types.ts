@@ -1,12 +1,47 @@
 import { exhaustiveGuard } from "./util/exhaustive-switch.ts";
 import { Dayjs } from "dayjs";
+import { displayCurrency } from "./util/display-currency.ts";
 
-export type Account = {
-  id: number;
-  userId: number;
-  name: string;
-  balances: AccountBalance[];
-};
+export class Account {
+  constructor(
+    public id: number,
+    public name: string,
+    public balances: AccountBalance[],
+    public value: number,
+    public preferences: AccountPreferences,
+    public xirr: number,
+  ) {}
+
+  hasXirr(): boolean {
+    return this.xirr !== null;
+  }
+
+  getXirrColor(): string {
+    if (!this.hasXirr()) {
+      return "black";
+    }
+    if (this.xirr > 0) {
+      return "green";
+    } else if (this.xirr < 0) {
+      return "red";
+    }
+    return "black";
+  }
+
+  displayXirr(): string {
+    if (!this.hasXirr()) {
+      return "";
+    }
+    if (this.xirr > 0) {
+      return "+" + (this.xirr * 100).toFixed(1) + "%";
+    }
+    return (this.xirr * 100).toFixed(1) + "%";
+  }
+
+  displayValue(): string {
+    return displayCurrency(this.value, this.preferences.baseCurrency);
+  }
+}
 
 export type AccountBalance = {
   currency: string;
@@ -113,11 +148,6 @@ export type AccountPreferences = {
   taxCurrency: string;
 };
 
-export const DEFAULT_ACCOUNT_PREFERENCES: AccountPreferences = {
-  baseCurrency: "PLN",
-  taxCurrency: "PLN",
-};
-
 export class Asset {
   constructor(
     public isin: string,
@@ -137,6 +167,13 @@ export class Asset {
       return "red";
     }
     return "black";
+  }
+
+  displayResult(): string {
+    if (this.result > 0) {
+      return "+" + this.result.toFixed(1) + "%";
+    }
+    return this.result.toFixed(1) + "%";
   }
 }
 
@@ -197,6 +234,24 @@ export class AssetTransaction {
         return exhaustiveGuard(this.type);
     }
   }
+
+  getQuantity() {
+    if (this.type === AssetTransactionType.DIVIDEND) {
+      return "-";
+    }
+    return this.quantity;
+  }
+
+  getValue() {
+    if (this.type === AssetTransactionType.DIVIDEND) {
+      return this.price;
+    }
+    return this.quantity * this.price;
+  }
+
+  isDividend() {
+    return this.type === AssetTransactionType.DIVIDEND;
+  }
 }
 
 export type AssetBalanceHistory = {
@@ -214,4 +269,10 @@ export type AccountHistory = {
 export type BaseStockValue = {
   price: number;
   currency: string;
+};
+
+export type Exchange = {
+  id: number;
+  name: string;
+  code: string;
 };

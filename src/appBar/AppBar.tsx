@@ -4,21 +4,31 @@ import {
   Button,
   IconButton,
   styled,
+  Theme,
   Toolbar,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Drawer from "./Drawer";
 import { useAppBar } from "./use-app-bar.ts";
 import { useNavigate } from "react-router-dom";
-import SearchBar from "./SearchBar.tsx";
 import { LogoutModal } from "./LogoutModal.tsx";
+import SearchBar from "./SearchBar.tsx";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 const AppBar = () => {
-  const { drawerOpen, drawerToggle, isDrawerButtonVisible, buttons, handleLogoutAction, setLogoutModalOpen, isLogoutModalOpen } =
-    useAppBar();
+  const {
+    drawerOpen,
+    drawerToggle,
+    isDrawerButtonVisible,
+    buttons,
+    handleLogoutAction,
+    setLogoutModalOpen,
+    isLogoutModalOpen,
+  } = useAppBar();
   const navigate = useNavigate();
+  const isDesktop = useMediaQuery((theme: Theme) => theme.breakpoints.up("md"));
 
   return (
     <>
@@ -34,7 +44,25 @@ const AppBar = () => {
               <MenuIcon />
             </IconButton>
           )}
-          <div className="flex flex-row items-center w-full justify-between m-2">
+          {isDesktop ? (
+            <div className="flex flex-row items-center w-full justify-between m-2">
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  alignSelf: "stretch",
+                  userSelect: "none",
+                  cursor: "pointer",
+                }}
+                onClick={() => navigate("/")}
+              >
+                <Typography variant="h3" className="font-poppins">
+                  AMS
+                </Typography>
+              </Box>
+              <SearchBar />
+            </div>
+          ) : (
             <Box
               sx={{
                 display: "flex",
@@ -45,10 +73,11 @@ const AppBar = () => {
               }}
               onClick={() => navigate("/")}
             >
-              <Typography variant="h3" className="font-poppins">AMS</Typography>
+              <Typography variant="h3" className="font-poppins">
+                AMS
+              </Typography>
             </Box>
-            <SearchBar/>
-          </div>
+          )}
 
           <Box sx={{ flexGrow: 1 }}></Box>
           {!isDrawerButtonVisible && (
@@ -62,7 +91,11 @@ const AppBar = () => {
           )}
         </Toolbar>
       </MUIAppBar>
-      <LogoutModal isOpen={isLogoutModalOpen} onClose={() => setLogoutModalOpen(false)} onLogout={handleLogoutAction} />
+      <LogoutModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setLogoutModalOpen(false)}
+        onLogout={handleLogoutAction}
+      />
       <Box component="nav">
         <Drawer open={drawerOpen} toggle={drawerToggle} items={buttons} />
       </Box>

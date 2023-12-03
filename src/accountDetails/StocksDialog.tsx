@@ -14,7 +14,7 @@ import { Controller, useForm } from "react-hook-form";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { useMemo, useState } from "react";
-import { Asset } from "../types.ts";
+import { Asset, Exchange } from "../types.ts";
 import { LoadingButton } from "@mui/lab";
 import {
   isValidCurrency,
@@ -26,7 +26,7 @@ import { CURRENCIES } from "../util/currencies.ts";
 
 interface StockTransactionFormData {
   ticker: string | null;
-  exchange: string | null;
+  exchange: Exchange | null;
   quantity: number | null;
   price: number | null;
   date: Dayjs | null;
@@ -37,11 +37,13 @@ interface StockTransactionFormData {
 
 export const StocksDialog = ({
   stocks,
+  exchanges,
   isOpen,
   onClose,
   onConfirm,
 }: {
   stocks: Asset[];
+  exchanges: Exchange[];
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (
@@ -73,10 +75,10 @@ export const StocksDialog = ({
     return [...new Set(allTickers)];
   }, [stocks]);
 
-  const exchanges: string[] = useMemo(() => {
-    const allExchanges = stocks.map((stock) => stock.exchange);
-    return [...new Set(allExchanges)];
-  }, [stocks]);
+  // const exchanges: string[] = useMemo(() => {
+  //   const allExchanges = stocks.map((stock) => stock.exchange);
+  //   return [...new Set(allExchanges)];
+  // }, [stocks]);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -104,7 +106,7 @@ export const StocksDialog = ({
     setIsLoading(true);
     onConfirm(
       data.ticker.trim(),
-      data.exchange.trim(),
+      data.exchange.code.trim(),
       data.quantity,
       data.price,
       data.date,
@@ -125,7 +127,7 @@ export const StocksDialog = ({
       open={isOpen}
       onClose={cancelHandler}
       disableRestoreFocus
-      onKeyUp={(event) => {
+      onKeyDown={(event) => {
         if (event.key === "Enter") confirmHandler().then();
       }}
     >
@@ -150,6 +152,9 @@ export const StocksDialog = ({
                 fullWidth
                 autoHighlight
                 autoSelect
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") event.stopPropagation();
+                }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -168,8 +173,6 @@ export const StocksDialog = ({
             control={control}
             rules={{
               required: true,
-              validate: (exchange) =>
-                exchange !== null && exchange.trim() !== "",
             }}
             render={({ field, fieldState: { error } }) => (
               <Autocomplete
@@ -177,11 +180,14 @@ export const StocksDialog = ({
                 onChange={(_event, newValue) => {
                   field.onChange(newValue);
                 }}
-                freeSolo
                 options={exchanges}
                 fullWidth
                 autoHighlight
                 autoSelect
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") event.stopPropagation();
+                }}
+                getOptionLabel={(option) => `${option.name} (${option.code})`}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -275,6 +281,9 @@ export const StocksDialog = ({
                   fullWidth
                   autoHighlight
                   autoSelect
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") event.stopPropagation();
+                  }}
                   sx={{ mr: 2 }}
                   renderInput={(params) => (
                     <TextField

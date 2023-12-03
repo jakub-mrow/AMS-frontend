@@ -7,7 +7,7 @@ import {
   AccountTransaction,
   AccountTransactionType,
   Asset,
-  DEFAULT_ACCOUNT_PREFERENCES,
+  Exchange,
 } from "../types.ts";
 import { apiUrl } from "../config.ts";
 import { AccountsDetailsService } from "./account-details-service.ts";
@@ -45,8 +45,7 @@ export const useAccountDetails = () => {
   const [isDepositsLoading, setIsDepositsLoading] = useState(false);
   const [isCryptocurrenciesLoading, setIsCryptocurrenciesLoading] =
     useState(false);
-  const [isAccountPreferencesLoading, setIsAccountPreferencesLoading] =
-    useState(false);
+  const [isExchangesLoading, setIsExchangesLoading] = useState(false);
   const isLoading = useMemo(() => {
     return (
       isAccountLoading ||
@@ -55,7 +54,7 @@ export const useAccountDetails = () => {
       isBondsLoading ||
       isDepositsLoading ||
       isCryptocurrenciesLoading ||
-      isAccountPreferencesLoading
+      isExchangesLoading
     );
   }, [
     isAccountLoading,
@@ -64,7 +63,7 @@ export const useAccountDetails = () => {
     isBondsLoading,
     isDepositsLoading,
     isCryptocurrenciesLoading,
-    isAccountPreferencesLoading,
+    isExchangesLoading,
   ]);
   const [account, setAccount] = useState<Account | null>(null);
   const [accountTransactions, setAccountTransactions] = useState<
@@ -74,10 +73,9 @@ export const useAccountDetails = () => {
   const [bonds, setBonds] = useState<Asset[]>([]);
   const [deposits, setDeposits] = useState<Asset[]>([]);
   const [cryptocurrencies, setCryptocurrencies] = useState<Asset[]>([]);
-  const [accountPreferences, setAccountPreferences] =
-    useState<AccountPreferences>(DEFAULT_ACCOUNT_PREFERENCES);
   const [isAccountHistoryLoading, setIsAccountHistoryLoading] = useState(false);
   const [accountHistory, setAccountHistory] = useState<AccountHistory[]>([]);
+  const [exchanges, setExchanges] = useState<Exchange[]>([]);
   const [dialogType, setDialogType] = useState<DialogType>(
     DialogType.TRANSACTION,
   );
@@ -115,8 +113,8 @@ export const useAccountDetails = () => {
     setIsBondsLoading(true);
     setIsDepositsLoading(true);
     setIsCryptocurrenciesLoading(true);
-    setIsAccountPreferencesLoading(true);
     setIsAccountHistoryLoading(true);
+    setIsExchangesLoading(true);
     if (!id) {
       return;
     }
@@ -175,22 +173,17 @@ export const useAccountDetails = () => {
       })
       .catch(handleError);
     accountDetailsService
-      .fetchAccountPreferences(Number(id))
-      .then((data) => {
-        setAccountPreferences(data);
-        setIsAccountPreferencesLoading(false);
-      })
-      .catch((error) => {
-        if (error instanceof Error) {
-          alert(error.message, Severity.ERROR);
-          navigate("/", { replace: true });
-        }
-      });
-    accountDetailsService
       .fetchAccountHistory(Number(id))
       .then((data) => {
         setAccountHistory(data);
         setIsAccountHistoryLoading(false);
+      })
+      .catch(handleError);
+    accountDetailsService
+      .fetchExchanges()
+      .then((data) => {
+        setExchanges(data);
+        setIsExchangesLoading(false);
       })
       .catch(handleError);
   }, [id, alert, accountDetailsService, navigate]);
@@ -199,39 +192,50 @@ export const useAccountDetails = () => {
     refreshAccountData();
   }, [refreshAccountData]);
 
-  const onConfirmAccountTransactionDialog = (
+  const onConfirmAccountTransactionDialog = async (
     amount: number,
     currency: string,
     type: AccountTransactionType,
     date: Dayjs,
   ) => {
-    if (account) {
-      if (accountTransactionToEdit) {
-        accountDetailsService
-          .updateAccountTransaction(
-            account.id,
-            accountTransactionToEdit.id,
-            type,
-            amount,
-            currency,
-            date,
-          )
-          .then(() => refreshAccountData())
-          .catch((error) => {
-            if (error instanceof Error) {
-              alert(error.message, Severity.ERROR);
-            }
-          });
-      } else {
-        accountDetailsService
-          .addAccountTransaction(account.id, type, amount, currency, date)
-          .then(() => refreshAccountData())
-          .catch((error) => {
-            if (error instanceof Error) {
-              alert(error.message, Severity.ERROR);
-            }
-          });
+    if (!account) {
+      return false;
+    }
+    if (accountTransactionToEdit) {
+      try {
+        await accountDetailsService.updateAccountTransaction(
+          account.id,
+          accountTransactionToEdit.id,
+          type,
+          amount,
+          currency,
+          date,
+        );
+        refreshAccountData();
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+        }
+        return false;
       }
+      return true;
+    } else {
+      try {
+        await accountDetailsService.addAccountTransaction(
+          account.id,
+          type,
+          amount,
+          currency,
+          date,
+        );
+        refreshAccountData();
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+        }
+        return false;
+      }
+      return true;
     }
   };
 
@@ -264,8 +268,8 @@ export const useAccountDetails = () => {
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message, Severity.ERROR);
-        return false;
       }
+      return false;
     }
     return true;
   };
@@ -274,16 +278,19 @@ export const useAccountDetails = () => {
     return dialogOpen && dialogType === type;
   };
 
-  const onDeleteTransaction = () => {
+  const onDeleteTransaction = async () => {
     if (account && accountTransactionToEdit) {
-      accountDetailsService
-        .deleteAccountTransaction(account.id, accountTransactionToEdit.id)
-        .then(() => refreshAccountData())
-        .catch((error) => {
-          if (error instanceof Error) {
-            alert(error.message, Severity.ERROR);
-          }
-        });
+      try {
+        await accountDetailsService.deleteAccountTransaction(
+          account.id,
+          accountTransactionToEdit.id,
+        );
+        refreshAccountData();
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+        }
+      }
     }
   };
 
@@ -311,20 +318,18 @@ export const useAccountDetails = () => {
     navigate(`./assets/${isin}`, {});
   };
 
-  const deleteAccount = () => {
+  const deleteAccount = async () => {
     if (!account) {
       return;
     }
-    accountDetailsService
-      .deleteAccount(account.id)
-      .then(() => {
-        navigate("/", { replace: true });
-      })
-      .catch((error) => {
-        if (error instanceof Error) {
-          alert(error.message, Severity.ERROR);
-        }
-      });
+    try {
+      await accountDetailsService.deleteAccount(account.id);
+      navigate("/", { replace: true });
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message, Severity.ERROR);
+      }
+    }
   };
 
   const onSendCsvFile = async (file: File) => {
@@ -370,8 +375,8 @@ export const useAccountDetails = () => {
     bonds,
     deposits,
     cryptocurrencies,
-    accountPreferences,
     accountHistory,
+    exchanges,
     isLoading,
     isAccountHistoryLoading,
     openDialog,

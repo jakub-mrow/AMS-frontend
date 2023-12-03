@@ -44,7 +44,7 @@ export const AccountDetailsMobile = () => {
     bonds,
     deposits,
     cryptocurrencies,
-    accountPreferences,
+    exchanges,
     isLoading,
     isDialogOpen,
     openDialog,
@@ -126,23 +126,23 @@ export const AccountDetailsMobile = () => {
         isOpen={isDialogOpen(DialogType.TRANSACTION)}
         onClose={closeDialog}
         onConfirm={onConfirmAccountTransactionDialog}
-        baseCurrency={accountPreferences.baseCurrency}
+        baseCurrency={account.preferences.baseCurrency}
         onDelete={onDeleteTransaction}
         transactionToEdit={accountTransactionToEdit}
       />
       <StocksDialog
         stocks={stocks}
+        exchanges={exchanges}
         isOpen={isDialogOpen(DialogType.STOCK)}
         onClose={closeDialog}
         onConfirm={onConfirmStockDialog}
       />
       <AccountEditDialog
+        account={account}
         isOpen={isAccountEditDialogOpen}
         onClose={closeAccountEditDialog}
         onConfirm={onConfirmEdit}
         onDelete={deleteAccount}
-        currentName={account.name}
-        currentPreferences={accountPreferences}
       />
       <ImportDialog
         isOpen={isDialogOpen(DialogType.IMPORT)}

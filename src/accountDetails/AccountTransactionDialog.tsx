@@ -48,8 +48,8 @@ export const AccountTransactionDialog = ({
     currency: string,
     type: AccountTransactionType,
     date: Dayjs,
-  ) => void;
-  onDelete: () => void;
+  ) => Promise<boolean>;
+  onDelete: () => Promise<void>;
   baseCurrency: string;
   transactionToEdit: AccountTransaction | null;
 }) => {
@@ -64,6 +64,7 @@ export const AccountTransactionDialog = ({
     },
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
   useEffect(() => {
@@ -87,10 +88,13 @@ export const AccountTransactionDialog = ({
   };
 
   const onDeleteConfirm = () => {
-    onDelete();
+    setIsDeleteLoading(true);
     setIsConfirmationOpen(false);
-    onClose();
-    reset();
+    onDelete().then(() => {
+      setIsDeleteLoading(false);
+      onClose();
+      reset();
+    });
   };
 
   const confirmHandler = handleSubmit((transactionFormData) => {
@@ -114,10 +118,13 @@ export const AccountTransactionDialog = ({
       transactionFormData.currency.trim(),
       transactionType,
       transactionFormData.date,
-    );
-    onClose();
-    setIsLoading(false);
-    reset();
+    ).then((success) => {
+      setIsLoading(false);
+      if (success) {
+        onClose();
+        reset();
+      }
+    });
   });
 
   return (
@@ -126,7 +133,7 @@ export const AccountTransactionDialog = ({
         open={isOpen}
         onClose={cancelHandler}
         disableRestoreFocus
-        onKeyUp={(event) => {
+        onKeyDown={(event) => {
           if (event.key === "Enter") confirmHandler().then();
         }}
       >
@@ -216,6 +223,9 @@ export const AccountTransactionDialog = ({
                   fullWidth
                   autoHighlight
                   autoSelect
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") event.stopPropagation();
+                  }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -232,9 +242,13 @@ export const AccountTransactionDialog = ({
         </DialogContent>
         <DialogActions>
           {transactionToEdit && (
-            <Button onClick={deleteHandler} color="error">
+            <LoadingButton
+              loading={isDeleteLoading}
+              onClick={deleteHandler}
+              color="error"
+            >
               Delete
-            </Button>
+            </LoadingButton>
           )}
           <Button onClick={cancelHandler} color="secondary">
             Cancel

@@ -172,16 +172,19 @@ export const useStockDetails = () => {
     return true;
   };
 
-  const onDeleteTransaction = () => {
+  const onDeleteTransaction = async () => {
     if (accountId && assetTransactionToEdit) {
-      stockDetailsService
-        .deleteAssetTransaction(accountId, assetTransactionToEdit.id)
-        .then(() => refreshStockData())
-        .catch((error) => {
-          if (error instanceof Error) {
-            alert(error.message, Severity.ERROR);
-          }
-        });
+      try {
+        await stockDetailsService.deleteAssetTransaction(
+          accountId,
+          assetTransactionToEdit.id,
+        );
+        refreshStockData();
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+        }
+      }
     }
   };
 

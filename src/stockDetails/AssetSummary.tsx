@@ -35,21 +35,33 @@ export const AssetSummary = ({
           <Divider />
           <Box display="flex" justifyContent="space-between">
             <Typography variant="h5">Value:</Typography>
-            <Typography variant="h5">
-              {displayCurrency(stock.price * stock.quantity, stock.currency)}
-            </Typography>
+            <Box display="flex">
+              <Typography variant="h5">
+                {displayCurrency(stock.price * stock.quantity, stock.currency)}
+              </Typography>
+              <Typography
+                variant="subtitle1"
+                alignSelf="flex-end"
+                sx={{ ml: 1 }}
+                color={stock.getResultColor()}
+              >
+                {stock.displayResult()}
+              </Typography>
+            </Box>
           </Box>
-          <Box display="flex" justifyContent="space-between">
-            <Typography variant="h5">
-              Value in {baseStockValue.currency}:
-            </Typography>
-            <Typography variant="h5">
-              {displayCurrency(
-                baseStockValue.price * stock.quantity,
-                baseStockValue.currency,
-              )}
-            </Typography>
-          </Box>
+          {stock.currency !== baseStockValue.currency && (
+            <Box display="flex" justifyContent="space-between">
+              <Typography variant="h5">
+                Value in {baseStockValue.currency}:
+              </Typography>
+              <Typography variant="h5">
+                {displayCurrency(
+                  baseStockValue.price * stock.quantity,
+                  baseStockValue.currency,
+                )}
+              </Typography>
+            </Box>
+          )}
           <Box display="flex" justifyContent="space-between">
             <Typography variant="h5">Quantity:</Typography>
             <Typography variant="h5">{stock.quantity}</Typography>

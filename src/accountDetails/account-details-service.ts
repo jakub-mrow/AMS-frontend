@@ -5,15 +5,58 @@ import {
   AccountTransaction,
   AccountTransactionType,
   Asset,
+  Exchange,
 } from "../types.ts";
 import dayjs, { Dayjs } from "dayjs";
 
-export type AccountInput = {
-  name: string;
-};
-
 type ErrorResponse = {
   error?: string;
+};
+
+type AccountPreferencesDto = {
+  base_currency: string;
+  tax_currency: string;
+};
+
+const fromAccountPreferencesDto = (
+  accountPreference: AccountPreferencesDto,
+): AccountPreferences => {
+  return {
+    baseCurrency: accountPreference.base_currency,
+    taxCurrency: accountPreference.tax_currency,
+  };
+};
+
+type AccountBalanceDto = {
+  amount: number;
+  currency: string;
+};
+
+const fromAccountBalanceDto = (accountBalance: AccountBalanceDto) => {
+  return {
+    amount: accountBalance.amount,
+    currency: accountBalance.currency,
+  };
+};
+
+type AccountDto = {
+  id: number;
+  name: string;
+  balances: AccountBalanceDto[];
+  value: number;
+  preferences: AccountPreferencesDto;
+  xirr: number;
+};
+
+const fromAccountDto = (account: AccountDto): Account => {
+  return new Account(
+    account.id,
+    account.name,
+    account.balances.map(fromAccountBalanceDto),
+    account.value,
+    fromAccountPreferencesDto(account.preferences),
+    account.xirr,
+  );
 };
 
 type AccountTransactionDto = {
@@ -60,20 +103,6 @@ const fromAssetDto = (stock: AssetDto): Asset => {
   );
 };
 
-type AccountPreferencesDto = {
-  base_currency: string;
-  tax_currency: string;
-};
-
-const fromAccountPreferencesDto = (
-  accountPreference: AccountPreferencesDto,
-): AccountPreferences => {
-  return {
-    baseCurrency: accountPreference.base_currency,
-    taxCurrency: accountPreference.tax_currency,
-  };
-};
-
 type AccountHistoryDto = {
   date: string;
   amount: number;
@@ -85,6 +114,20 @@ const fromAccountHistoryDto = (
   return {
     date: dayjs(accountHistory.date),
     amount: accountHistory.amount,
+  };
+};
+
+type ExchangeDto = {
+  id: number;
+  name: string;
+  code: string;
+};
+
+const fromExchangeDto = (exchange: ExchangeDto): Exchange => {
+  return {
+    id: exchange.id,
+    name: exchange.name,
+    code: exchange.code,
   };
 };
 
@@ -104,7 +147,8 @@ export class AccountsDetailsService {
       const data: ErrorResponse = await response.json();
       throw new Error(data.error ?? "Failed to fetch account");
     }
-    return await response.json();
+    const accountDto: AccountDto = await response.json();
+    return fromAccountDto(accountDto);
   }
 
   async fetchAccountTransactions(id: number): Promise<AccountTransaction[]> {
@@ -270,23 +314,6 @@ export class AccountsDetailsService {
     }
   }
 
-  async fetchAccountPreferences(id: number): Promise<AccountPreferences> {
-    const response = await fetch(
-      `${this.apiUrl}/api/accounts/${id}/get_preferences`,
-      {
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-        },
-      },
-    );
-    if (!response.ok) {
-      const data: ErrorResponse = await response.json();
-      throw new Error(data.error ?? "Failed to fetch account preferences");
-    }
-    const accountPreferencesDto: AccountPreferencesDto = await response.json();
-    return fromAccountPreferencesDto(accountPreferencesDto);
-  }
-
   async updateAccountPreferences(
     id: number,
     accountPreferences: AccountPreferences,
@@ -353,6 +380,20 @@ export class AccountsDetailsService {
     }
     const accountHistoryDto: AccountHistoryDto[] = await response.json();
     return accountHistoryDto.map(fromAccountHistoryDto);
+  }
+
+  async fetchExchanges(): Promise<Exchange[]> {
+    const response = await fetch(`${this.apiUrl}/api/exchanges`, {
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to fetch exchanges");
+    }
+    const exchangesDto: ExchangeDto[] = await response.json();
+    return exchangesDto.map(fromExchangeDto);
   }
 
   async sendCsvFile(file: File): Promise<Blob> {
