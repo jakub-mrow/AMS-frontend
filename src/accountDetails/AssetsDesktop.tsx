@@ -3,20 +3,17 @@ import { AssetsTable } from "./AssetsTable.tsx";
 import { Loading } from "../util/Loading.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
-import { DetailsTabs } from "./AccountDetailsDesktop.tsx";
-import { Asset } from "../types.ts";
+import { Asset, AssetType } from "../types.ts";
 
-const getTypeName = (type: DetailsTabs) => {
+const getTypeName = (type: AssetType) => {
   switch (type) {
-    case DetailsTabs.STOCKS:
-    case DetailsTabs.TRANSACTIONS:
-    case DetailsTabs.EMPTY:
+    case AssetType.STOCK:
       return "stocks";
-    case DetailsTabs.BONDS:
+    case AssetType.BOND:
       return "bonds";
-    case DetailsTabs.DEPOSITS:
+    case AssetType.DEPOSIT:
       return "deposits";
-    case DetailsTabs.CRYPTO:
+    case AssetType.CRYPTO:
       return "crypto";
     default:
       exhaustiveGuard(type);
@@ -31,7 +28,7 @@ export const AssetsDesktop = ({
   goToAsset,
 }: {
   assets: Asset[];
-  type: DetailsTabs;
+  type: AssetType;
   isLoading: boolean;
   onAddAssetClick: () => void;
   goToAsset: (id: number) => void;
@@ -68,7 +65,7 @@ export const AssetsDesktop = ({
           Add asset
         </Button>
       </Box>
-      <AssetsTable assets={assets} goToAsset={goToAsset} />
+      <AssetsTable assets={assets} type={type} goToAsset={goToAsset} />
     </>
   );
 };

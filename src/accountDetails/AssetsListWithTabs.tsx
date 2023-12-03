@@ -4,14 +4,7 @@ import { useState } from "react";
 import { VerticalFlexContainer } from "../util/VerticalFlexContainer.tsx";
 import { Loading } from "../util/Loading.tsx";
 import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
-import { Asset } from "../types.ts";
-
-export enum AssetsType {
-  STOCKS,
-  BONDS,
-  DEPOSITS,
-  CRYPTO,
-}
+import { Asset, AssetType } from "../types.ts";
 
 export const AssetsListWithTabs = ({
   stocks,
@@ -28,17 +21,17 @@ export const AssetsListWithTabs = ({
   isLoading: boolean;
   goToAsset: (id: number) => void;
 }) => {
-  const [assetsType, setAssetsType] = useState(AssetsType.STOCKS);
+  const [type, setType] = useState(AssetType.STOCK);
 
-  const getAssetsOfType = (type: AssetsType): Asset[] => {
+  const getAssetsOfType = (type: AssetType): Asset[] => {
     switch (type) {
-      case AssetsType.STOCKS:
+      case AssetType.STOCK:
         return stocks.filter((asset) => asset.quantity > 0);
-      case AssetsType.BONDS:
+      case AssetType.BOND:
         return bonds.filter((asset) => asset.quantity > 0);
-      case AssetsType.DEPOSITS:
+      case AssetType.DEPOSIT:
         return deposits.filter((asset) => asset.quantity > 0);
-      case AssetsType.CRYPTO:
+      case AssetType.CRYPTO:
         return cryptocurrencies.filter((asset) => asset.quantity > 0);
       default:
         exhaustiveGuard(type);
@@ -48,8 +41,8 @@ export const AssetsListWithTabs = ({
   return (
     <>
       <Tabs
-        value={assetsType}
-        onChange={(_event, newValue) => setAssetsType(newValue)}
+        value={type}
+        onChange={(_event, newValue) => setType(newValue)}
         indicatorColor="secondary"
         textColor="inherit"
         variant="fullWidth"
@@ -70,8 +63,8 @@ export const AssetsListWithTabs = ({
           }}
         >
           <AssetsList
-            assets={getAssetsOfType(assetsType)}
-            type={assetsType}
+            assets={getAssetsOfType(type)}
+            type={type}
             goToAsset={goToAsset}
           />
         </VerticalFlexContainer>
