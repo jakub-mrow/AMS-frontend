@@ -212,8 +212,9 @@ export const useAccountDetails = () => {
   };
 
   const onConfirmStockDialog = async (
+    type: AssetType,
     ticker: string,
-    exchange: string,
+    exchange: string | null,
     quantity: number,
     price: number,
     date: Dayjs,
@@ -224,26 +225,50 @@ export const useAccountDetails = () => {
     if (!account) {
       return false;
     }
-    try {
-      await accountDetailsService.buyStocks(
-        account.id,
-        ticker,
-        exchange,
-        quantity,
-        price,
-        date,
-        payCurrency,
-        exchangeRate,
-        commission,
-      );
-      refreshAccountData();
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(error.message, Severity.ERROR);
+    if (type === AssetType.STOCK && exchange) {
+      try {
+        await accountDetailsService.buyStocks(
+          account.id,
+          ticker,
+          exchange,
+          quantity,
+          price,
+          date,
+          payCurrency,
+          exchangeRate,
+          commission,
+        );
+        refreshAccountData();
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+        }
+        return false;
       }
-      return false;
+      return true;
+    } else if (type === AssetType.CRYPTO) {
+      try {
+        await accountDetailsService.buyStocks(
+          account.id,
+          ticker,
+          "CC",
+          quantity,
+          price,
+          date,
+          payCurrency,
+          exchangeRate,
+          commission,
+        );
+        refreshAccountData();
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+        }
+        return false;
+      }
+      return true;
     }
-    return true;
+    return false;
   };
 
   const isDialogOpen = (type: DialogType) => {

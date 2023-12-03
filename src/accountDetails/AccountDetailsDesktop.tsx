@@ -185,7 +185,8 @@ export const AccountDetailsDesktop = () => {
         transactionToEdit={accountTransactionToEdit}
       />
       <StocksDialog
-        stocks={stocks}
+        assets={getAssetsOfType(detailsTabToAssetType(detailsTab))}
+        type={detailsTabToAssetType(detailsTab)}
         exchanges={exchanges}
         isOpen={isDialogOpen(DialogType.STOCK)}
         onClose={closeDialog}

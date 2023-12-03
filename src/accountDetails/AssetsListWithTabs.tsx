@@ -4,22 +4,42 @@ import { useState } from "react";
 import { VerticalFlexContainer } from "../util/VerticalFlexContainer.tsx";
 import { Loading } from "../util/Loading.tsx";
 import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
-import { Asset, AssetType } from "../types.ts";
+import { Asset, AssetType, Exchange } from "../types.ts";
+import { StocksDialog } from "./StocksDialog.tsx";
+import { Dayjs } from "dayjs";
 
 export const AssetsListWithTabs = ({
   stocks,
   bonds,
   deposits,
   cryptocurrencies,
+  exchanges,
   isLoading,
   goToAsset,
+  isDialogOpen,
+  closeDialog,
+  onConfirmStockDialog,
 }: {
   stocks: Asset[];
   bonds: Asset[];
   deposits: Asset[];
   cryptocurrencies: Asset[];
+  exchanges: Exchange[];
   isLoading: boolean;
   goToAsset: (id: number) => void;
+  isDialogOpen: boolean;
+  closeDialog: () => void;
+  onConfirmStockDialog: (
+    type: AssetType,
+    ticker: string,
+    exchange: string | null,
+    quantity: number,
+    price: number,
+    date: Dayjs,
+    payCurrency: string | null,
+    exchangeRate: number | null,
+    commission: number | null,
+  ) => Promise<boolean>;
 }) => {
   const [type, setType] = useState(AssetType.STOCK);
 
@@ -69,6 +89,14 @@ export const AssetsListWithTabs = ({
           />
         </VerticalFlexContainer>
       )}
+      <StocksDialog
+        assets={getAssetsOfType(type)}
+        exchanges={exchanges}
+        type={type}
+        isOpen={isDialogOpen}
+        onClose={closeDialog}
+        onConfirm={onConfirmStockDialog}
+      />
     </>
   );
 };
