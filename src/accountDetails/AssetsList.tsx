@@ -12,7 +12,7 @@ export const AssetsList = ({
 }: {
   assets: Asset[];
   type: AssetsType;
-  goToAsset: (isin: string) => void;
+  goToAsset: (id: number) => void;
 }) => {
   const getTypeName = () => {
     switch (type) {
@@ -48,9 +48,9 @@ export const AssetsList = ({
     <List sx={{ flex: 1, overflowY: "auto" }}>
       {assets.map((asset) => (
         <AssetsListItem
-          key={asset.isin}
+          key={asset.id}
           asset={asset}
-          goToAsset={() => goToAsset(asset.isin)}
+          goToAsset={() => goToAsset(asset.id)}
         />
       ))}
     </List>

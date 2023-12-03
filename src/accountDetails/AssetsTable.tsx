@@ -17,7 +17,7 @@ export const AssetsTable = ({
   goToAsset,
 }: {
   assets: Asset[];
-  goToAsset: (isin: string) => void;
+  goToAsset: (id: number) => void;
 }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -40,7 +40,7 @@ export const AssetsTable = ({
   );
 
   const getTableRow = (asset: Asset) => (
-    <TableRow key={asset.isin} hover onClick={() => goToAsset(asset.isin)}>
+    <TableRow key={asset.id} hover onClick={() => goToAsset(asset.id)}>
       <TableCell>{asset.name}</TableCell>
       <TableCell>{asset.exchange}</TableCell>
       <TableCell>

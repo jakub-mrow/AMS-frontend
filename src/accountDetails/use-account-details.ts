@@ -314,8 +314,8 @@ export const useAccountDetails = () => {
       });
   };
 
-  const goToAsset = (isin: string) => {
-    navigate(`./assets/${isin}`, {});
+  const goToAsset = (id: number) => {
+    navigate(`./assets/${id}`, {});
   };
 
   const deleteAccount = async () => {

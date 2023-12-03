@@ -80,7 +80,7 @@ const fromAccountTransactionDto = (
 };
 
 type AssetDto = {
-  isin: string;
+  asset_id: number;
   name: string;
   ticker: string;
   exchange_code: string;
@@ -92,7 +92,7 @@ type AssetDto = {
 
 const fromAssetDto = (stock: AssetDto): Asset => {
   return new Asset(
-    stock.isin,
+    stock.asset_id,
     stock.name,
     stock.ticker,
     stock.exchange_code,

@@ -150,7 +150,7 @@ export type AccountPreferences = {
 
 export class Asset {
   constructor(
-    public isin: string,
+    public id: number,
     public name: string,
     public ticker: string,
     public exchange: string,
@@ -186,7 +186,7 @@ export enum AssetTransactionType {
 export class AssetTransaction {
   constructor(
     public id: number,
-    public isin: string,
+    public assetId: number,
     public quantity: number,
     public price: number,
     public type: AssetTransactionType,

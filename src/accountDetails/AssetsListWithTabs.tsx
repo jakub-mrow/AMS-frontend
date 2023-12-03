@@ -26,7 +26,7 @@ export const AssetsListWithTabs = ({
   deposits: Asset[];
   cryptocurrencies: Asset[];
   isLoading: boolean;
-  goToAsset: (isin: string) => void;
+  goToAsset: (id: number) => void;
 }) => {
   const [assetsType, setAssetsType] = useState(AssetsType.STOCKS);
 

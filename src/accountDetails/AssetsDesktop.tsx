@@ -34,7 +34,7 @@ export const AssetsDesktop = ({
   type: DetailsTabs;
   isLoading: boolean;
   onAddAssetClick: () => void;
-  goToAsset: (isin: string) => void;
+  goToAsset: (id: number) => void;
 }) => {
   if (isLoading) {
     return <Loading />;
