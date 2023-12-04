@@ -9,6 +9,8 @@ import { AddAssetDialog } from '../AddAssetDialog'
 import { DialogType, useAddAsset } from '../use-add-asset'
 import { ChartTabs } from './ChartTabs'
 import { AssetDetailsHeaderProps } from '../types'
+import useFavouriteAssets from '../../favourites/favouriteAssets/use-favourite-assets'
+import { NewFavouriteAsset } from '../../favourites/types'
 
 
 const AssetDetailsHeader: React.FC<AssetDetailsHeaderProps> = ({ assetDetailsData, assetDetailsInfo }) => {
@@ -45,6 +47,17 @@ const AssetDetailsHeader: React.FC<AssetDetailsHeaderProps> = ({ assetDetailsDat
         onConfirmStockDialog 
     } = useAddAsset();
 
+    const { addFavouriteAsset } = useFavouriteAssets();
+    const newFavouriteAsset: NewFavouriteAsset = {
+        code: assetDetailsData.Code,
+        exchange: assetDetailsData.Exchange,
+        name: assetDetailsData.Name,
+        type: assetDetailsData.Type,
+        country: assetDetailsData.Country,
+        currency: assetDetailsData.Currency,
+        isin: assetDetailsData.ISIN
+    }
+
 
     return (
         <div className="flex flex-col m-6 p-4 bg-gray-100 rounded-lg shadow-lg border">
@@ -78,7 +91,7 @@ const AssetDetailsHeader: React.FC<AssetDetailsHeaderProps> = ({ assetDetailsDat
                     <Button className=" text-gray-900 bg-white">
                         <div className="flex flex-row justify-center items-center space-x-2">
                             <BsStar />
-                            <span className="hidden md:block">Watchlist</span>
+                            <span className="hidden md:block" onClick={() => addFavouriteAsset(newFavouriteAsset)}>Watchlist</span>
                         </div>
                     </Button>
                     <Button className=" text-gray-900 bg-white" onClick={() => openDialog(DialogType.STOCK)}>
