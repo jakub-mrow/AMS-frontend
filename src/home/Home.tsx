@@ -1,14 +1,38 @@
-import { useContext } from "react";
+import { ReactNode, useContext, useState } from "react";
 import AuthContext from "../auth/auth-context";
 import { FaPlus, FaWallet } from "react-icons/fa";
-import Exchanges from "./Exchanges.tsx";
+import Exchanges from "../favourites/exchanges/Exchanges.tsx";
 import { useAccounts } from "./use-accounts.ts";
 import { AddAccountDialog } from "./AddAccountDialog.tsx";
 import { TickerTape } from "react-tradingview-embed";
 import AccountCard from "./AccountCard.tsx";
 import News from "../news/News.tsx";
+import { Box, Tab, Tabs } from "@mui/material";
+import FavouriteAssets from "../favourites/favouriteAssets/FavouriteAssets.tsx";
+import { useFavourites } from "../favourites/use-favourites.ts";
+
+
+interface TabPanelProps {
+  value: number;
+  index: number;
+  children: ReactNode;
+}
+
+const TabPanel: React.FC<TabPanelProps> = ({ value, index, children }) => {
+  return (
+    <div role="tabpanel" hidden={value !== index}>
+      {value === index && <Box p={3}>{children}</Box>}
+    </div>
+  );
+};
 
 const Home = () => {
+  const [activeTab, setActiveTab] = useState(0);
+
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setActiveTab(newValue);
+  };
+
   useContext(AuthContext);
 
   const {
@@ -19,6 +43,13 @@ const Home = () => {
     addAccount,
     goToAccount,
   } = useAccounts();
+
+  const { favouriteAssets, deleteFavouriteAsset, viewFavouriteAsset } = useFavourites();
+
+  const components = [
+    <Exchanges />,
+    <FavouriteAssets favouriteAssets={favouriteAssets} deleteFavoriteAsset={deleteFavouriteAsset} viewFavoriteAsset={viewFavouriteAsset}/>,
+  ];
 
   return (
     <div className="container mx-auto p-1">
@@ -48,7 +79,15 @@ const Home = () => {
           </div>
         </div>
         <TickerTape widgetProps={{ colorTheme: "light" }} />
-        <Exchanges />
+        <Tabs value={activeTab} onChange={handleTabChange}>
+          <Tab label="Exchanges" />
+          <Tab label="Favourite Assets" />
+        </Tabs>
+        {components.map((component, index) => (
+          <TabPanel key={index} value={activeTab} index={index}>
+            {component}
+          </TabPanel>
+        ))}
         <News ticker=""></News>
       </div>
     </div>
