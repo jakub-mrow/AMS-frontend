@@ -14,7 +14,7 @@ const AssetOverviewHeader: React.FC<AssetDetailsDataProps> = ({ assetDetailsData
                     </div>
                 </div>
         
-                <div className="flex flex-row border rounded-lg space-x-4 p-2 justify-center items-center">
+                <div className="flex flex-row border rounded-lg space-x-4 p-2 justify-center items-center bg-white">
                     <div>
                         <span>Ticker: </span>
                         <span className="font-bold">{assetDetailsData.Code}</span>

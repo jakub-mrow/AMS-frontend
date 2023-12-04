@@ -5,6 +5,7 @@ import { Result } from '../../appBar/use-search-bar';
 
 import { Chart } from 'react-chartjs-2';
 import { Chart as ChartJS, LineController, LineElement, PointElement, LinearScale, Title } from 'chart.js';
+import AssetDetailsPriceValues from '../assetBodyCards/AssetDetailsPriceValues';
 
 ChartJS.register(LineController, LineElement, PointElement, LinearScale, Title);
 
@@ -91,6 +92,7 @@ export const OriginalChart: React.FC<OrignalChartProps> = ({ assetDetailsInfo, a
                     },
                 },
             }} />
+            <AssetDetailsPriceValues />
         </div>
     );
 };
