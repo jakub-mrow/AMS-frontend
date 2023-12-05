@@ -58,7 +58,7 @@ const FavouriteAssets: React.FC<FavouriteAssetsProps> = ({ favouriteAssets, dele
                                 <td className="">
                                     <div className="flex space-x-2 items-center justify-end pr-5">
                                         <button
-                                            className="focus:ring-2 focus:ring-offset-2 focus:ring-red-300 text-sm leading-none text-gray-600 py-3 px-5 bg-gray-100 rounded hover:bg-gray-200 focus:outline-none"
+                                            className="focus:ring-2 focus:ring-offset-2 text-sm leading-none text-gray-600 py-3 px-5 bg-gray-100 rounded hover:bg-gray-200 focus:outline-none"
                                             onClick={() => viewFavoriteAsset(favouriteAsset.code, favouriteAsset.exchange)}
                                         >
                                             View

@@ -66,15 +66,16 @@ export const AssetsTable = ({
           <TableBody>
             {(rowsPerPage > 0
               ? assets.slice(
-                  page * rowsPerPage,
-                  page * rowsPerPage + rowsPerPage,
-                )
+                page * rowsPerPage,
+                page * rowsPerPage + rowsPerPage,
+              )
               : assets
             ).map(getTableRow)}
           </TableBody>
         </Table>
       </TableContainer>
       <TablePagination
+        className="rounded-b-xl"
         rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
         count={assets.length}
         rowsPerPage={rowsPerPage}

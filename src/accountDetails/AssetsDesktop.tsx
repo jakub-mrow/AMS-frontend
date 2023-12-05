@@ -48,7 +48,7 @@ export const AssetsDesktop = ({
           mx: 8,
         }}
       >
-        <Typography align="center" variant="h3">
+        <Typography align="center" variant="h5">
           You don't have any {getTypeName(type)} yet
         </Typography>
         <Button variant={"contained"} onClick={onAddAssetClick}>
