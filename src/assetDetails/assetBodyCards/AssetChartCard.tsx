@@ -1,5 +1,4 @@
 import { AssetDetailsDataProps } from '../use-asset-details';
-import AssetDetailsCardTitle from './AssetDetailsCardTitle'
 import { AdvancedChart } from "react-tradingview-embed"
 
 const AssetChartCard: React.FC<AssetDetailsDataProps> = ({ assetDetailsData }) => {
@@ -23,10 +22,7 @@ const AssetChartCard: React.FC<AssetDetailsDataProps> = ({ assetDetailsData }) =
     }
 
     return (
-        <div className="bg-white rounded-lg shadow-lg">
-            <AssetDetailsCardTitle cardTitle="Chart" />
-            <AdvancedChart widgetProps={{ theme: "light", symbol: symbol }}/>
-        </div>
+        <AdvancedChart widgetProps={{ theme: "light", symbol: symbol }}/>
     )
 }
 

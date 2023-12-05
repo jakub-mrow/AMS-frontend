@@ -2,49 +2,22 @@ import AssetExchangeOpen from './AssetExchangeOpen'
 import { FiCopy } from 'react-icons/fi'
 import { BsStar } from 'react-icons/bs'
 import { Button } from '@mui/material'
-import AssetDetailFrontCards from './AssetDetailFrontCards'
 import { IoMdAdd } from 'react-icons/io'
 import React from 'react'
 import { AddAssetDialog } from '../AddAssetDialog'
 import { DialogType, useAddAsset } from '../use-add-asset'
-import { ChartTabs } from './ChartTabs'
 import { AssetDetailsHeaderProps } from '../types'
 import useFavouriteAssets from '../../favourites/favouriteAssets/use-favourite-assets'
 import { NewFavouriteAsset } from '../../favourites/types'
 
 
-const AssetDetailsHeader: React.FC<AssetDetailsHeaderProps> = ({ assetDetailsData, assetDetailsInfo }) => {
-    let symbols: string[] = [];
-    switch (assetDetailsData.Type) {
-        case 'Common Stock':
-            if (assetDetailsData.Exchange === "US") {
-                symbols = [`NASDAQ:${assetDetailsData.Code}`];
-            } else {
-                symbols = [`${assetDetailsData.Exchange}:${assetDetailsData.Code}`];
-            }
-            break;
-        case 'ETF':
-            symbols = [`${assetDetailsData.Exchange}:${assetDetailsData.Code}`]
-            break;
-        case 'Currency':
-            if (assetDetailsData.Exchange === "CC") {
-                symbols = [`${assetDetailsData.Code.split("-").join("")}`];
-                break;
-            } else {
-                symbols = [];
-            }
-            break;
-        default:
-            symbols = [`${assetDetailsData.Code}`]
-            break;
-    }
-
+const AssetDetailsHeader: React.FC<AssetDetailsHeaderProps> = ({ assetDetailsData }) => {
     const {
         accounts,
         isDialogOpen,
         openDialog,
         closeDialog,
-        onConfirmStockDialog 
+        onConfirmStockDialog
     } = useAddAsset();
 
     const { addFavouriteAsset } = useFavouriteAssets();
@@ -60,7 +33,7 @@ const AssetDetailsHeader: React.FC<AssetDetailsHeaderProps> = ({ assetDetailsDat
 
 
     return (
-        <div className="flex flex-col m-6 p-4 bg-gray-100 rounded-lg shadow-lg border">
+        <div className="flex flex-col p-4 bg-gray-100 rounded-lg shadow-lg border">
             <div className="flex flex-row justify-between">
                 <div className="flex flex-col">
                     <div className="flex flex-row items-center space-x-3">
@@ -85,6 +58,12 @@ const AssetDetailsHeader: React.FC<AssetDetailsHeaderProps> = ({ assetDetailsDat
 
                             <FiCopy className="hover:bg-white transition duration-300 ease-in-out" />
                         </div>
+                        <div className="flex flex-row justify-center items-center space-x-2">
+                            <div>
+                                <span className="font-bold">Exchange: </span>
+                                <span>{assetDetailsData.Exchange}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className="flex flex-row items-center justify-center space-x-2">
@@ -102,10 +81,7 @@ const AssetDetailsHeader: React.FC<AssetDetailsHeaderProps> = ({ assetDetailsDat
                     </Button>
                 </div>
             </div>
-            <div className="border-t border-gray-300 my-4"></div>
-
-            <ChartTabs tradingviewSymbols={symbols} assetDetailsInfo={assetDetailsInfo} assetDetailsData={assetDetailsData}/>
-            <AssetDetailFrontCards assetDetailsData={assetDetailsData} assetDetailsInfo={assetDetailsInfo}/>
+            <div className="border-t border-gray-300 mt-4"></div>
 
             <AddAssetDialog
                 accounts={accounts}

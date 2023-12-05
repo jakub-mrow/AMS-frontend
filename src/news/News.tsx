@@ -22,9 +22,15 @@ const News: React.FC<NewsProps> = ({ ticker }) => {
                 <Loading />
             ) : (
                 <div className="flex flex-col space-y-8">
-                    {displayedNews.map((newsItem) => (
-                        <NewsCard key={newsItem.link} newsCardData={newsItem} />
-                    ))}
+                    {displayedNews.length === 0 ? (
+                        <div className="flex items-center justify-center bg-gray-100 p-8 rounded-xl mb-8">
+                            <p className="text-gray-500">There are no available articles about this asset</p>
+                        </div>
+                    ) : (
+                        displayedNews.map((newsItem) => (
+                            <NewsCard key={newsItem.link} newsCardData={newsItem} />
+                        ))
+                    )}
                     {displayedNews.length < news.length && (
                         <button className="text-blue-500 hover:underline" onClick={handleLoadMore}>
                             Load More

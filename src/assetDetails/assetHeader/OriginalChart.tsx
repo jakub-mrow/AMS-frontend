@@ -5,6 +5,7 @@ import { Result } from '../../appBar/use-search-bar';
 
 import { Chart } from 'react-chartjs-2';
 import { Chart as ChartJS, LineController, LineElement, PointElement, LinearScale, Title } from 'chart.js';
+import AssetDetailsPriceValues from '../assetBodyCards/AssetDetailsPriceValues';
 
 ChartJS.register(LineController, LineElement, PointElement, LinearScale, Title);
 
@@ -16,10 +17,10 @@ interface OrignalChartProps {
 export const OriginalChart: React.FC<OrignalChartProps> = ({ assetDetailsInfo, assetDetailsData }) => {
 
     const dates = assetDetailsInfo.priceChanges.map((priceChange: AssetPriceChange) => priceChange.date.valueOf());
-    const closeValues = assetDetailsInfo.priceChanges.map((priceChange: AssetPriceChange) => priceChange.close);
+    const closeValues = assetDetailsInfo.priceChanges.map((priceChange: AssetPriceChange) => priceChange.adjustedClose);
 
     const data = {
-        dates,
+        dates,  
         closeValues
     }
 
@@ -83,7 +84,7 @@ export const OriginalChart: React.FC<OrignalChartProps> = ({ assetDetailsInfo, a
                         }
                     },
                     y: {
-                        min: (Math.min(...data.closeValues) - 5).toFixed(3),
+                        min: Math.max(parseFloat((Math.min(...data.closeValues) - 5).toFixed(3)), 0),
                         max: (Math.max(...data.closeValues) + 10).toFixed(3),
                         ticks: {
                             callback: (value) => value + ` ${assetDetailsData.Currency}`
@@ -91,6 +92,7 @@ export const OriginalChart: React.FC<OrignalChartProps> = ({ assetDetailsInfo, a
                     },
                 },
             }} />
+            <AssetDetailsPriceValues />
         </div>
     );
 };

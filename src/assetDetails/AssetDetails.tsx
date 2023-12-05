@@ -1,9 +1,8 @@
 import AssetDetailsHeader from './assetHeader/AssetDetailsHeader';
-import AssetOverviewCard from './assetBodyCards/AssetOverviewCard'
-import AssetChartCard from './assetBodyCards/AssetChartCard'
 import { useAssetDetails } from './use-asset-details';
 import News from '../news/News';
 import { Loading } from '../util/Loading';
+import { ChartTabs } from './assetHeader/ChartTabs';
 
 
 const AssetDetails = () => {
@@ -11,25 +10,13 @@ const AssetDetails = () => {
     return (
         <>
             {isLoading ? (
-                <Loading/>
+                <Loading />
             ) : (
                 assetDetailsData && assetDetailsInfo && (
-                    <div className="flex flex-col m-6 space-y-4">
+                    <div className="container mx-auto flex flex-col m-6 space-y-4">
                         <AssetDetailsHeader assetDetailsData={assetDetailsData} assetDetailsInfo={assetDetailsInfo} />
-                        <div className="flex flex-col m-6 p-4 bg-gray-100 rounded-lg shadow-lg border">
-                            <div className="flex flex-col md:flex-row justify-between md:space-x-4 space-y-2 md:space-y-0">
-                                <div className="flex-1 space-y-4">
-                                    <AssetOverviewCard assetDetailsData={assetDetailsData} assetDetailsInfo={assetDetailsInfo} />
-                                </div>
-                                <div className="flex-1 space-y-4">
-                                    <AssetChartCard assetDetailsData={assetDetailsData} assetDetailsInfo={assetDetailsInfo}/>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="bg-white rounded-xl">
-                            <News ticker={assetDetailsData.Code}/>
-                        </div>
-                        
+                        <ChartTabs assetDetailsInfo={assetDetailsInfo} assetDetailsData={assetDetailsData} />
+                        <News ticker={assetDetailsData.Code} />
                     </div>
                 )
             )}
