@@ -41,14 +41,16 @@ const AssetDetailsHeader: React.FC<AssetDetailsHeaderProps> = ({ assetDetailsDat
                         <AssetExchangeOpen />
                     </div>
                     <div className="flex flex-row justify-items-start space-x-8 pt-1">
-                        <div className="flex flex-row justify-center items-center space-x-2">
-                            <div>
-                                <span className="font-bold tracking-normal">ISIN</span>
-                                <span>: </span>
-                                <span>{assetDetailsData.ISIN}</span>
+                        {assetDetailsData.ISIN && (
+                            <div className="flex flex-row justify-center items-center space-x-2">
+                                <div>
+                                    <span className="font-bold tracking-normal">ISIN</span>
+                                    <span>: </span>
+                                    <span>{assetDetailsData.ISIN}</span>
+                                </div>
+                                <FiCopy />
                             </div>
-                            <FiCopy />
-                        </div>
+                        )}
                         <div className="flex flex-row justify-center items-center space-x-2">
                             <div >
                                 <span className="font-bold tracking-normal">Symbols</span>
