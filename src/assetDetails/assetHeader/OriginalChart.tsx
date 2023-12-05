@@ -84,7 +84,7 @@ export const OriginalChart: React.FC<OrignalChartProps> = ({ assetDetailsInfo, a
                         }
                     },
                     y: {
-                        min: (Math.min(...data.closeValues) - 5).toFixed(3),
+                        min: Math.max(parseFloat((Math.min(...data.closeValues) - 5).toFixed(3)), 0),
                         max: (Math.max(...data.closeValues) + 10).toFixed(3),
                         ticks: {
                             callback: (value) => value + ` ${assetDetailsData.Currency}`

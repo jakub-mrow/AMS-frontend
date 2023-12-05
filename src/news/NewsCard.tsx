@@ -22,8 +22,14 @@ const NewsCard: React.FC<NewsCardProps> = ({ newsCardData }) => {
                 </div>
             )}
             <div className="flex flex-col p-4 h-40 overflow-y-auto">
-                <span className="font-semibold text-lg">{newsCardData.title}</span>
-                <p className="text-gray-600 overflow-ellipsis">{newsCardData.description}</p>
+                <span className="font-semibold text-lg">
+                    {newsCardData.title}
+                </span>
+                <p className="text-gray-600 overflow-ellipsis">
+                    {((newsCardData.description ?? '').length ?? 0) > 250
+                        ? `${newsCardData.description?.slice(0, 250)}...`
+                        : newsCardData.description}
+                </p>
                 <Link to={newsCardData.link} className="text-blue-500 hover:underline mt-2 mb-2">
                     Read more
                 </Link>
