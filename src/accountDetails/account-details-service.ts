@@ -381,10 +381,25 @@ export class AccountsDetailsService {
     return exchangesDto.map(fromExchangeDto);
   }
 
-  async sendCsvFile(file: File): Promise<Blob> {
-    return new Promise((resolve) => {
-      resolve(file);
-    });
+  async sendCsvFile(id: number, file: File): Promise<string> {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await fetch(
+      `${this.apiUrl}/api/${id}/import_csv_stock_transactions`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+        body: formData,
+      },
+    );
+    if (!response.ok) {
+      const data: ErrorResponse = await response.json();
+      throw new Error(data.error ?? "Failed to send broker file");
+    }
+    const data = await response.json();
+    return data.msg;
   }
 
   async sendBrokerFile(file: File, broker: string) {

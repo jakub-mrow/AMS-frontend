@@ -172,9 +172,9 @@ export class Asset {
 
   displayResult(): string {
     if (this.result > 0) {
-      return "+" + this.result.toFixed(1) + "%";
+      return "+" + (this.result * 100).toFixed(1) + "%";
     }
-    return this.result.toFixed(1) + "%";
+    return (this.result * 100).toFixed(1) + "%";
   }
 }
 
