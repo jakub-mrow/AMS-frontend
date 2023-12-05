@@ -5,6 +5,7 @@ import {
   AccountTransaction,
   AccountTransactionType,
   Asset,
+  AssetType,
   Exchange,
 } from "../types.ts";
 import dayjs, { Dayjs } from "dayjs";
@@ -80,7 +81,7 @@ const fromAccountTransactionDto = (
 };
 
 type AssetDto = {
-  isin: string;
+  asset_id: number;
   name: string;
   ticker: string;
   exchange_code: string;
@@ -88,11 +89,12 @@ type AssetDto = {
   price: number;
   currency: string;
   result: number;
+  type: AssetType;
 };
 
 const fromAssetDto = (stock: AssetDto): Asset => {
   return new Asset(
-    stock.isin,
+    stock.asset_id,
     stock.name,
     stock.ticker,
     stock.exchange_code,
@@ -100,6 +102,7 @@ const fromAssetDto = (stock: AssetDto): Asset => {
     stock.price,
     stock.currency,
     stock.result,
+    stock.type,
   );
 };
 
@@ -242,7 +245,7 @@ export class AccountsDetailsService {
     }
   }
 
-  async fetchStocks(accountId: number): Promise<Asset[]> {
+  async fetchAssets(accountId: number): Promise<Asset[]> {
     const response = await fetch(
       `${this.apiUrl}/api/stock_balances/${accountId}/list_dto`,
       {
@@ -257,24 +260,6 @@ export class AccountsDetailsService {
     }
     const stocks: AssetDto[] = await response.json();
     return stocks.map(fromAssetDto);
-  }
-
-  async fetchBonds(_accountId: number): Promise<Asset[]> {
-    return new Promise((resolve) => {
-      resolve([]);
-    });
-  }
-
-  async fetchDeposits(_accountId: number): Promise<Asset[]> {
-    return new Promise((resolve) => {
-      resolve([]);
-    });
-  }
-
-  async fetchCryptocurrencies(_accountId: number): Promise<Asset[]> {
-    return new Promise((resolve) => {
-      resolve([]);
-    });
   }
 
   async buyStocks(

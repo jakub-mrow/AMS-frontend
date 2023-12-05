@@ -4,41 +4,54 @@ import { useState } from "react";
 import { VerticalFlexContainer } from "../util/VerticalFlexContainer.tsx";
 import { Loading } from "../util/Loading.tsx";
 import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
-import { Asset } from "../types.ts";
-
-export enum AssetsType {
-  STOCKS,
-  BONDS,
-  DEPOSITS,
-  CRYPTO,
-}
+import { Asset, AssetType, Exchange } from "../types.ts";
+import { StocksDialog } from "./StocksDialog.tsx";
+import { Dayjs } from "dayjs";
 
 export const AssetsListWithTabs = ({
   stocks,
   bonds,
   deposits,
   cryptocurrencies,
+  exchanges,
   isLoading,
   goToAsset,
+  isDialogOpen,
+  closeDialog,
+  onConfirmStockDialog,
 }: {
   stocks: Asset[];
   bonds: Asset[];
   deposits: Asset[];
   cryptocurrencies: Asset[];
+  exchanges: Exchange[];
   isLoading: boolean;
-  goToAsset: (isin: string) => void;
+  goToAsset: (id: number) => void;
+  isDialogOpen: boolean;
+  closeDialog: () => void;
+  onConfirmStockDialog: (
+    type: AssetType,
+    ticker: string,
+    exchange: string | null,
+    quantity: number,
+    price: number,
+    date: Dayjs,
+    payCurrency: string | null,
+    exchangeRate: number | null,
+    commission: number | null,
+  ) => Promise<boolean>;
 }) => {
-  const [assetsType, setAssetsType] = useState(AssetsType.STOCKS);
+  const [type, setType] = useState(AssetType.STOCK);
 
-  const getAssetsOfType = (type: AssetsType): Asset[] => {
+  const getAssetsOfType = (type: AssetType): Asset[] => {
     switch (type) {
-      case AssetsType.STOCKS:
+      case AssetType.STOCK:
         return stocks.filter((asset) => asset.quantity > 0);
-      case AssetsType.BONDS:
+      case AssetType.BOND:
         return bonds.filter((asset) => asset.quantity > 0);
-      case AssetsType.DEPOSITS:
+      case AssetType.DEPOSIT:
         return deposits.filter((asset) => asset.quantity > 0);
-      case AssetsType.CRYPTO:
+      case AssetType.CRYPTO:
         return cryptocurrencies.filter((asset) => asset.quantity > 0);
       default:
         exhaustiveGuard(type);
@@ -48,8 +61,8 @@ export const AssetsListWithTabs = ({
   return (
     <>
       <Tabs
-        value={assetsType}
-        onChange={(_event, newValue) => setAssetsType(newValue)}
+        value={type}
+        onChange={(_event, newValue) => setType(newValue)}
         indicatorColor="secondary"
         textColor="inherit"
         variant="fullWidth"
@@ -70,12 +83,20 @@ export const AssetsListWithTabs = ({
           }}
         >
           <AssetsList
-            assets={getAssetsOfType(assetsType)}
-            type={assetsType}
+            assets={getAssetsOfType(type)}
+            type={type}
             goToAsset={goToAsset}
           />
         </VerticalFlexContainer>
       )}
+      <StocksDialog
+        assets={getAssetsOfType(type)}
+        exchanges={exchanges}
+        type={type}
+        isOpen={isDialogOpen}
+        onClose={closeDialog}
+        onConfirm={onConfirmStockDialog}
+      />
     </>
   );
 };

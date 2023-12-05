@@ -21,7 +21,6 @@ import { Summary } from "./Summary.tsx";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
 import { Loading } from "../util/Loading.tsx";
 import { AccountEditDialog } from "./AccountEditDialog.tsx";
-import { StocksDialog } from "./StocksDialog.tsx";
 import { ImportDialog } from "./ImportDialog.tsx";
 
 enum MobilePage {
@@ -96,8 +95,12 @@ export const AccountDetailsMobile = () => {
           bonds={bonds}
           deposits={deposits}
           cryptocurrencies={cryptocurrencies}
+          exchanges={exchanges}
           isLoading={isLoading}
           goToAsset={goToAsset}
+          isDialogOpen={isDialogOpen(DialogType.STOCK)}
+          closeDialog={closeDialog}
+          onConfirmStockDialog={onConfirmStockDialog}
         />
       )}
       {mobilePage === MobilePage.TRANSACTIONS && (
@@ -129,13 +132,6 @@ export const AccountDetailsMobile = () => {
         baseCurrency={account.preferences.baseCurrency}
         onDelete={onDeleteTransaction}
         transactionToEdit={accountTransactionToEdit}
-      />
-      <StocksDialog
-        stocks={stocks}
-        exchanges={exchanges}
-        isOpen={isDialogOpen(DialogType.STOCK)}
-        onClose={closeDialog}
-        onConfirm={onConfirmStockDialog}
       />
       <AccountEditDialog
         account={account}

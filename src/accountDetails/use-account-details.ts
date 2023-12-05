@@ -7,6 +7,7 @@ import {
   AccountTransaction,
   AccountTransactionType,
   Asset,
+  AssetType,
   Exchange,
 } from "../types.ts";
 import { apiUrl } from "../config.ts";
@@ -40,29 +41,19 @@ export const useAccountDetails = () => {
   const navigate = useNavigate();
   const [isAccountLoading, setIsAccountLoading] = useState(false);
   const [isTransactionsLoading, setIsTransactionsLoading] = useState(false);
-  const [isStocksLoading, setIsStocksLoading] = useState(false);
-  const [isBondsLoading, setIsBondsLoading] = useState(false);
-  const [isDepositsLoading, setIsDepositsLoading] = useState(false);
-  const [isCryptocurrenciesLoading, setIsCryptocurrenciesLoading] =
-    useState(false);
+  const [isAssetsLoading, setIsAssetsLoading] = useState(false);
   const [isExchangesLoading, setIsExchangesLoading] = useState(false);
   const isLoading = useMemo(() => {
     return (
       isAccountLoading ||
       isTransactionsLoading ||
-      isStocksLoading ||
-      isBondsLoading ||
-      isDepositsLoading ||
-      isCryptocurrenciesLoading ||
+      isAssetsLoading ||
       isExchangesLoading
     );
   }, [
     isAccountLoading,
     isTransactionsLoading,
-    isStocksLoading,
-    isBondsLoading,
-    isDepositsLoading,
-    isCryptocurrenciesLoading,
+    isAssetsLoading,
     isExchangesLoading,
   ]);
   const [account, setAccount] = useState<Account | null>(null);
@@ -109,10 +100,7 @@ export const useAccountDetails = () => {
   const refreshAccountData = useCallback(() => {
     setIsAccountLoading(true);
     setIsTransactionsLoading(true);
-    setIsStocksLoading(true);
-    setIsBondsLoading(true);
-    setIsDepositsLoading(true);
-    setIsCryptocurrenciesLoading(true);
+    setIsAssetsLoading(true);
     setIsAccountHistoryLoading(true);
     setIsExchangesLoading(true);
     if (!id) {
@@ -145,31 +133,15 @@ export const useAccountDetails = () => {
       })
       .catch(handleError);
     accountDetailsService
-      .fetchStocks(Number(id))
+      .fetchAssets(Number(id))
       .then((data) => {
-        setStocks(data);
-        setIsStocksLoading(false);
-      })
-      .catch(handleError);
-    accountDetailsService
-      .fetchBonds(Number(id))
-      .then((data) => {
-        setBonds(data);
-        setIsBondsLoading(false);
-      })
-      .catch(handleError);
-    accountDetailsService
-      .fetchDeposits(Number(id))
-      .then((data) => {
-        setDeposits(data);
-        setIsDepositsLoading(false);
-      })
-      .catch(handleError);
-    accountDetailsService
-      .fetchCryptocurrencies(Number(id))
-      .then((data) => {
-        setCryptocurrencies(data);
-        setIsCryptocurrenciesLoading(false);
+        setStocks(data.filter((asset) => asset.type === AssetType.STOCK));
+        setBonds(data.filter((asset) => asset.type === AssetType.BOND));
+        setDeposits(data.filter((asset) => asset.type === AssetType.DEPOSIT));
+        setCryptocurrencies(
+          data.filter((asset) => asset.type === AssetType.CRYPTO),
+        );
+        setIsAssetsLoading(false);
       })
       .catch(handleError);
     accountDetailsService
@@ -240,8 +212,9 @@ export const useAccountDetails = () => {
   };
 
   const onConfirmStockDialog = async (
+    type: AssetType,
     ticker: string,
-    exchange: string,
+    exchange: string | null,
     quantity: number,
     price: number,
     date: Dayjs,
@@ -252,26 +225,50 @@ export const useAccountDetails = () => {
     if (!account) {
       return false;
     }
-    try {
-      await accountDetailsService.buyStocks(
-        account.id,
-        ticker,
-        exchange,
-        quantity,
-        price,
-        date,
-        payCurrency,
-        exchangeRate,
-        commission,
-      );
-      refreshAccountData();
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(error.message, Severity.ERROR);
+    if (type === AssetType.STOCK && exchange) {
+      try {
+        await accountDetailsService.buyStocks(
+          account.id,
+          ticker,
+          exchange,
+          quantity,
+          price,
+          date,
+          payCurrency,
+          exchangeRate,
+          commission,
+        );
+        refreshAccountData();
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+        }
+        return false;
       }
-      return false;
+      return true;
+    } else if (type === AssetType.CRYPTO) {
+      try {
+        await accountDetailsService.buyStocks(
+          account.id,
+          ticker,
+          "CC",
+          quantity,
+          price,
+          date,
+          payCurrency,
+          exchangeRate,
+          commission,
+        );
+        refreshAccountData();
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(error.message, Severity.ERROR);
+        }
+        return false;
+      }
+      return true;
     }
-    return true;
+    return false;
   };
 
   const isDialogOpen = (type: DialogType) => {
@@ -314,8 +311,8 @@ export const useAccountDetails = () => {
       });
   };
 
-  const goToAsset = (isin: string) => {
-    navigate(`./assets/${isin}`, {});
+  const goToAsset = (id: number) => {
+    navigate(`./assets/${id}`, {});
   };
 
   const deleteAccount = async () => {

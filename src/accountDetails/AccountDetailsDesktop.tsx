@@ -8,12 +8,13 @@ import { useState } from "react";
 import { TransactionsDesktop } from "./TransactionsDesktop.tsx";
 import { AssetsDesktop } from "./AssetsDesktop.tsx";
 import { AccountEditDialog } from "./AccountEditDialog.tsx";
-import { Asset } from "../types.ts";
+import { Asset, AssetType } from "../types.ts";
 import { StocksDialog } from "./StocksDialog.tsx";
 import { AccountChart } from "./AccountChart.tsx";
 import { ImportDialog } from "./ImportDialog.tsx";
+import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
 
-export enum DetailsTabs {
+enum DetailsTabs {
   STOCKS,
   BONDS,
   DEPOSITS,
@@ -21,6 +22,19 @@ export enum DetailsTabs {
   EMPTY,
   TRANSACTIONS,
 }
+
+const detailsTabToAssetType = (tab: DetailsTabs): AssetType => {
+  if (tab === DetailsTabs.STOCKS) {
+    return AssetType.STOCK;
+  } else if (tab === DetailsTabs.BONDS) {
+    return AssetType.BOND;
+  } else if (tab === DetailsTabs.DEPOSITS) {
+    return AssetType.DEPOSIT;
+  } else if (tab === DetailsTabs.CRYPTO) {
+    return AssetType.CRYPTO;
+  }
+  return AssetType.STOCK;
+};
 
 export const AccountDetailsDesktop = () => {
   const {
@@ -53,16 +67,23 @@ export const AccountDetailsDesktop = () => {
   } = useAccountDetails();
   const [detailsTab, setDetailsTab] = useState(DetailsTabs.STOCKS);
 
-  const getAssetsOfType = (type: DetailsTabs): Asset[] => {
+  const getAssetsOfType = (type: AssetType): Asset[] => {
     let assets: Asset[] = [];
-    if (type === DetailsTabs.STOCKS) {
-      assets = stocks;
-    } else if (type === DetailsTabs.BONDS) {
-      assets = bonds;
-    } else if (type === DetailsTabs.DEPOSITS) {
-      assets = deposits;
-    } else if (type === DetailsTabs.CRYPTO) {
-      assets = cryptocurrencies;
+    switch (type) {
+      case AssetType.STOCK:
+        assets = stocks;
+        break;
+      case AssetType.BOND:
+        assets = bonds;
+        break;
+      case AssetType.DEPOSIT:
+        assets = deposits;
+        break;
+      case AssetType.CRYPTO:
+        assets = cryptocurrencies;
+        break;
+      default:
+        exhaustiveGuard(type);
     }
     return assets.filter((asset) => asset.quantity > 0);
   };
@@ -120,8 +141,8 @@ export const AccountDetailsDesktop = () => {
                 />
               ) : (
                 <AssetsDesktop
-                  assets={getAssetsOfType(detailsTab)}
-                  type={detailsTab}
+                  assets={getAssetsOfType(detailsTabToAssetType(detailsTab))}
+                  type={detailsTabToAssetType(detailsTab)}
                   isLoading={isLoading}
                   onAddAssetClick={() => openDialog(DialogType.STOCK)}
                   goToAsset={goToAsset}
@@ -164,7 +185,8 @@ export const AccountDetailsDesktop = () => {
         transactionToEdit={accountTransactionToEdit}
       />
       <StocksDialog
-        stocks={stocks}
+        assets={getAssetsOfType(detailsTabToAssetType(detailsTab))}
+        type={detailsTabToAssetType(detailsTab)}
         exchanges={exchanges}
         isOpen={isDialogOpen(DialogType.STOCK)}
         onClose={closeDialog}

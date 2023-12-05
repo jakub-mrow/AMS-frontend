@@ -1,12 +1,14 @@
 import { Box, Divider, ListItem, ListItemText } from "@mui/material";
-import { Asset } from "../types.ts";
+import { Asset, AssetType } from "../types.ts";
 import { displayCurrency } from "../util/display-currency.ts";
 
 export const AssetsListItem = ({
   asset,
+  type,
   goToAsset,
 }: {
   asset: Asset;
+  type: AssetType;
   goToAsset: () => void;
 }) => {
   const getListItem = () => (
@@ -18,7 +20,10 @@ export const AssetsListItem = ({
           alignItems: "center",
         }}
       >
-        <ListItemText primary={asset.name} secondary={asset.exchange} />
+        <ListItemText
+          primary={asset.name}
+          secondary={type === AssetType.STOCK ? asset.exchange : undefined}
+        />
         <ListItemText
           primary={displayCurrency(
             asset.price * asset.quantity,

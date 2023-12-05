@@ -1,59 +1,33 @@
 import { FcCurrencyExchange } from 'react-icons/fc';
 import { AiOutlineStar, AiFillStar } from 'react-icons/ai';
-import useStockExchanges from './use-stock-exchanges';
+import { StockExchange } from './use-stock-exchanges';
 
-const Exchanges = () => {
-    const stockExchanges = [
-        {
-            name: 'New York Stock Exchange',
-            timezone: 'America/New_York',
-            openingHours: '9:30 AM - 4:00 PM',
-        },
-        {
-            name: 'London Stock Exchange',
-            timezone: 'Europe/London',
-            openingHours: '8:00 AM - 4:30 PM',
-        },
-        {
-            name: 'Tokyo Stock Exchange',
-            timezone: 'Asia/Tokyo',
-            openingHours: '9:00 AM - 3:00 PM',
-        },
-        {
-            name: 'Frankfurt Stock Exchange',
-            timezone: 'Europe/Berlin',
-            openingHours: '8:00 AM - 8:00 PM',
-        },
-        {
-            name: 'Hong Kong Stock Exchange',
-            timezone: 'Asia/Hong_Kong',
-            openingHours: '9:30 AM - 4:00 PM',
-        },
-        {
-            name: 'Amsterdam Stock Exchange',
-            timezone: 'Europe/Amsterdam',
-            openingHours: '9:00 AM - 5:30 PM',
-        },
-        {
-            name: 'Xetra Stock Exchange',
-            timezone: 'Europe/Berlin',
-            openingHours: '8:00 AM - 8:00 PM',
-        },
-    ];
+interface ExchangeProps {
+    currentPage: number;
+    showFavorites: boolean;
+    handlePageChange: (index: number) => void;
+    addToFavorites: (name: string) => void;
+    isFavorite: (name: string) => boolean;
+    toggleShowFavorites: () => void;
+    filteredExchanges: StockExchange[];
+    totalPages: number;
+    startIndex: number;
+    endIndex: number;
+}
 
-    const {
-        currentPage,
-        showFavorites,
-        handlePageChange,
-        addToFavorites,
-        isFavorite,
-        toggleShowFavorites,
-        filteredExchanges,
-        totalPages,
-        startIndex,
-        endIndex,
-    } = useStockExchanges(stockExchanges);
 
+const Exchanges: React.FC<ExchangeProps> = ({ 
+    currentPage, 
+    showFavorites, 
+    handlePageChange, 
+    addToFavorites, 
+    isFavorite, 
+    toggleShowFavorites, 
+    filteredExchanges, 
+    totalPages, 
+    startIndex, 
+    endIndex
+}) => {
 
     return (
         <div className="container mx-auto">
@@ -92,7 +66,7 @@ const Exchanges = () => {
                             </td>
                             <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-300">
                                 <div className="text-sm leading-5 text-gray-900">
-                                    {exchange.openingHours}
+                                    {exchange.openingHour} - {exchange.closingHour}
                                 </div>
                             </td>
                         </tr>

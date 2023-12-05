@@ -19,9 +19,9 @@ export const useStockDetails = () => {
   const stockDetailsService = useMemo(() => {
     return new StockDetailsService(apiUrl, token);
   }, [token]);
-  const { accountId: accountIdStr, isin } = useParams<{
+  const { accountId: accountIdStr, id: idStr } = useParams<{
     accountId: string;
-    isin: string;
+    id: string;
   }>();
   const accountId = useMemo(() => {
     if (!accountIdStr) {
@@ -29,6 +29,12 @@ export const useStockDetails = () => {
     }
     return Number(accountIdStr);
   }, [accountIdStr]);
+  const id = useMemo(() => {
+    if (!idStr) {
+      return null;
+    }
+    return Number(idStr);
+  }, [idStr]);
   const alert = useSnackbar();
   const navigate = useNavigate();
   const [isStockLoading, setIsStockLoading] = useState(false);
@@ -67,7 +73,7 @@ export const useStockDetails = () => {
     setIsTransactionsLoading(true);
     setIsHistoryLoading(true);
     setIsBaseStockValueLoading(true);
-    if (!accountId || !isin) {
+    if (!accountId || !id) {
       return;
     }
 
@@ -78,7 +84,7 @@ export const useStockDetails = () => {
       }
     };
     stockDetailsService
-      .fetchStockBalance(accountId, isin)
+      .fetchStockBalance(accountId, id)
       .then((data) => {
         if (data.quantity === 0) {
           navigate(`/accounts/${accountId}`, { replace: true });
@@ -89,27 +95,27 @@ export const useStockDetails = () => {
       })
       .catch(handleError);
     stockDetailsService
-      .fetchAssetTransactions(Number(accountId), isin)
+      .fetchAssetTransactions(Number(accountId), id)
       .then((data) => {
         setAssetTransactions(data);
         setIsTransactionsLoading(false);
       })
       .catch(handleError);
     stockDetailsService
-      .fetchStockBalanceHistory(accountId, isin)
+      .fetchStockBalanceHistory(accountId, id)
       .then((data) => {
         setAssetBalanceHistories(data);
         setIsHistoryLoading(false);
       })
       .catch(handleError);
     stockDetailsService
-      .fetchBaseStockValue(accountId, isin)
+      .fetchBaseStockValue(accountId, id)
       .then((data) => {
         setBaseStockValue(data);
         setIsBaseStockValueLoading(false);
       })
       .catch(handleError);
-  }, [accountId, isin, alert, stockDetailsService, navigate]);
+  }, [accountId, id, alert, stockDetailsService, navigate]);
 
   useEffect(() => {
     refreshStockData();
@@ -124,7 +130,7 @@ export const useStockDetails = () => {
     exchangeRate: number | null,
     commission: number | null,
   ) => {
-    if (!accountId || !isin) {
+    if (!accountId || !id) {
       return false;
     }
     if (assetTransactionToEdit) {
@@ -132,7 +138,7 @@ export const useStockDetails = () => {
         await stockDetailsService.updateAssetTransaction(
           accountId,
           assetTransactionToEdit.id,
-          isin,
+          id,
           quantity,
           price,
           type,
@@ -152,7 +158,7 @@ export const useStockDetails = () => {
       try {
         await stockDetailsService.addAssetTransaction(
           accountId,
-          isin,
+          id,
           quantity,
           price,
           type,

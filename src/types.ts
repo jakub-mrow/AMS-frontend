@@ -150,7 +150,7 @@ export type AccountPreferences = {
 
 export class Asset {
   constructor(
-    public isin: string,
+    public id: number,
     public name: string,
     public ticker: string,
     public exchange: string,
@@ -158,6 +158,7 @@ export class Asset {
     public price: number,
     public currency: string,
     public result: number,
+    public type: AssetType,
   ) {}
 
   getResultColor(): string {
@@ -186,7 +187,7 @@ export enum AssetTransactionType {
 export class AssetTransaction {
   constructor(
     public id: number,
-    public isin: string,
+    public assetId: number,
     public quantity: number,
     public price: number,
     public type: AssetTransactionType,
@@ -276,3 +277,10 @@ export type Exchange = {
   name: string;
   code: string;
 };
+
+export enum AssetType {
+  STOCK = "STOCK",
+  CRYPTO = "CRYPTO",
+  DEPOSIT = "DEPOSIT",
+  BOND = "BOND",
+}

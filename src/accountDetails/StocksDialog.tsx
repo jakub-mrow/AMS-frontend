@@ -14,7 +14,7 @@ import { Controller, useForm } from "react-hook-form";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { useMemo, useState } from "react";
-import { Asset, Exchange } from "../types.ts";
+import { Asset, AssetType, Exchange } from "../types.ts";
 import { LoadingButton } from "@mui/lab";
 import {
   isValidCurrency,
@@ -23,6 +23,7 @@ import {
   quantityPattern,
 } from "../util/validations.ts";
 import { CURRENCIES } from "../util/currencies.ts";
+import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
 
 interface StockTransactionFormData {
   ticker: string | null;
@@ -35,20 +36,38 @@ interface StockTransactionFormData {
   commission: number | null;
 }
 
+const getDialogTitle = (type: AssetType) => {
+  switch (type) {
+    case AssetType.STOCK:
+      return "Buy stocks";
+    case AssetType.CRYPTO:
+      return "Buy cryptocurrencies";
+    case AssetType.BOND:
+      return "Buy bonds";
+    case AssetType.DEPOSIT:
+      return "Buy deposits";
+    default:
+      exhaustiveGuard(type);
+  }
+};
+
 export const StocksDialog = ({
-  stocks,
+  assets,
+  type,
   exchanges,
   isOpen,
   onClose,
   onConfirm,
 }: {
-  stocks: Asset[];
+  assets: Asset[];
+  type: AssetType;
   exchanges: Exchange[];
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (
+    type: AssetType,
     ticker: string,
-    exchange: string,
+    exchange: string | null,
     quantity: number,
     price: number,
     date: Dayjs,
@@ -71,14 +90,9 @@ export const StocksDialog = ({
       },
     });
   const tickers: string[] = useMemo(() => {
-    const allTickers = stocks.map((stock) => stock.ticker);
+    const allTickers = assets.map((asset) => asset.ticker);
     return [...new Set(allTickers)];
-  }, [stocks]);
-
-  // const exchanges: string[] = useMemo(() => {
-  //   const allExchanges = stocks.map((stock) => stock.exchange);
-  //   return [...new Set(allExchanges)];
-  // }, [stocks]);
+  }, [assets]);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -90,7 +104,6 @@ export const StocksDialog = ({
   const confirmHandler = handleSubmit((data) => {
     if (
       data.ticker === null ||
-      data.exchange === null ||
       data.quantity === null ||
       data.price === null ||
       data.date === null
@@ -103,23 +116,47 @@ export const StocksDialog = ({
       payCurrency = data.payCurrency;
       exchangeRate = data.exchangeRate;
     }
+    if (type === AssetType.STOCK && data.exchange === null) {
+      return;
+    }
     setIsLoading(true);
-    onConfirm(
-      data.ticker.trim(),
-      data.exchange.code.trim(),
-      data.quantity,
-      data.price,
-      data.date,
-      payCurrency,
-      exchangeRate,
-      data.commission,
-    ).then((success) => {
-      setIsLoading(false);
-      if (success) {
-        onClose();
-        reset();
-      }
-    });
+    if (type === AssetType.STOCK && data.exchange !== null) {
+      onConfirm(
+        type,
+        data.ticker.trim(),
+        data.exchange.code.trim(),
+        data.quantity,
+        data.price,
+        data.date,
+        payCurrency,
+        exchangeRate,
+        data.commission,
+      ).then((success) => {
+        setIsLoading(false);
+        if (success) {
+          onClose();
+          reset();
+        }
+      });
+    } else if (type === AssetType.CRYPTO) {
+      onConfirm(
+        type,
+        data.ticker.trim(),
+        null,
+        data.quantity,
+        data.price,
+        data.date,
+        payCurrency,
+        exchangeRate,
+        data.commission,
+      ).then((success) => {
+        setIsLoading(false);
+        if (success) {
+          onClose();
+          reset();
+        }
+      });
+    }
   });
 
   return (
@@ -131,7 +168,7 @@ export const StocksDialog = ({
         if (event.key === "Enter") confirmHandler().then();
       }}
     >
-      <DialogTitle>Buy stocks</DialogTitle>
+      <DialogTitle>{getDialogTitle(type)}</DialogTitle>
       <DialogContent>
         <form>
           <Controller
@@ -168,38 +205,43 @@ export const StocksDialog = ({
               />
             )}
           />
-          <Controller
-            name="exchange"
-            control={control}
-            rules={{
-              required: true,
-            }}
-            render={({ field, fieldState: { error } }) => (
-              <Autocomplete
-                {...field}
-                onChange={(_event, newValue) => {
-                  field.onChange(newValue);
-                }}
-                options={exchanges}
-                fullWidth
-                autoHighlight
-                autoSelect
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") event.stopPropagation();
-                }}
-                getOptionLabel={(option) => `${option.name} (${option.code})`}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    margin="normal"
-                    label="Exchange"
-                    variant="standard"
-                    error={!!error}
-                  />
-                )}
-              />
-            )}
-          />
+          {type === AssetType.STOCK && (
+            <Controller
+              name="exchange"
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <Autocomplete
+                  {...field}
+                  onChange={(_event, newValue) => {
+                    field.onChange(newValue);
+                  }}
+                  options={exchanges}
+                  fullWidth
+                  autoHighlight
+                  autoSelect
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") event.stopPropagation();
+                  }}
+                  getOptionLabel={(option) => `${option.name} (${option.code})`}
+                  isOptionEqualToValue={(option, value) =>
+                    option.code === value.code
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      margin="normal"
+                      label="Exchange"
+                      variant="standard"
+                      error={!!error}
+                    />
+                  )}
+                />
+              )}
+            />
+          )}
           <FormControl margin="normal" fullWidth variant="standard">
             <FormLabel id="date">Date</FormLabel>
             <Controller

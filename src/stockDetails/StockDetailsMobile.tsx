@@ -72,6 +72,7 @@ export const StockDetailsMobile = () => {
       </BottomNavigation>
       <AssetTransactionDialog
         isOpen={dialogOpen}
+        type={stock.type}
         onClose={closeDialog}
         onConfirm={onConfirmStockDialog}
         onDelete={onDeleteTransaction}
