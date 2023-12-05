@@ -3,6 +3,7 @@ import {
   AssetBalanceHistory,
   AssetTransaction,
   AssetTransactionType,
+  AssetType,
   BaseStockValue,
 } from "../types.ts";
 import dayjs, { Dayjs } from "dayjs";
@@ -13,7 +14,7 @@ type ErrorResponse = {
 
 type AssetTransactionDto = {
   id: number;
-  isin: string;
+  asset_id: number;
   quantity: number;
   price: number;
   transaction_type: AssetTransactionType;
@@ -28,7 +29,7 @@ const fromAssetTransactionDto = (
 ): AssetTransaction =>
   new AssetTransaction(
     transaction.id,
-    transaction.isin,
+    transaction.asset_id,
     transaction.quantity,
     transaction.price,
     transaction.transaction_type,
@@ -39,7 +40,7 @@ const fromAssetTransactionDto = (
   );
 
 type AssetDto = {
-  isin: string;
+  asset_id: number;
   name: string;
   ticker: string;
   exchange_code: string;
@@ -47,11 +48,12 @@ type AssetDto = {
   price: number;
   currency: string;
   result: number;
+  type: AssetType;
 };
 
 const fromAssetDto = (stock: AssetDto): Asset => {
   return new Asset(
-    stock.isin,
+    stock.asset_id,
     stock.name,
     stock.ticker,
     stock.exchange_code,
@@ -59,11 +61,11 @@ const fromAssetDto = (stock: AssetDto): Asset => {
     stock.price,
     stock.currency,
     stock.result,
+    stock.type,
   );
 };
 
 type AssetBalanceHistoryDto = {
-  isin: string;
   quantity: number;
   price: number;
   date: string;
@@ -101,9 +103,9 @@ export class StockDetailsService {
     private readonly token: string,
   ) {}
 
-  async fetchStockBalance(accountId: number, isin: string): Promise<Asset> {
+  async fetchStockBalance(accountId: number, id: number): Promise<Asset> {
     const response = await fetch(
-      `${this.apiUrl}/api/stock_balances/${accountId}/${isin}/dto`,
+      `${this.apiUrl}/api/stock_balances/${accountId}/${id}/dto`,
       {
         headers: {
           Authorization: `Bearer ${this.token}`,
@@ -120,12 +122,12 @@ export class StockDetailsService {
 
   async fetchAssetTransactions(
     accountId: number,
-    isin: string,
+    id: number,
   ): Promise<AssetTransaction[]> {
     const response = await fetch(
       `${this.apiUrl}/api/stock/${accountId}/transaction?` +
         new URLSearchParams({
-          isin,
+          id: id.toString(),
         }),
       {
         headers: {
@@ -143,7 +145,7 @@ export class StockDetailsService {
 
   async addAssetTransaction(
     accountId: number,
-    isin: string,
+    assetId: number,
     quantity: number,
     price: number,
     transactionType: AssetTransactionType,
@@ -161,7 +163,7 @@ export class StockDetailsService {
           Authorization: `Bearer ${this.token}`,
         },
         body: JSON.stringify({
-          isin,
+          asset_id: assetId,
           quantity,
           price,
           transaction_type: transactionType,
@@ -181,7 +183,7 @@ export class StockDetailsService {
   async updateAssetTransaction(
     accountId: number,
     transactionId: number,
-    isin: string,
+    assetId: number,
     quantity: number,
     price: number,
     transactionType: AssetTransactionType,
@@ -199,7 +201,7 @@ export class StockDetailsService {
           Authorization: `Bearer ${this.token}`,
         },
         body: JSON.stringify({
-          isin,
+          asset_id: assetId,
           quantity,
           price,
           transaction_type: transactionType,
@@ -233,10 +235,10 @@ export class StockDetailsService {
 
   async fetchStockBalanceHistory(
     accountId: number,
-    isin: string,
+    id: number,
   ): Promise<AssetBalanceHistory[]> {
     const response = await fetch(
-      `${this.apiUrl}/api/stock_balances/${accountId}/${isin}/history`,
+      `${this.apiUrl}/api/stock_balances/${accountId}/${id}/history`,
       {
         headers: {
           Authorization: `Bearer ${this.token}`,
@@ -253,10 +255,10 @@ export class StockDetailsService {
 
   async fetchBaseStockValue(
     accountId: number,
-    isin: string,
+    id: number,
   ): Promise<BaseStockValue> {
     const response = await fetch(
-      `${this.apiUrl}/api/stock_balances/${accountId}/${isin}/price`,
+      `${this.apiUrl}/api/stock_balances/${accountId}/${id}/price`,
       {
         headers: {
           Authorization: `Bearer ${this.token}`,

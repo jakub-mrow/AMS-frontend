@@ -16,7 +16,7 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
-import { AssetTransaction, AssetTransactionType } from "../types.ts";
+import { AssetTransaction, AssetTransactionType, AssetType } from "../types.ts";
 import { useEffect, useState } from "react";
 import { LoadingButton } from "@mui/lab";
 import {
@@ -40,12 +40,14 @@ interface StockTransactionFormData {
 
 export const AssetTransactionDialog = ({
   isOpen,
+  type,
   onClose,
   onConfirm,
   onDelete,
   transactionToEdit,
 }: {
   isOpen: boolean;
+  type: AssetType;
   onClose: () => void;
   onConfirm: (
     quantity: number,
@@ -182,11 +184,13 @@ export const AssetTransactionDialog = ({
                       control={<Radio />}
                       label="Sell"
                     />
-                    <FormControlLabel
-                      value={"dividend"}
-                      control={<Radio />}
-                      label="Dividend"
-                    />
+                    {type === AssetType.STOCK && (
+                      <FormControlLabel
+                        value={"dividend"}
+                        control={<Radio />}
+                        label="Dividend"
+                      />
+                    )}
                   </RadioGroup>
                 )}
               />

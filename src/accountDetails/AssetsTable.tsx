@@ -9,15 +9,17 @@ import {
   TableRow,
 } from "@mui/material";
 import { ChangeEvent, useState } from "react";
-import { Asset } from "../types.ts";
+import { Asset, AssetType } from "../types.ts";
 import { displayCurrency } from "../util/display-currency.ts";
 
 export const AssetsTable = ({
   assets,
+  type,
   goToAsset,
 }: {
   assets: Asset[];
-  goToAsset: (isin: string) => void;
+  type: AssetType;
+  goToAsset: (id: number) => void;
 }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -32,7 +34,7 @@ export const AssetsTable = ({
     <TableHead>
       <TableRow>
         <TableCell>Name</TableCell>
-        <TableCell>Exchange</TableCell>
+        {type === AssetType.STOCK && <TableCell>Exchange</TableCell>}
         <TableCell>Value</TableCell>
         <TableCell>Result</TableCell>
       </TableRow>
@@ -40,9 +42,9 @@ export const AssetsTable = ({
   );
 
   const getTableRow = (asset: Asset) => (
-    <TableRow key={asset.isin} hover onClick={() => goToAsset(asset.isin)}>
+    <TableRow key={asset.id} hover onClick={() => goToAsset(asset.id)}>
       <TableCell>{asset.name}</TableCell>
-      <TableCell>{asset.exchange}</TableCell>
+      {type === AssetType.STOCK && <TableCell>{asset.exchange}</TableCell>}
       <TableCell>
         {displayCurrency(asset.price * asset.quantity, asset.currency)}
       </TableCell>

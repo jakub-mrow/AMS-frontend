@@ -2,8 +2,7 @@ import { List, Typography } from "@mui/material";
 import { AssetsListItem } from "./AssetsListItem.tsx";
 import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
 import { VerticalFlexBox } from "../util/VerticalFlexBox.tsx";
-import { AssetsType } from "./AssetsListWithTabs.tsx";
-import { Asset } from "../types.ts";
+import { Asset, AssetType } from "../types.ts";
 
 export const AssetsList = ({
   assets,
@@ -11,18 +10,18 @@ export const AssetsList = ({
   goToAsset,
 }: {
   assets: Asset[];
-  type: AssetsType;
-  goToAsset: (isin: string) => void;
+  type: AssetType;
+  goToAsset: (id: number) => void;
 }) => {
   const getTypeName = () => {
     switch (type) {
-      case AssetsType.STOCKS:
+      case AssetType.STOCK:
         return "stocks";
-      case AssetsType.BONDS:
+      case AssetType.BOND:
         return "bonds";
-      case AssetsType.DEPOSITS:
+      case AssetType.DEPOSIT:
         return "deposits";
-      case AssetsType.CRYPTO:
+      case AssetType.CRYPTO:
         return "crypto";
       default:
         exhaustiveGuard(type);
@@ -48,9 +47,10 @@ export const AssetsList = ({
     <List sx={{ flex: 1, overflowY: "auto" }}>
       {assets.map((asset) => (
         <AssetsListItem
-          key={asset.isin}
+          key={asset.id}
           asset={asset}
-          goToAsset={() => goToAsset(asset.isin)}
+          type={type}
+          goToAsset={() => goToAsset(asset.id)}
         />
       ))}
     </List>
