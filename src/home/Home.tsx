@@ -44,11 +44,38 @@ const Home = () => {
     goToAccount,
   } = useAccounts();
 
-  const { favouriteAssets, deleteFavouriteAsset, viewFavouriteAsset } = useFavourites();
+  const { favouriteAssets, 
+    deleteFavouriteAsset, 
+    viewFavouriteAsset, 
+    showFavorites,
+    handlePageChange,
+    addToFavorites,
+    isFavorite,
+    toggleShowFavorites,
+    filteredExchanges,
+    totalPages,
+    startIndex,
+    endIndex, 
+    currentPage
+  } = useFavourites();
 
   const components = [
-    <Exchanges />,
-    <FavouriteAssets favouriteAssets={favouriteAssets} deleteFavoriteAsset={deleteFavouriteAsset} viewFavoriteAsset={viewFavouriteAsset}/>,
+    <Exchanges 
+      showFavorites={showFavorites} 
+      handlePageChange={handlePageChange}
+      addToFavorites={addToFavorites}
+      isFavorite={isFavorite}
+      toggleShowFavorites={toggleShowFavorites}
+      filteredExchanges={filteredExchanges}
+      totalPages={totalPages}
+      startIndex={startIndex}
+      endIndex={endIndex}
+      currentPage={currentPage}
+    />,
+    <FavouriteAssets 
+      favouriteAssets={favouriteAssets} 
+      deleteFavoriteAsset={deleteFavouriteAsset} 
+      viewFavoriteAsset={viewFavouriteAsset} />,
   ];
 
   return (

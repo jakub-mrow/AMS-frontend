@@ -1,9 +1,37 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
+import AuthContext from '../../auth/auth-context';
+import { apiUrl } from '../../config';
+import { Severity } from '../../snackbar/snackbar-context';
+import { useSnackbar } from '../../snackbar/use-snackbar';
 
-interface StockExchange {
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import 'dayjs/locale/en'; // Import a locale if needed
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+interface StockExchangeDto {
+    id: number;
     name: string;
+    mic: string;
+    country: string;
+    code: string;
     timezone: string;
-    openingHours: string;
+    opening_hour: string;
+    closing_hour: string;
+}
+
+export interface StockExchange {
+    id: number;
+    name: string;
+    mic: string;
+    country: string;
+    code: string;
+    timezone: string;
+    openingHour: string;
+    closingHour: string;
 }
 
 interface StockExchangesHook {
@@ -22,13 +50,35 @@ interface StockExchangesHook {
     endIndex: number;
 }
 
-const useStockExchanges = (initialExchanges: StockExchange[], initialItemsPerPage = 5): StockExchangesHook => {
-    const [stockExchanges] = useState<StockExchange[]>(initialExchanges);
+function mapStockExchangeDtoToModel(dto: StockExchangeDto): StockExchange {
+    const openingHourDateTimeString = `2000-01-01 ${dto.opening_hour}`;
+    const closingHourDateTimeString = `2000-01-01 ${dto.closing_hour}`;
+
+    // Parse the opening and closing hours
+    const openingHour = dayjs(openingHourDateTimeString).tz(dto.timezone).format('HH:mm:ss');
+    const closingHour = dayjs(closingHourDateTimeString).tz(dto.timezone).format('HH:mm:ss');
+    return {
+        id: dto.id,
+        name: dto.name,
+        mic: dto.mic,
+        country: dto.country,
+        code: dto.code,
+        timezone: dto.timezone,
+        openingHour: openingHour,
+        closingHour: closingHour,
+    };
+}
+
+const useStockExchanges = (initialItemsPerPage = 10): StockExchangesHook => {
+    const [stockExchanges, setStockExchanges] = useState<StockExchange[]>([]);
     const [itemsPerPage] = useState<number>(initialItemsPerPage);
     const [currentPage, setCurrentPage] = useState<number>(0);
     const [favorites, setFavorites] = useState<string[]>([]);
     const [showFavorites, setShowFavorites] = useState<boolean>(false);
 
+    const { token } = useContext(AuthContext);
+    const alert = useSnackbar();
+    
     const handlePageChange = useCallback((newPage: number) => {
         setCurrentPage(newPage);
     }, []);
@@ -47,6 +97,7 @@ const useStockExchanges = (initialExchanges: StockExchange[], initialItemsPerPag
 
     const toggleShowFavorites = useCallback(() => {
         setShowFavorites((prevShowFavorites) => !prevShowFavorites);
+        setCurrentPage(0);
     }, []);
 
     const filteredExchanges = showFavorites
@@ -56,6 +107,36 @@ const useStockExchanges = (initialExchanges: StockExchange[], initialItemsPerPag
     const totalPages: number = Math.ceil(filteredExchanges.length / itemsPerPage);
     const startIndex: number = currentPage * itemsPerPage;
     const endIndex: number = Math.min((currentPage + 1) * itemsPerPage, filteredExchanges.length);
+
+
+    const fetchExchanges = useCallback(async () => {
+        try{
+            const response = await fetch(`${apiUrl}/api/exchanges`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+            });
+    
+            if (!response.ok) {
+                throw new Error("Failed to fetch list of exchanges");
+            }
+    
+            const result: StockExchangeDto[] = await response.json();
+            setStockExchanges(result.map(mapStockExchangeDtoToModel));
+            return result;
+        } catch (error) {
+            console.log((error as Error).message);
+            alert("Failed to get exchanges", Severity.ERROR);
+        }
+        
+    }, [alert, token])
+
+
+    useEffect(() => {
+        fetchExchanges();
+    }, [fetchExchanges])
 
     return {
         stockExchanges,
