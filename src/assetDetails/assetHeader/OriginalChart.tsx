@@ -17,10 +17,10 @@ interface OrignalChartProps {
 export const OriginalChart: React.FC<OrignalChartProps> = ({ assetDetailsInfo, assetDetailsData }) => {
 
     const dates = assetDetailsInfo.priceChanges.map((priceChange: AssetPriceChange) => priceChange.date.valueOf());
-    const closeValues = assetDetailsInfo.priceChanges.map((priceChange: AssetPriceChange) => priceChange.close);
+    const closeValues = assetDetailsInfo.priceChanges.map((priceChange: AssetPriceChange) => priceChange.adjustedClose);
 
     const data = {
-        dates,
+        dates,  
         closeValues
     }
 

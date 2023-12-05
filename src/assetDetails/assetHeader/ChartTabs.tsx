@@ -70,7 +70,7 @@ export const ChartTabs: React.FC<ChartTabsProps> = ({ assetDetailsInfo, assetDet
     return (
         <div>
             <Tabs value={activeTab} onChange={handleTabChange}>
-                <Tab label="Original" />
+                <Tab label="Chart" />
                 <Tab label="Tradingview" />
                 <Tab label="Financials" />
                 <Tab label="Technical chart" />
