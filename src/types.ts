@@ -243,11 +243,15 @@ export class AssetTransaction {
     return this.quantity;
   }
 
+  getPrice() {
+    return this.price * (this.exchangeRate ?? 1);
+  }
+
   getValue() {
     if (this.type === AssetTransactionType.DIVIDEND) {
-      return this.price;
+      return this.price * (this.exchangeRate ?? 1);
     }
-    return this.quantity * this.price;
+    return this.quantity * this.price * (this.exchangeRate ?? 1);
   }
 
   isDividend() {

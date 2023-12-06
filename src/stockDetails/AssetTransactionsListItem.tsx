@@ -43,7 +43,7 @@ export const AssetTransactionsListItem = ({
               transaction.isDividend()
                 ? undefined
                 : `${transaction.quantity} x ${displayCurrency(
-                    transaction.price,
+                    transaction.getPrice(),
                     transaction.payCurrency || asset.currency,
                   )}`
             }

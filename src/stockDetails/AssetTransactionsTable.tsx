@@ -68,7 +68,7 @@ export const AssetTransactionsTable = ({
                 <TableCell>{transaction.getName()}</TableCell>
                 <TableCell>
                   {displayCurrency(
-                    transaction.price,
+                    transaction.getPrice(),
                     transaction.payCurrency || asset.currency,
                   )}
                 </TableCell>
