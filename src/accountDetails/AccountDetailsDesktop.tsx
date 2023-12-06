@@ -110,7 +110,6 @@ export const AccountDetailsDesktop = () => {
             <Tabs
               value={detailsTab}
               onChange={(_event, newValue) => setDetailsTab(newValue)}
-              indicatorColor="secondary"
               textColor="inherit"
               variant="fullWidth"
             >
@@ -122,7 +121,7 @@ export const AccountDetailsDesktop = () => {
               <Tab label="Transactions" />
             </Tabs>
             <Paper
-              elevation={4}
+              className="shadow-xl border border-t border-l border-r rounded-b-xl"
               sx={{
                 flex: 1,
                 display: "flex",
@@ -151,7 +150,7 @@ export const AccountDetailsDesktop = () => {
             </Paper>
           </VerticalFlexBox>
           <Paper
-            elevation={4}
+            elevation={0}
             sx={{ flex: 1, display: "flex", flexDirection: "column" }}
           >
             <Summary
@@ -164,7 +163,8 @@ export const AccountDetailsDesktop = () => {
         </Box>
         <Box sx={{ flex: 1, display: "flex", minHeight: 0 }}>
           <Paper
-            elevation={4}
+            // elevation={4}
+            className="shadow-xl border rounded-xl"
             sx={{ flex: 1, display: "flex", flexDirection: "column" }}
           >
             <AccountChart

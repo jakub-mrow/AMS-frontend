@@ -31,6 +31,7 @@ export default {
           'Segoe UI Emoji',
           'Segoe UI Symbol',
         ],
+        'sans': ['Fugaz One', 'sans-serif'],
       }
     },
   },

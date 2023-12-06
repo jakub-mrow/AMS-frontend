@@ -56,7 +56,7 @@ const AppBar = () => {
                 }}
                 onClick={() => navigate("/")}
               >
-                <Typography variant="h3" className="font-poppins">
+                <Typography variant="h3" className="font-sans">
                   AMS
                 </Typography>
               </Box>
