@@ -20,6 +20,7 @@ import {
   isValidCurrency,
   isValidNumber,
   moneyPattern,
+  quantityPattern,
 } from "../util/validations.ts";
 import { CURRENCIES } from "../util/currencies.ts";
 import { LoadingButton } from "@mui/lab";
@@ -29,8 +30,8 @@ interface StockTransactionFormData {
   accountId: number | null;
   ticker: string | null;
   exchange: string | null;
-  quantity: number;
-  price: number;
+  quantity: number | null;
+  price: number | null;
   date: Dayjs | null;
   payCurrency: string | null;
   exchangeRate: number | null;
@@ -62,20 +63,19 @@ export const AddAssetDialog = ({
     commission: number | null,
   ) => Promise<boolean>;
 }) => {
-  const { control, handleSubmit, reset, watch } =
-    useForm<StockTransactionFormData>({
-      defaultValues: {
-        accountId: null,
-        ticker: assetTicker,
-        exchange: exchange,
-        quantity: 0,
-        price: 0,
-        date: dayjs() as Dayjs | null,
-        payCurrency: null,
-        exchangeRate: null,
-        commission: null,
-      },
-    });
+  const { control, handleSubmit, reset } = useForm<StockTransactionFormData>({
+    defaultValues: {
+      accountId: null,
+      ticker: assetTicker,
+      exchange: exchange,
+      quantity: null,
+      price: null,
+      date: dayjs() as Dayjs | null,
+      payCurrency: null,
+      exchangeRate: null,
+      commission: null,
+    },
+  });
   const [isLoading, setIsLoading] = useState(false);
 
   const cancelHandler = () => {
@@ -88,6 +88,7 @@ export const AddAssetDialog = ({
       data.ticker === null ||
       data.exchange === null ||
       data.date === null ||
+      data.price === null ||
       data.accountId === null
     ) {
       return;
@@ -98,12 +99,13 @@ export const AddAssetDialog = ({
       payCurrency = data.payCurrency;
       exchangeRate = data.exchangeRate;
     }
+    const quantity = data.quantity ?? 0;
     setIsLoading(true);
     onConfirm(
       data.accountId,
       data.ticker.trim(),
       data.exchange.trim(),
-      data.quantity,
+      quantity,
       data.price,
       data.date,
       payCurrency,
@@ -165,8 +167,8 @@ export const AddAssetDialog = ({
             control={control}
             rules={{
               required: true,
-              validate: (quantity) => quantity > 0,
-              pattern: /^[0-9]*$/,
+              validate: isValidNumber,
+              pattern: quantityPattern,
             }}
             render={({ field, fieldState: { error } }) => (
               <TextField
@@ -185,8 +187,8 @@ export const AddAssetDialog = ({
             control={control}
             rules={{
               required: true,
-              validate: (price) => price > 0,
-              pattern: /^(?!0*[.,]0*$|[.,]0*$|0*$)\d+[,.]?\d{0,2}$/,
+              validate: isValidNumber,
+              pattern: moneyPattern,
             }}
             render={({ field, fieldState: { error } }) => (
               <TextField
@@ -237,12 +239,11 @@ export const AddAssetDialog = ({
             />
             <Controller
               name="exchangeRate"
-              disabled={watch("payCurrency") === null}
               control={control}
               rules={{
-                required: watch("payCurrency") !== null,
+                required: false,
                 validate: (exchangeRate) =>
-                  watch("payCurrency") === null || isValidNumber(exchangeRate),
+                  exchangeRate === null || isValidNumber(exchangeRate),
               }}
               render={({ field, fieldState: { error } }) => (
                 <TextField
