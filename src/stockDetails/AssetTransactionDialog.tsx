@@ -296,13 +296,13 @@ export const AssetTransactionDialog = ({
               />
               <Controller
                 name="exchangeRate"
-                disabled={isDividend || watch("payCurrency") === null}
+                disabled={isDividend}
                 control={control}
                 rules={{
-                  required: !isDividend && watch("payCurrency") !== null,
+                  required: false,
                   validate: (exchangeRate) =>
                     isDividend ||
-                    watch("payCurrency") === null ||
+                    exchangeRate === null ||
                     isValidNumber(exchangeRate),
                 }}
                 render={({ field, fieldState: { error } }) => (
