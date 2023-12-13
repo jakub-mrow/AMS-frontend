@@ -30,7 +30,7 @@ export const TransactionsDesktop = ({
           mx: 8,
         }}
       >
-        <Typography align="center" variant="h3">
+        <Typography align="center" variant="h5">
           You don't have any transactions yet
         </Typography>
         <Button variant={"contained"} onClick={onAddTransactionClick}>
