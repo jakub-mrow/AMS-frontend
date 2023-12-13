@@ -156,6 +156,7 @@ export const AccountEditDialog = ({
               }}
               render={({ field, fieldState: { error } }) => (
                 <Autocomplete
+                  sx={{ display: "none" }}
                   {...field}
                   onChange={(_event, newValue) => {
                     field.onChange(newValue);
