@@ -16,9 +16,9 @@ import { exhaustiveGuard } from "../util/exhaustive-switch.ts";
 
 enum DetailsTabs {
   STOCKS,
+  CRYPTO,
   BONDS,
   DEPOSITS,
-  CRYPTO,
   EMPTY,
   TRANSACTIONS,
 }
@@ -113,10 +113,10 @@ export const AccountDetailsDesktop = () => {
               textColor="inherit"
               variant="fullWidth"
             >
-              <Tab label="Stocks" />
-              <Tab label="Bonds" />
-              <Tab label="Deposits" />
-              <Tab label="Crypto" />
+              <Tab sx={{ fontWeight: "bold" }} label="Stocks" />
+              <Tab sx={{ fontWeight: "bold" }} label="Crypto" />
+              <Tab disabled label="Bonds" />
+              <Tab disabled label="Deposits" />
               <Tab disabled />
               <Tab label="Transactions" />
             </Tabs>
