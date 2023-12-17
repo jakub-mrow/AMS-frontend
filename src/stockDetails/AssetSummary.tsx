@@ -18,6 +18,14 @@ export const AssetSummary = ({
   baseStockValue: BaseStockValue;
   isMobile: boolean;
 }) => {
+  type ColorMap = {
+    [key: string]: 'text-red-800' | 'text-black' | 'text-green-800';
+  };
+  const colorMap: ColorMap = {
+    red: 'text-red-800',
+    black: 'text-black',
+    green: 'text-green-800',
+  };
   return (
     <>
       {isLoading ? (
@@ -39,9 +47,13 @@ export const AssetSummary = ({
                   <MdOutlineAccountBalanceWallet />
                   <p>Value</p>
                 </div>
-                <p className="text-black">{displayCurrency(stock.price * stock.quantity, stock.currency)}</p>
+                <div className="flex flex-row space-x-2">
+                  <p className="text-black">{displayCurrency(stock.price * stock.quantity, stock.currency)}</p>
+                  <p className={colorMap[stock.getResultColor()]}>
+                    {stock.displayResult()}
+                  </p>
+                </div>
               </div>
-
               {
                 stock.currency !== baseStockValue.currency && (
                   <div className="flex flex-col space-x-2 text-gray-400 text-lg my-3">
