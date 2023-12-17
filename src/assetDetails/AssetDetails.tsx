@@ -6,7 +6,7 @@ import { ChartTabs } from './assetHeader/ChartTabs';
 
 
 const AssetDetails = () => {
-    const { assetDetailsData, assetDetailsInfo, isLoading } = useAssetDetails();
+    const { assetDetailsData, assetDetailsInfo, isLoading, assetHistoryPrices } = useAssetDetails();
     return (
         <>
             {isLoading ? (
@@ -15,7 +15,7 @@ const AssetDetails = () => {
                 assetDetailsData && assetDetailsInfo && (
                     <div className="container mx-auto flex flex-col m-6 space-y-4">
                         <AssetDetailsHeader assetDetailsData={assetDetailsData} assetDetailsInfo={assetDetailsInfo} />
-                        <ChartTabs assetDetailsInfo={assetDetailsInfo} assetDetailsData={assetDetailsData} />
+                        <ChartTabs assetDetailsInfo={assetDetailsInfo} assetDetailsData={assetDetailsData} assetHistoryPrices={assetHistoryPrices}/>
                         <News ticker={assetDetailsData.Code} />
                     </div>
                 )

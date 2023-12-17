@@ -86,6 +86,7 @@ export const AssetTransactionsTable = ({
         </Table>
       </TableContainer>
       <TablePagination
+        className="rounded-b-xl"
         rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
         count={transactions.length}
         rowsPerPage={rowsPerPage}

@@ -3,7 +3,7 @@ import AuthContext from "../auth/auth-context";
 import { apiUrl } from "../config";
 import { useParams } from "react-router-dom";
 import { Result } from "../appBar/use-search-bar";
-import { AssetDetailsInfoRequest, AssetDetailsInfoResponse, AssetDetailsInfoResponseDto, convertResponseDtoToModel } from "./types";
+import { AssetDetailsInfoRequest, AssetDetailsInfoResponse, AssetDetailsInfoResponseDto, AssetHistoryPrices, AssetHistoryPricesRequest, convertResponseDtoToModel } from "./types";
 import dayjs from 'dayjs';
 
 export interface AssetDetailsDataProps {
@@ -15,6 +15,7 @@ export const useAssetDetails = () => {
     const { token } = useContext(AuthContext);
     const [assetDetailsData, setAssetDetailsData] = useState<Result | null>(null);
     const [assetDetailsInfo, setAssetDetailsInfo] = useState<AssetDetailsInfoResponse | null>(null);
+    const [assetHistoryPrices, setAssetHistoryPrices] = useState<AssetHistoryPrices>(Object);
     const { assetCode } = useParams();
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -57,6 +58,19 @@ export const useAssetDetails = () => {
         return nonDtoResponse;
     }, [token])
 
+    const getAssetHistoryPrices = useCallback(async (requestParams: AssetHistoryPricesRequest): Promise<AssetHistoryPrices> => {
+        const response = await fetch(`${apiUrl}/api/get_stock_history?stock=${requestParams.stock}&exchange=${requestParams.exchange}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+        })
+        const prices: AssetHistoryPrices = await response.json();
+        return prices;
+        
+    }, [token])
+
 
     useEffect(() => {
         const f = async () => {
@@ -76,16 +90,18 @@ export const useAssetDetails = () => {
             }
             setAssetDetailsData(await getSearchResult());
             setAssetDetailsInfo(await getAssetDetailsInfo(assetDetailsInfoRequestData));
+            setAssetHistoryPrices(await getAssetHistoryPrices({ stock, exchange }));
             setIsLoading(false);
         }
 
         f();
-    }, [assetCode, exchange, getAssetDetailsInfo, getSearchResult, stock])
+    }, [assetCode, exchange, getAssetDetailsInfo, getAssetHistoryPrices, getSearchResult, stock])
 
 
     return {
         assetDetailsData,
         assetDetailsInfo,
+        assetHistoryPrices,
         getSearchResult,
         isLoading
     }

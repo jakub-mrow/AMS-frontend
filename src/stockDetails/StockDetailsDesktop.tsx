@@ -40,7 +40,8 @@ export const StockDetailsDesktop = () => {
     >
       <Box sx={{ flex: 2, display: "flex", gap: 2, minHeight: 0 }}>
         <Paper
-          elevation={4}
+          elevation={0}
+          className="shadow-xl border rounded-xl mt-2"
           sx={{
             flex: 2,
             display: "flex",
@@ -57,7 +58,7 @@ export const StockDetailsDesktop = () => {
           />
         </Paper>
         <Paper
-          elevation={4}
+          elevation={0}
           sx={{ flex: 1, display: "flex", flexDirection: "column" }}
         >
           <AssetSummary
@@ -71,7 +72,7 @@ export const StockDetailsDesktop = () => {
       </Box>
       <Box sx={{ flex: 1, display: "flex", minHeight: 0 }}>
         <Paper
-          elevation={4}
+          className="shadow-xl border rounded-xl"
           sx={{ flex: 1, display: "flex", flexDirection: "column" }}
         >
           <AssetChart

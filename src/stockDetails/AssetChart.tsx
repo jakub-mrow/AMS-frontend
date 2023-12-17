@@ -1,7 +1,6 @@
 import { AssetBalanceHistory } from "../types.ts";
 import { Line } from "react-chartjs-2";
 import { Loading } from "../util/Loading.tsx";
-import { useTheme } from "@mui/material";
 import { getDateFormatString, getUserLocale } from "../util/locale.ts";
 import {
   displayCurrency,
@@ -19,8 +18,6 @@ export const AssetChart = ({
   histories: AssetBalanceHistory[];
   isMobile: boolean;
 }) => {
-  const theme = useTheme();
-
   const mapHistory = (history: AssetBalanceHistory) => ({
     x: history.date.valueOf(),
     y: history.price * history.quantity,
@@ -38,10 +35,23 @@ export const AssetChart = ({
               {
                 label: "Balance",
                 data: histories.map(mapHistory),
-                backgroundColor: theme.palette.primary.main,
-                borderColor: theme.palette.primary.main,
-                borderWidth: 1,
-                pointBackgroundColor: theme.palette.secondary.main,
+                //backgroundColor: theme.palette.primary.main,
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                backgroundColor: (context) => {
+                  if (!context.chart.chartArea) {
+                    return null;
+                  }
+
+                  const { ctx, chartArea: { top, bottom } } = context.chart;
+                  const gradientBg = ctx.createLinearGradient(0, top, 0, bottom);
+                  gradientBg.addColorStop(0, 'rgba(67, 104, 185, 0.5)');
+                  gradientBg.addColorStop(1, 'rgba(255, 255, 255, 1)')
+
+                  return gradientBg;
+                },
+                borderColor: 'rgba(39,92,196,1)',
+                borderWidth: 2,
                 pointRadius: 0,
                 fill: true,
               },

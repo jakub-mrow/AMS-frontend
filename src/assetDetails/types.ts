@@ -97,7 +97,24 @@ export interface AssetDetailsInfoRequest {
     to: string,
 }
 
+export interface AssetHistoryPricesRequest {
+    stock: string,
+    exchange: string
+}
+
 export interface AssetDetailsHeaderProps {
     assetDetailsData: Result
     assetDetailsInfo: AssetDetailsInfoResponse
+}
+
+export interface AssetHistoryPrices {
+    today: string;
+    week: number;
+    month: number;
+    three_months: number;
+    six_months: number;
+    year: number;
+    three_years: number;
+    five_years: number;
+    all_time: number;
 }

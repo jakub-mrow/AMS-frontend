@@ -1,46 +1,43 @@
-
+import { AssetHistoryPrices } from "../types";
 
 type ConvertedRanges = {
     today: string;
     week: string;
-    month_1: string;
-    month_6: string;
-    year_1: string;
-    year_5: string;
+    month: string;
+    three_months: string;
+    six_months: string;
+    year: string;
+    three_years: string;
+    five_years: string;
+    all_time: string;
 };
 
-type PriceValues = {
-    today: number;
-    week: number;
-    month_1: number;
-    month_6: number;
-    year_1: number;
-    year_5: number;
-};
+interface AssetDetailsPriceValuesProps {
+    assetHistoryPrices: AssetHistoryPrices;
 
-const AssetDetailsPriceValues = () => {
+}
+
+const AssetDetailsPriceValues: React.FC<AssetDetailsPriceValuesProps> = ({ assetHistoryPrices }) => {
 
     const convertedRanges: ConvertedRanges = {
         today: "Today",
         week: "Week",
-        month_1: "1 month",
-        month_6: "6 months",
-        year_1: "1 year",
-        year_5: "5 years",
+        month: "1 month",
+        three_months: "3 months",
+        six_months: "6 months",
+        year: "1 year",
+        three_years: "3 years",
+        five_years: "5 years",
+        all_time: "All time"
     }
-
-    const priceValues: PriceValues = {
-        today: 0.29,
-        week: -0.29,
-        month_1: 0.29,
-        month_6: 0.29,
-        year_1: -0.30,
-        year_5: 0.30
-    }
+    
 
     return (
         <div className="grid grid-rows-2 grid-flow-col lg:grid-rows-1">
-            {Object.entries(priceValues).map(([key, value]) => (
+            {Object.entries(assetHistoryPrices)
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                .filter(([key, _]) => key !== 'three_months' && key !== 'three_years')
+                .map(([key, value]) => (
                 <div
                     key={key}
                     className={`flex flex-col justify-center items-center bg-white rounded-lg m-2 p-4 hover:bg-gray-100 transition duration-300 ease-in-out `}
