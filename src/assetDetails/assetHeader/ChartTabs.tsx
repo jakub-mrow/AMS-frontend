@@ -35,6 +35,8 @@ export const ChartTabs: React.FC<ChartTabsProps> = ({ assetDetailsInfo, assetDet
         case 'Common Stock':
             if (assetDetailsData.Exchange === "US") {
                 symbols = [`NASDAQ:${assetDetailsData.Code}`];
+            } else if (assetDetailsData.Exchange === "WAR") {
+                symbols = [`GPW:${assetDetailsData.Code}`];
             } else {
                 symbols = [`${assetDetailsData.Exchange}:${assetDetailsData.Code}`];
             }
@@ -62,10 +64,10 @@ export const ChartTabs: React.FC<ChartTabsProps> = ({ assetDetailsInfo, assetDet
     };
 
     const components = [
-        <OriginalChart assetDetailsInfo={assetDetailsInfo} assetDetailsData={assetDetailsData} assetHistoryPrices={assetHistoryPrices}/>,
+        <OriginalChart assetDetailsInfo={assetDetailsInfo} assetDetailsData={assetDetailsData} assetHistoryPrices={assetHistoryPrices} />,
         <SymbolOverview widgetProps={{ colorTheme: "light", symbols: symbols }} />,
         <AssetOverviewBody assetDetailsData={assetDetailsData} assetDetailsInfo={assetDetailsInfo} />,
-        <AssetChartCard assetDetailsData={assetDetailsData} assetDetailsInfo={assetDetailsInfo}/>
+        <AssetChartCard assetDetailsData={assetDetailsData} assetDetailsInfo={assetDetailsInfo} />
     ];
 
     return (
