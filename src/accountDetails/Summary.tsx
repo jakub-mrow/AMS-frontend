@@ -1,21 +1,25 @@
-import { Account } from "../types.ts";
+import { Account, AccountHistory } from "../types.ts";
 import { Loading } from "../util/Loading.tsx";
 import { CloudUpload, Settings } from "@mui/icons-material";
 import { displayCurrency } from "../util/display-currency.ts";
 import { MdOutlineAccountBalanceWallet } from "react-icons/md";
 import { RiMoneyPoundCircleLine } from "react-icons/ri";
-
+import { AccountChart } from "./AccountChart.tsx";
 
 export const Summary = ({
   account,
+  histories,
   isLoading,
   openAccountEditDialog,
   openImportDialog,
+  isMobile,
 }: {
   isLoading: boolean;
   account: Account;
+  histories: AccountHistory[];
   openAccountEditDialog?: () => void;
   openImportDialog?: () => void;
+  isMobile: boolean;
 }) => {
   type ColorMap = {
     [key: string]: 'text-red-800' | 'text-black' | 'text-green-800';
@@ -91,6 +95,14 @@ export const Summary = ({
                   )}
                 </div>
               </div>
+              {isMobile && (
+                <AccountChart
+                  isLoading={isLoading}
+                  histories={histories}
+                  currency={account.preferences.baseCurrency}
+                  isMobile={isMobile}
+                />
+              )}
             </div>
           </div>
         </div>
