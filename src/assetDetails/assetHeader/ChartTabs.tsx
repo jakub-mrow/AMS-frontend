@@ -3,7 +3,7 @@ import React, { ReactNode, useState } from 'react';
 import { Box, Tab, Tabs } from '@mui/material';
 import { SymbolOverview } from 'react-tradingview-embed'
 import { OriginalChart } from './OriginalChart';
-import { AssetDetailsInfoResponse } from '../types';
+import { AssetDetailsInfoResponse, AssetHistoryPrices } from '../types';
 import { Result } from '../../appBar/use-search-bar';
 import AssetChartCard from '../assetBodyCards/AssetChartCard';
 import AssetOverviewBody from '../assetBodyCards/AssetOverviewBody';
@@ -18,6 +18,7 @@ interface ChartTabsProps {
     // tradingviewSymbols: string[];
     assetDetailsInfo: AssetDetailsInfoResponse;
     assetDetailsData: Result;
+    assetHistoryPrices: AssetHistoryPrices;
 }
 
 const TabPanel: React.FC<TabPanelProps> = ({ value, index, children }) => {
@@ -28,12 +29,14 @@ const TabPanel: React.FC<TabPanelProps> = ({ value, index, children }) => {
     );
 };
 
-export const ChartTabs: React.FC<ChartTabsProps> = ({ assetDetailsInfo, assetDetailsData }) => {
+export const ChartTabs: React.FC<ChartTabsProps> = ({ assetDetailsInfo, assetDetailsData, assetHistoryPrices }) => {
     let symbols: string[] = [];
     switch (assetDetailsData.Type) {
         case 'Common Stock':
             if (assetDetailsData.Exchange === "US") {
                 symbols = [`NASDAQ:${assetDetailsData.Code}`];
+            } else if (assetDetailsData.Exchange === "WAR") {
+                symbols = [`GPW:${assetDetailsData.Code}`];
             } else {
                 symbols = [`${assetDetailsData.Exchange}:${assetDetailsData.Code}`];
             }
@@ -61,10 +64,10 @@ export const ChartTabs: React.FC<ChartTabsProps> = ({ assetDetailsInfo, assetDet
     };
 
     const components = [
-        <OriginalChart assetDetailsInfo={assetDetailsInfo} assetDetailsData={assetDetailsData}/>,
+        <OriginalChart assetDetailsInfo={assetDetailsInfo} assetDetailsData={assetDetailsData} assetHistoryPrices={assetHistoryPrices} />,
         <SymbolOverview widgetProps={{ colorTheme: "light", symbols: symbols }} />,
         <AssetOverviewBody assetDetailsData={assetDetailsData} assetDetailsInfo={assetDetailsInfo} />,
-        <AssetChartCard assetDetailsData={assetDetailsData} assetDetailsInfo={assetDetailsInfo}/>
+        <AssetChartCard assetDetailsData={assetDetailsData} assetDetailsInfo={assetDetailsInfo} />
     ];
 
     return (

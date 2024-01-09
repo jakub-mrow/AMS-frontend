@@ -18,7 +18,6 @@ import { ConfirmationDialog } from "../dialog/ConfirmationDialog.tsx";
 interface AccountEditFormData {
   name: string;
   baseCurrency: string;
-  taxCurrency: string;
 }
 
 export const AccountEditDialog = ({
@@ -38,7 +37,6 @@ export const AccountEditDialog = ({
     defaultValues: {
       name: account.name,
       baseCurrency: account.preferences.baseCurrency,
-      taxCurrency: account.preferences.taxCurrency,
     },
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -69,7 +67,6 @@ export const AccountEditDialog = ({
     const newName = accountEditFormData.name.trim();
     const newAccountPreferences = {
       baseCurrency: accountEditFormData.baseCurrency.trim(),
-      taxCurrency: accountEditFormData.taxCurrency.trim(),
     };
     onConfirm(newName, newAccountPreferences);
     onClose();
@@ -140,39 +137,6 @@ export const AccountEditDialog = ({
                       autoFocus
                       margin="normal"
                       label="Base currency"
-                      variant="standard"
-                      error={!!error}
-                    />
-                  )}
-                />
-              )}
-            />
-            <Controller
-              name="taxCurrency"
-              control={control}
-              rules={{
-                required: true,
-                validate: isValidCurrency,
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <Autocomplete
-                  sx={{ display: "none" }}
-                  {...field}
-                  onChange={(_event, newValue) => {
-                    field.onChange(newValue);
-                  }}
-                  options={CURRENCIES}
-                  fullWidth
-                  autoHighlight
-                  autoSelect
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") event.stopPropagation();
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      margin="normal"
-                      label="Tax currency"
                       variant="standard"
                       error={!!error}
                     />

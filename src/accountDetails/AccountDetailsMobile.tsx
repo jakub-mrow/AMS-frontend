@@ -43,6 +43,7 @@ export const AccountDetailsMobile = () => {
     bonds,
     deposits,
     cryptocurrencies,
+    accountHistory,
     exchanges,
     isLoading,
     isDialogOpen,
@@ -111,7 +112,12 @@ export const AccountDetailsMobile = () => {
         />
       )}
       {mobilePage === MobilePage.SUMMARY && (
-        <Summary isLoading={isLoading} account={account} />
+        <Summary
+          isLoading={isLoading}
+          account={account}
+          isMobile={true}
+          histories={accountHistory}
+        />
       )}
       <BottomNavigation
         showLabels

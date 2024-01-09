@@ -145,7 +145,6 @@ export class AccountTransaction {
 
 export type AccountPreferences = {
   baseCurrency: string;
-  taxCurrency: string;
 };
 
 export class Asset {

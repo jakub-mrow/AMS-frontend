@@ -1,6 +1,6 @@
 import React from 'react';
 import { getDateFormatString } from '../../util/locale';
-import { AssetDetailsInfoResponse, AssetPriceChange } from '../types';
+import { AssetDetailsInfoResponse, AssetHistoryPrices, AssetPriceChange } from '../types';
 import { Result } from '../../appBar/use-search-bar';
 
 import { Chart } from 'react-chartjs-2';
@@ -11,10 +11,11 @@ ChartJS.register(LineController, LineElement, PointElement, LinearScale, Title);
 
 interface OrignalChartProps {
     assetDetailsData: Result;
-    assetDetailsInfo: AssetDetailsInfoResponse
+    assetDetailsInfo: AssetDetailsInfoResponse;
+    assetHistoryPrices: AssetHistoryPrices;
 }
 
-export const OriginalChart: React.FC<OrignalChartProps> = ({ assetDetailsInfo, assetDetailsData }) => {
+export const OriginalChart: React.FC<OrignalChartProps> = ({ assetDetailsInfo, assetDetailsData, assetHistoryPrices }) => {
 
     const dates = assetDetailsInfo.priceChanges.map((priceChange: AssetPriceChange) => priceChange.date.valueOf());
     const closeValues = assetDetailsInfo.priceChanges.map((priceChange: AssetPriceChange) => priceChange.adjustedClose);
@@ -92,7 +93,7 @@ export const OriginalChart: React.FC<OrignalChartProps> = ({ assetDetailsInfo, a
                     },
                 },
             }} />
-            <AssetDetailsPriceValues />
+            <AssetDetailsPriceValues assetHistoryPrices={assetHistoryPrices}/>
         </div>
     );
 };

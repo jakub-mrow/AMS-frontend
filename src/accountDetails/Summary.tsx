@@ -1,21 +1,25 @@
-import { Account } from "../types.ts";
+import { Account, AccountHistory } from "../types.ts";
 import { Loading } from "../util/Loading.tsx";
 import { CloudUpload, Settings } from "@mui/icons-material";
 import { displayCurrency } from "../util/display-currency.ts";
 import { MdOutlineAccountBalanceWallet } from "react-icons/md";
 import { RiMoneyPoundCircleLine } from "react-icons/ri";
-
+import { AccountChart } from "./AccountChart.tsx";
 
 export const Summary = ({
   account,
+  histories,
   isLoading,
   openAccountEditDialog,
   openImportDialog,
+  isMobile,
 }: {
   isLoading: boolean;
   account: Account;
+  histories: AccountHistory[];
   openAccountEditDialog?: () => void;
   openImportDialog?: () => void;
+  isMobile: boolean;
 }) => {
   type ColorMap = {
     [key: string]: 'text-red-800' | 'text-black' | 'text-green-800';
@@ -30,7 +34,7 @@ export const Summary = ({
       {isLoading ? (
         <Loading />
       ) : (
-        <div className="flex h-full items-center justify-center mt-12">
+        <div className="flex h-full items-center justify-center pt-12">
           <div className="relative bg-white py-6 px-6 rounded-xl w-full my-4 lg:shadow-xl border h-full mx-4 lg:mx-0">
             <div className=" text-white flex items-center absolute rounded-full py-4 px-4 shadow-xl bg-primary left-4 -top-6">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -38,7 +42,7 @@ export const Summary = ({
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
               </svg>
             </div>
-            <div className="mt-8">
+            <div className="mt-8 overflow-y-auto max-h-full">
               <p className="text-3xl font-semibold my-2">{account.name}</p>
               <div className="flex flex-col space-x-2 text-gray-400 text-xl">
                 <div className="flex flex-row space-x-2 items-center">
@@ -73,7 +77,7 @@ export const Summary = ({
                 <div className="my-2">
                   {openImportDialog && (
                     <div>
-                      <p className="font-semibold text-base mb-2">Settings</p>
+                      <p className="font-semibold text-base mb-2">Import</p>
                       <div className="flex items-center justify-center text-base text-gray-400 font-semibold">
                         <CloudUpload className="text-primary" onClick={openImportDialog} />
                       </div>
@@ -91,6 +95,14 @@ export const Summary = ({
                   )}
                 </div>
               </div>
+              {isMobile && (
+                <AccountChart
+                  isLoading={isLoading}
+                  histories={histories}
+                  currency={account.preferences.baseCurrency}
+                  isMobile={isMobile}
+                />
+              )}
             </div>
           </div>
         </div>

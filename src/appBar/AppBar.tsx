@@ -15,6 +15,7 @@ import { useAppBar } from "./use-app-bar.ts";
 import { useNavigate } from "react-router-dom";
 import { LogoutModal } from "./LogoutModal.tsx";
 import SearchBar from "./SearchBar.tsx";
+import { SiChartdotjs } from "react-icons/si";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 const AppBar = () => {
@@ -53,9 +54,11 @@ const AppBar = () => {
                   alignSelf: "stretch",
                   userSelect: "none",
                   cursor: "pointer",
+                  gap: "8px",
                 }}
                 onClick={() => navigate("/")}
               >
+                <SiChartdotjs size={58} />
                 <Typography variant="h3" className="font-sans">
                   AMS
                 </Typography>

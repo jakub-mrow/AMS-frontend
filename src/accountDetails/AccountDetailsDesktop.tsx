@@ -156,8 +156,10 @@ export const AccountDetailsDesktop = () => {
             <Summary
               isLoading={isLoading}
               account={account}
+              histories={accountHistory}
               openAccountEditDialog={openAccountEditDialog}
               openImportDialog={() => openDialog(DialogType.IMPORT)}
+              isMobile={false}
             />
           </Paper>
         </Box>

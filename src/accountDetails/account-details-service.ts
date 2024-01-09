@@ -16,7 +16,6 @@ type ErrorResponse = {
 
 type AccountPreferencesDto = {
   base_currency: string;
-  tax_currency: string;
 };
 
 const fromAccountPreferencesDto = (
@@ -24,7 +23,6 @@ const fromAccountPreferencesDto = (
 ): AccountPreferences => {
   return {
     baseCurrency: accountPreference.base_currency,
-    taxCurrency: accountPreference.tax_currency,
   };
 };
 
@@ -313,7 +311,6 @@ export class AccountsDetailsService {
         },
         body: JSON.stringify({
           base_currency: accountPreferences.baseCurrency,
-          tax_currency: accountPreferences.taxCurrency,
         }),
       },
     );

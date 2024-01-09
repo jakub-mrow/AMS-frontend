@@ -5,10 +5,13 @@ const AssetChartCard: React.FC<AssetDetailsDataProps> = ({ assetDetailsData }) =
     let symbol: string;
     switch (assetDetailsData.Type) {
         case 'Common Stock':
-            if (assetDetailsData.Exchange === "US"){
-                assetDetailsData.Exchange = "NASDAQ"
+            if (assetDetailsData.Exchange === "US") {
+                symbol = `NASDAQ:${assetDetailsData.Code}`;
+            } else if (assetDetailsData.Exchange === "WAR") {
+                symbol = `GPW:${assetDetailsData.Code}`;
+            } else {
+                symbol = `${assetDetailsData.Exchange}:${assetDetailsData.Code}`;
             }
-            symbol = `${assetDetailsData.Exchange}:${assetDetailsData.Code}`;
             break;
         case 'ETF':
             symbol = `${assetDetailsData.Exchange}:${assetDetailsData.Code}`
@@ -22,7 +25,7 @@ const AssetChartCard: React.FC<AssetDetailsDataProps> = ({ assetDetailsData }) =
     }
 
     return (
-        <AdvancedChart widgetProps={{ theme: "light", symbol: symbol }}/>
+        <AdvancedChart widgetProps={{ theme: "light", symbol: symbol }} />
     )
 }
 

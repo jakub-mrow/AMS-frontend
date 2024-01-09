@@ -163,7 +163,9 @@ export const AssetTransactionDialog = ({
           if (event.key === "Enter") confirmHandler().then();
         }}
       >
-        <DialogTitle>Buy stocks</DialogTitle>
+        <DialogTitle>
+          Buy {type === AssetType.STOCK ? "stocks" : "cryptocurrency"}
+        </DialogTitle>
         <DialogContent>
           <form>
             <FormControl>
